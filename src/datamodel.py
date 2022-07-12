@@ -1,136 +1,112 @@
-'''
-TODO info
-'''
-
+import colorama
+from colorama import Fore
 import logging
-import os
-import sys
-
+from typing import Dict
 import pandas as pd
-import nltk
-import numpy as np
-import tqdm
-from tqdm import tqdm
+import sys, os
 
-from typing import Dict, List, Callable
+class Data:
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from datamodel import Block, Data
-from blocks.utils import drop_single_entity_blocks
+    def __init__(
+            self, 
+            dataset_1: pd.DataFrame,
+            attributes_1: list,
+            id_column_name_1: str,
+            dataset_2: pd.DataFrame=None,
+            attributes_2: list=None,
+            id_column_name_2: str=None,
+            ground_truth: pd.DataFrame=None,
+            with_header: bool=None
+    ) -> None:
+        self.dataset_1 = dataset_1
+        self.dataset_2 = dataset_2
+        if dataset_2 is not None and (id_column_name_2 is None or attributes_2 is None):
+            print("ERROR")
+            # TODO: error
+        self.entities_d1: pd.DataFrame
+        self.entities_d2: pd.DataFrame = None
+        self.ground_truth = ground_truth.astype(str)
+        self.is_dirty_er = True if dataset_2 is None else False
+        self.dataset_limit = self.num_of_entities_1 = len(dataset_1)
+        self.num_of_entities_2: int = len(dataset_2) if dataset_2 is not None else 0
+        self.num_of_entities: int = self.num_of_entities_1 + self.num_of_entities_2
+        self.attributes_1: list = attributes_1
+        # self.attributes_1.remove(id_column_name_1)
+        
+        if dataset_2 is not None: self.attributes_2: list = attributes_2
+            # self.attributes_2.remove(id_column_name_2)
 
-class Evaluation:
+        self.entities: pd.DataFrame
+        self.id_column_name_1 = id_column_name_1
+        self.id_column_name_2 = id_column_name_2
+
+    def process(self, text_cleaning_method=None) -> None:
+        
+        self.entities = self.dataset_1 = self.dataset_1.astype(str).apply(text_cleaning_method)
+        self.entities_d1 = self.dataset_1[self.attributes_1].apply(" ".join, axis=1)
+        
+        if not self.is_dirty_er:
+            self.dataset_2 = self.dataset_2.astype(str).apply(text_cleaning_method)
+            self.entities_d2 = self.dataset_2[self.attributes_2].apply(" ".join, axis=1)
+            self.entities = pd.concat([self.dataset_1, self.dataset_2])
+        self._create_gt_mapping()
+        
+    def _create_gt_mapping(self) -> None:
+        
+        if self.ground_truth is not None:
+            self.ground_truth = self.ground_truth.astype(str)
+
+        self._ids_mapping_1 = dict(zip(
+            self.dataset_1[self.id_column_name_1].tolist(), range(0, self.num_of_entities_1)
+        ))
+        
+        if not self.is_dirty_er:
+            self._ids_mapping_2 = dict(zip(
+                self.dataset_2[self.id_column_name_2].tolist(), range(self.num_of_entities_1, self.num_of_entities_1+self.num_of_entities_2)
+            ))      
+
+    def print_specs(self):
+        print("Type of Entity Resolution: ", "Dirty" if self.is_dirty_er else "Clean-Clean" )
+        print("Number of entities in D1: ", self.num_of_entities_1)
+        print("Attributes provided  for D1: ", self.attributes_2)
+        if not self.is_dirty_er: 
+            print("\nNumber of entities in D2: ", self.num_of_entities_2)
+            print("Attributes provided  for D2: ", self.attributes_2)
+        print("\nTotal number of entities: ", self.num_of_entities)
+        
+        if self.ground_truth is not None:
+            print("Number of matching pairs in ground-truth: ", len(self.ground_truth))
+        
+        
+class Block:
+    '''
+    Block entity
+    ---
+    Consists of 2 sets of profile entities (1 for Dirty ER and 2 for Clean-Clean ER)
+    '''
 
     def __init__(self) -> None:
-        self.f1: float
-        self.recall: float
-        self.precision: float
-        self.accuracy: float
-        self.num_of_comparisons: int
-        self.true_positives = 0
-        self.true_negatives = 0
-        self.false_positives = 0
-        self.false_negatives = 0
-        self.total_matching_pairs = 0
-        self.data: Data
-    
-    def report(self, prediction: any, data: Data) -> None:
-        
-        self.data = data
-        gt = self.data.ground_truth
+        self.entities_D1: set = set()
+        self.entities_D2: set = set()
 
-        if isinstance(prediction, dict) and isinstance(list(prediction.values())[0], set):
-            self.total_matching_pairs = sum([len(block) for block in prediction.values()])
-            for _, (id1, id2) in gt.iterrows():
-                if (id1 in prediction and id2 in prediction[id1]) or   \
-                    (id2 in prediction and id1 in prediction[id2]):
-                    self.true_positives += 1
-                else:
-                    self.false_negatives += 1
+    def get_cardinality(self, is_dirty_er) -> int:
+        if is_dirty_er:
+            return len(self.entities_D1)*(len(self.entities_D1)-1)/2
+        return len(self.entities_D1) * len(self.entities_D2)
+
+    def get_size(self) -> int:
+        return len(self.entities_D1) + len(self.entities_D2)
+
+    def verbose(self, key, is_dirty_er):
+        print("\nBlock ", "\033[1;32m"+key+"\033[0m", " contains entities with ids: ")
+        if is_dirty_er:
+            print("Dirty dataset: " + "[\033[1;34m" + \
+             str(len(self.entities_D1)) + " entities\033[0m]")
+            print(self.entities_D1)
         else:
-            entity_index: dict = self._create_entity_index(prediction)
-
-            for _, (id1, id2) in gt.iterrows():
-                if id1 in entity_index and    \
-                    id2 in entity_index and     \
-                        self._are_matching(entity_index, id1, id2):
-                    self.true_positives += 1
-                else:
-                    self.false_negatives += 1
-        self.false_positives = self.total_matching_pairs - self.true_positives
-        self.precision = self.true_positives / self.total_matching_pairs
-        self.recall = self.true_positives / len(gt)
-        self.f1 = 2*((self.precision*self.recall)/(self.precision+self.recall))
-        
-        print("+----------+\n Evaluation\n+----------+\nPrecision: {:9.2f}% \nRecall:    {:9.2f}%\nF1-score:  {:9.2f}%".format(
-            self.precision*100, self.recall*100, self.f1*100)
-        )
-
-    def _create_entity_index(self, groups: any) -> dict:
-        
-        if len(groups) < 1:
-            print("error")
-            # TODO: error
-        
-        if isinstance(groups, list):
-            return self._create_entity_index_from_clusters(groups)
-        elif 'Block' in str(type(list(groups.values())[0])):
-            return self._create_entity_index_from_blocks(groups)
-        else:
-            print("Not supported type")
-            # TODO: error
-    
-    
-    def _create_entity_index_from_clusters(self, clusters: list) -> dict:
-       
-        entity_index = dict()
-        for cluster, cluster_id in zip(clusters, range(0, len(clusters))):
-            cluster_entities_d1 = 0
-            cluster_entities_d2 = 0
-            for id in cluster:
-                entity_index[id] = cluster_id
-
-                if not self.data.is_dirty_er:
-                    if id < self.data.dataset_limit:
-                        cluster_entities_d1 += 1
-                    else:
-                        cluster_entities_d2 += 1
-
-            if self.data.is_dirty_er:
-                self.total_matching_pairs += len(cluster)*(len(cluster)-1)/2
-            else:
-                self.total_matching_pairs += cluster_entities_d1*cluster_entities_d2
-                    
-        return entity_index
-    
-    def _create_entity_index_from_blocks(self, blocks: dict) -> dict:
-        
-        entity_index = dict()
-        for block_id, block in blocks.items():
-            block_entities_d1 = 0
-            block_entities_d2 = 0
-            
-            for id in block.entities_D1:
-                entity_index.setdefault(id, set())
-                entity_index[id] = block_id
-                
-            if not self.data.is_dirty_er:
-                for id in block.entities_D2:
-                    entity_index.setdefault(id, set())
-                    entity_index[id] = block_id
-                    
-            if self.data.is_dirty_er:
-                self.total_matching_pairs += len(block.entities_D1)*(len(block.entities_D1)-1)/2
-            else:
-                self.total_matching_pairs += len(block.entities_D1)*len(block.entities_D2)
-
-        return entity_index
-    
-    
-    def _are_matching(self, entity_index, id1, id2) -> bool:
-        if len(entity_index) < 1:
-            print("error") # TODO: error
-            return None
-        
-        return True if (isinstance([entity_index.values()][0], set) and \
-                        entity_index[id1].intersection(entity_index[id2]) > 0) or \
-                        entity_index[id1] == entity_index[id2] else False
+            print("Clean dataset 1: " + "[\033[1;34m" + \
+             str(len(self.entities_D1)) + " entities\033[0m]")
+            print(self.entities_D1)
+            print("Clean dataset 2: " + "[\033[1;34m" + str(len(self.entities_D2)) + \
+            " entities\033[0m]")
+            print(self.entities_D2)

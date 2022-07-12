@@ -21,6 +21,8 @@ import numpy as np
 import tqdm
 from tqdm import tqdm
 
+import math
+
 from typing import Dict, List, Callable
 
 info = logging.info
@@ -38,15 +40,14 @@ class AbstractBlockBuilding:
 
     _method_name: str
     _method_info: str
-    _is_dirty_er: bool
-    blocks: dict = dict()
 
     def __init__(self) -> any:
-        self._num_of_entities_2 = None
+        self.blocks: dict
 
     def build_blocks(
-            self,
-            data: Data
+            self, data: Data,
+            attributes_1: list=None,
+            attributes_2: list=None,
     ) -> dict:
         '''
         Main method of Standard Blocking
@@ -54,26 +55,27 @@ class AbstractBlockBuilding:
         Input: Dirty/Clean-1 dataframe, Clean-2 dataframe
         Returns: dict of token -> Block
         '''
-        
-        if not data.is_dirty_er:
+        self.blocks: dict = dict()
+        self.attributes_1 = attributes_1
+        self.attributes_2 = attributes_2
+        if data.is_dirty_er:
+            tqdm_desc_1 = self._method_name + " - Dirty ER"
+        else:
             tqdm_desc_1 = self._method_name + " - Clean-Clean ER (1)"
             tqdm_desc_2 = self._method_name + " - Clean-Clean ER (2)"
-        else:
-            tqdm_desc_1 = self._method_name + " - Dirty ER"
+            
 
         for i in tqdm(range(0, data.num_of_entities_1, 1), desc=tqdm_desc_1):
-            record = data.entities_d1[i]
+            record = data.dataset_1.iloc[i, attributes_1] if attributes_1 else data.entities_d1.iloc[i] 
             for token in self._tokenize_entity(record):
                 self.blocks.setdefault(token, Block())
                 self.blocks[token].entities_D1.add(i)
-
         if not data.is_dirty_er:
             for i in tqdm(range(0, data.num_of_entities_2, 1), desc=tqdm_desc_2):
-                record = data.entities_d2[i]
+                record = data.dataset_2.iloc[i, attributes_2] if attributes_2 else data.entities_d2.iloc[i]
                 for token in self._tokenize_entity(record):
                     self.blocks.setdefault(token, Block())
-                    self.blocks[token].entities_D2.add(data.num_of_entities_1+i)
-
+                    self.blocks[token].entities_D2.add(data.dataset_limit+i)
         self.blocks = drop_single_entity_blocks(self.blocks, data.is_dirty_er)
 
         return self.blocks
@@ -99,7 +101,7 @@ class StandardBlocking(AbstractBlockBuilding):
         super().__init__()
 
     def _tokenize_entity(self, entity) -> list:
-        return nltk.word_tokenize(entity)
+        return entity.split()
 
 
 class QGramsBlocking(AbstractBlockBuilding):
@@ -128,13 +130,89 @@ class QGramsBlocking(AbstractBlockBuilding):
 
 
 class SuffixArraysBlocking(AbstractBlockBuilding):
-    pass
+        
+    _method_name = "Suffix Arrays Blocking"
+    _method_info = _method_name + ": it creates one block for every suffix that appears in the attribute value tokens of at least two entities."
 
-class ExtendedSuffixArraysBlocking(AbstractBlockBuilding):
-    pass
+    def __init__(
+            self, suffix_length: int = 3,
+    ) -> any:
+        super().__init__()
 
-class ExtendedQGramsBlocking(AbstractBlockBuilding):
-    pass
+        self.suffix_length = suffix_length
+
+    def _tokenize_entity(self, entity) -> list:
+        return [word[:self.suffix_length] if len(word) > self.suffix_length else word for word in entity.split()]
+
+    
+class ExtendedSuffixArraysBlocking(SuffixArraysBlocking):
+    _method_name = "Extended Suffix Arrays Blocking"
+    _method_info = _method_name + ": it creates one block for every substring (not just suffix) that appears in the tokens of at least two entities."
+
+    def __init__(
+            self, suffix_length: int = 3,
+    ) -> any:
+        super().__init__(suffix_length)
+        self.suffix_length = suffix_length
+
+
+    def _tokenize_entity(self, entity) -> list:
+        tokens = []
+        for word in entity.split():
+            if len(word) > self.suffix_length:
+                for token in list(nltk.ngrams(word,n=self.suffix_length)):
+                    tokens.append("".join(token))
+            else:
+                tokens.append("".join(word))
+        return tokens
+
+class ExtendedQGramsBlocking(QGramsBlocking):
+    
+    _method_name = "Extended Suffix Arrays Blocking"
+    _method_info = _method_name + ": it creates one block for every substring (not just suffix) that appears in the tokens of at least two entities."
+    
+    def __init__(
+        self, qgrams: int, threshold: float = 0.95
+    ) -> any:
+        super().__init__(qgrams)
+        self.threshold: float = threshold
+        self.MAX_QGRAMS: int = 15
+
+    def _tokenize_entity(self, entity) -> list:
+        tokens = []
+        for word in entity.split():
+            qgrams = [''.join(qgram) for qgram in nltk.ngrams(word, n=self.qgrams)]
+            if len(qgrams) == 1:
+                tokens += qgrams
+            else:
+                if len(qgrams) > self.MAX_QGRAMS:
+                    qgrams = qgrams[:self.MAX_QGRAMS]
+
+                minimum_length = math.floor(len(qgrams) * self.threshold)
+
+                for i in range(minimum_length, len(qgrams)):
+                    tokens += self._qgrams_combinations(qgrams, i)
+        
+        return tokens
+    
+    def _qgrams_combinations(self, sublists: list, sublist_length: int) -> list:
+        
+        if not sublists or len(sublists) < sublist_length:
+            return []
+        
+        remaining_elements = sublists.copy()
+        last_sublist = remaining_elements.pop(len(sublists)-1)
+        combinations_exclusive_x = self._qgrams_combinations(remaining_elements, sublist_length)
+        combinations_inclusive_x = self._qgrams_combinations(remaining_elements, sublist_length-1)
+        
+        resulting_combinations = combinations_exclusive_x.copy()
+        if not resulting_combinations:
+            resulting_combinations.append(last_sublist)
+        else:
+            for combination in combinations_inclusive_x:
+                resulting_combinations.append(combination+last_sublist)
+            
+        return resulting_combinations
 
 class LSHSuperBitBlocking(AbstractBlockBuilding):
     pass

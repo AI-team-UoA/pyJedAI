@@ -34,8 +34,8 @@ def drop_single_entity_blocks(blocks: dict, is_dirty_er: bool) -> dict:
 
 def print_blocks(blocks, is_dirty_er):
     print("Number of blocks: ", len(blocks))
-    for _, block in blocks.items():
-        block.verbose(is_dirty_er)
+    for key, block in blocks.items():
+        block.verbose(key, is_dirty_er)
 
 def print_candidate_pairs(blocks):
     print("Number of blocks: ", len(blocks))
