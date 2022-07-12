@@ -83,5 +83,3 @@ class BlockFiltering(AbstractBlockCleaning):
     def _sort_blocks_cardinality(self, blocks: dict) -> dict:
         return dict(sorted(blocks.items(), key=lambda x: x[1].get_cardinality(self.data.is_dirty_er)))
 
-class BlockClustering(AbstractBlockCleaning):
-    pass

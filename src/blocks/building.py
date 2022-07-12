@@ -213,10 +213,3 @@ class ExtendedQGramsBlocking(QGramsBlocking):
                 resulting_combinations.append(combination+last_sublist)
             
         return resulting_combinations
-
-class LSHSuperBitBlocking(AbstractBlockBuilding):
-    pass
-
-
-class LSHMinHashBlocking(LSHSuperBitBlocking):
-    pass

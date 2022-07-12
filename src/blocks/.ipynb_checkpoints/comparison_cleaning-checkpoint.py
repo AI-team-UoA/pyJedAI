@@ -32,8 +32,8 @@ class AbstractComparisonCleaning:
 
     def process(
             self,
-            blocks: dict = None,
-            data: Data = None
+            blocks: dict,
+            data: Data
     ) -> dict:
         '''
         TODO: add description
@@ -493,28 +493,3 @@ class ComparisonPropagation(AbstractComparisonCleaning):
                 self.blocks[i] = self._valid_entities.copy()
             self._progress_bar.update(1)
         return self.blocks
-
-class CanopyClustering(CardinalityNodePruning):
-    '''
-    TODO: CanopyClustering
-    '''    
-    _method_name = ""
-    _method_info = ""
-    
-    
-    def __init__(self) -> None:
-        super().__init__()
-        
-
-class ExtendedCanopyClustering(CardinalityNodePruning):
-    '''
-    TODO: ExtendedCanopyClustering
-    '''
-    
-    _method_name = ""
-    _method_info = ""    
-    
-    def __init__(self) -> None:
-        super().__init__()
-        pass    
-    pass

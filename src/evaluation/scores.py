@@ -159,8 +159,7 @@ class Evaluation:
         return entity_index[id1] == entity_index[id2] # Clusters case
     
     
-    def confusion_matrix(self):
-        
+    def confusion_matrix(self) -> None:
         heatmap = [
             [int(self.true_positives), int(self.false_positives)],
             [int(self.false_negatives), int(self.true_negatives)]
