@@ -1,7 +1,6 @@
 '''
 TODO
 '''
-
 import strsimpy
 from strsimpy.levenshtein import Levenshtein
 from strsimpy.normalized_levenshtein import NormalizedLevenshtein
@@ -31,10 +30,13 @@ import networkx
 import os
 import sys
 
+# pyJedAI
 from .datamodel import Block, Data
-from .blocks.utils import drop_single_entity_blocks, create_entity_index, print_blocks
-from .utils.constants import EMBEDING_TYPES
-
+from .utils import (
+    drop_single_entity_blocks, 
+    create_entity_index, 
+    print_blocks
+)
 
 class EntityMatching:
     '''

@@ -22,9 +22,9 @@ from strsimpy.jaccard import Jaccard
 from strsimpy.sorensen_dice import SorensenDice
 from strsimpy import SIFT4
 
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# pyJedAI
 from datamodel import Data
-from utils.constants import EMPTY
+from utils import EMPTY
 
 from queue import PriorityQueue
 

@@ -3,8 +3,9 @@ import networkx as nx
 import os
 import sys
 import time
-from .datamodel import Data
 
+# pyJedAI
+from .datamodel import Data
 
 class ConnectedComponentsClustering:
 

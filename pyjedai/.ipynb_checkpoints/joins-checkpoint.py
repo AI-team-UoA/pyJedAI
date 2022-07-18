@@ -22,9 +22,9 @@ from strsimpy.jaccard import Jaccard
 from strsimpy.sorensen_dice import SorensenDice
 from strsimpy import SIFT4
 
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# pyJedAI
 from datamodel import Data
-from utils.constants import EMPTY
+from utils import EMPTY
 
 from queue import PriorityQueue
 
@@ -187,6 +187,9 @@ class TopKSchemaAgnosticJoin(AbstractJoin):
             priority_queue = PriorityQueue()
             minimum_weight = 0.0
             record = self.data.dataset_1.iloc[i, self.attributes_1] if self.attributes_1 else self.data.entities_d1.iloc[i]
+            tokens = self._tokenize_entity(record)
+            
+            
             for token in self._tokenize_entity(record):
                 entity_index_d1.setdefault(token, set())
                 if self.data.is_dirty_er and len(entity_index_d1[token])>0:

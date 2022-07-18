@@ -20,7 +20,7 @@ from datetime import timedelta
 
 # pyJedAI
 from .datamodel import Block, Data
-from .blocks.utils import drop_single_entity_blocks
+from .utils import drop_single_entity_blocks
 
 class Evaluation:
 
