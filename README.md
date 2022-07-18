@@ -11,9 +11,6 @@
 
 Open demos are available in [Jupyter-nbViewer](https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/CleanCleanER-AbtBuy.ipynb) and in [GitHub](https://github.com/Nikoletos-K/pyJedAI/blob/main/CleanCleanER-AbtBuy.ipynb)
 
-## Versions
-
-- Python > 3.9
 
 ## Technologies
 ![](https://img.shields.io/badge/PyTorch%20-%23EE4C2C.svg?&style=for-the-badge&logo=PyTorch&logoColor=white)
