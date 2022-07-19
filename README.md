@@ -16,7 +16,7 @@ Open demos are available in [Jupyter-nbViewer](https://nbviewer.org/github/Nikol
 <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/2560px-Pandas_logo.svg.png" width=150/> 
 <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/NumPy_logo_2020.svg/1280px-NumPy_logo_2020.svg.png" width=150/> 
 <img align="center" src="https://logoeps.com/wp-content/uploads/2012/10/python-logo-vector.png" width=150/>
-<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/883px-Jupyter_logo.svg.png" width=85/>  <br><br>
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/883px-Jupyter_logo.svg.png" width=85/>  <br>
 <img align="center" src="https://upload.wikimedia.org/wikipedia/en/c/cd/Anaconda_Logo.png" width=130/>
 <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Plotly_logo_for_digital_final_%286%29.png/1200px-Plotly_logo_for_digital_final_%286%29.png" width=150/>
 <img align="center" src="https://www.fullstackpython.com/img/logos/scipy.png" width=150/>  <br><br>
