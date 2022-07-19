@@ -1,26 +1,10 @@
 '''
 Evaluation methods
 '''
-
-import logging
-import os
-import sys
-
-import pandas as pd
-import nltk
-import numpy as np
-import tqdm
-from tqdm import tqdm
-
-from typing import Dict, List, Callable
 import matplotlib.pyplot as plt
 import seaborn as sns
-import time
 from datetime import timedelta
-
-# pyJedAI
-from .datamodel import Block, Data
-from .utils import drop_single_entity_blocks
+from .datamodel import Data
 
 class Evaluation:
 
@@ -36,7 +20,7 @@ class Evaluation:
         self.false_negatives: int
         self.total_matching_pairs = 0
         self.data: Data= data
-    
+        
     def report(self, prediction: any, execution_time: int=None) -> None:
         self.true_positives = 0
         self.true_negatives = 0
@@ -127,10 +111,7 @@ class Evaluation:
     ) -> dict:
         
         entity_index = dict()
-        for block_id, block in blocks.items():
-            block_entities_d1 = 0
-            block_entities_d2 = 0
-            
+        for block_id, block in blocks.items():          
             for entity_id in block.entities_D1:
                 entity_index.setdefault(entity_id, set())
                 entity_index[entity_id].add(block_id)
@@ -164,7 +145,6 @@ class Evaluation:
     
     
     def confusion_matrix(self):
-        
         heatmap = [
             [int(self.true_positives), int(self.false_positives)],
             [int(self.false_negatives), int(self.true_negatives)]

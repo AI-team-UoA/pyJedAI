@@ -1,8 +1,7 @@
 import pandas as pd
 import networkx as nx
-import os
-import sys
 import time
+import tqdm
 
 # pyJedAI
 from .datamodel import Data

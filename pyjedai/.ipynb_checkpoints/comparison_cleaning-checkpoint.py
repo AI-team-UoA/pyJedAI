@@ -2,17 +2,15 @@
 Comparison cleaning methods
 '''
 import numpy as np
-import os, sys
-import tqdm
-import math
+import sys
 import time
-from tqdm.notebook import tqdm
 from math import log10
 from queue import PriorityQueue
+from tqdm.notebook import tqdm
 
 # pyJedAI
 from .datamodel import Data
-from .utils import EMPTY, DISCRETIZATION_FACTOR, create_entity_index
+from .utils import create_entity_index, chi_square
 
 class AbstractComparisonCleaning:
     '''
@@ -44,7 +42,7 @@ class AbstractComparisonCleaning:
         self._entity_index = create_entity_index(blocks, self.data.is_dirty_er)
         self._num_of_blocks = len(blocks)
         self._blocks: dict = blocks
-        self._limit = self.data.num_of_entities if self.data.is_dirty_er else self.data.dataset_limit
+        self._limit = self.data.num_of_entities if self.data.is_dirty_er or self._node_centric else self.data.dataset_limit
         
         self._progress_bar = tqdm(total=self._limit, desc=self._method_name)
         
@@ -109,9 +107,12 @@ class AbstractMetablocking(AbstractComparisonCleaning):
             return float(probability * \
                     log10(self._distinct_comparisons / self._comparisons_per_entity[entity_id]) * \
                     log10(self._distinct_comparisons / self._comparisons_per_entity[neighbor_id]))
-        elif ws == 'PEARSON_X2':
-            # TODO: ChiSquared
-            pass
+        elif ws == 'X2':
+            expected = [int(self._counters[neighbor_id]), 
+                        int(len(self._entity_index[entity_id])-self._counters[neighbor_id])]
+            observed = [int(len(self._entity_index[neighbor_id])-expected[0]), 
+                        int(self._num_of_blocks - (expected[0] + expected[1] + (len(self._entity_index[neighbor_id])-expected[0])))]
+            return chi_square(np.array([observed, expected])) 
         else:
             # TODO: Error handling
             print('This weighting scheme does not exist')
@@ -128,9 +129,6 @@ class AbstractMetablocking(AbstractComparisonCleaning):
                 self._neighbors.update(self._blocks[block_key].entities_D2)
             else:
                 self._neighbors.update(self._blocks[block_key].entities_D1)
-
-    def _discretize_comparison_weight(self, weight: float) -> int:
-        return int(weight * DISCRETIZATION_FACTOR)
 
     def _set_statistics(self) -> None:
         self._distinct_comparisons = 0
@@ -179,7 +177,7 @@ class ComparisonPropagation(AbstractComparisonCleaning):
                 associated_blocks = self._entity_index[i]
                 for block_index in associated_blocks:
                     if self.data.is_dirty_er:
-                        self._valid_entities.update([neighbor_id for neighbor_id in self._blocks[block_key].entities_D1 if i < neighbor_id])
+                        self._valid_entities.update([neighbor_id for neighbor_id in self._blocks[block_index].entities_D1 if i < neighbor_id])
                     else:
                         self._valid_entities.update(self._blocks[block_index].entities_D2)
                 self.blocks[i] = self._valid_entities.copy()
@@ -214,7 +212,7 @@ class WeightedEdgePruning(AbstractMetablocking):
             return
 
         self._valid_entities.clear()
-        self._flags[:] = EMPTY
+        self._flags[:] = -1
         associated_blocks = self._entity_index[entity_id]
         
         for block_id in associated_blocks:
@@ -231,6 +229,9 @@ class WeightedEdgePruning(AbstractMetablocking):
                 self._valid_entities.add(neighbor_id)
 
     def _update_threshold(self, entity_id: int) -> None:
+        if entity_id not in self._entity_index:
+            return
+            
         self._num_of_edges += len(self._valid_entities)
         for neighbor_id in self._valid_entities:
             self._threshold += self._get_weight(entity_id, neighbor_id)
@@ -244,9 +245,11 @@ class WeightedEdgePruning(AbstractMetablocking):
             self._update_threshold(i)
 
         self._threshold /= self._num_of_edges
-        print(self._threshold)
-
-    def _verify_valid_entities(self, entity_id: int) -> None:            
+        
+    def _verify_valid_entities(self, entity_id: int) -> None:    
+        if entity_id not in self._entity_index:
+            return
+            
         self._retained_neighbors.clear()
         for neighbor_id in self._valid_entities:
             weight = self._get_weight(entity_id, neighbor_id)
@@ -293,6 +296,9 @@ class CardinalityEdgePruning(WeightedEdgePruning):
         self._threshold = block_assignments / 2
     
     def _verify_valid_entities(self, entity_id: int) -> None:
+        if entity_id not in self._entity_index:
+            return
+            
         for neighbor_id in self._valid_entities:
             weight = self._get_weight(entity_id, neighbor_id)
             if weight >= self._minimum_weight:
@@ -319,7 +325,7 @@ class CardinalityNodePruning(CardinalityEdgePruning):
         
     def _prune_edges(self) -> dict:
         self._nearest_entities = dict()
-        for i in range(0, self.data.num_of_entities):
+        for i in range(0, self._limit):
             self._process_entity(i)
             self._verify_valid_entities(i)
             self._progress_bar.update(1)
@@ -352,6 +358,9 @@ class CardinalityNodePruning(CardinalityEdgePruning):
         self._threshold = max(1, block_assignments / self.data.num_of_entities)
     
     def _verify_valid_entities(self, entity_id: int) -> None: 
+        if entity_id not in self._entity_index:
+            return
+            
         self._top_k_edges = PriorityQueue(int(2*self._threshold))
         self._minimum_weight = sys.float_info.min
         for neighbor_id in self._valid_entities:
@@ -404,7 +413,6 @@ class WeightedNodePruning(WeightedEdgePruning):
         super().__init__(weighting_scheme)
         self._average_weight: np.array
         self._node_centric = True
-        self._limit = self.data.num_of_entities
 
     def _get_valid_weight(self, entity_id: int, neighbor_id: int) -> float:
         weight = self._get_weight(entity_id, neighbor_id)
@@ -414,17 +422,23 @@ class WeightedNodePruning(WeightedEdgePruning):
         
     def _set_threshold(self):
         self._average_weight = np.empty([self.data.num_of_entities], dtype=float)
-        for i in range(0, self.data.num_of_entities):
+        for i in range(0, self._limit):
             self._process_entity(i)
             self._update_threshold(i)
 
     def _update_threshold(self, entity_id: int) -> None:
+        if entity_id not in self._entity_index:
+            return
+            
         self._average_weight[entity_id] = 0.0
         for neighbor_id in self._valid_entities:
             self._average_weight[entity_id] += super()._get_weight(entity_id, neighbor_id)        
         self._average_weight[entity_id] /= len(self._valid_entities)
         
     def _verify_valid_entities(self, entity_id: int) -> None:
+        if entity_id not in self._entity_index:
+            return
+            
         self._retained_neighbors.clear()
         for neighbor_id in self._valid_entities:
             if self._get_valid_weight(entity_id, neighbor_id):
@@ -453,6 +467,9 @@ class BLAST(WeightedNodePruning):
         return edge_threshold <= weight and entity_id < neighbor_id
         
     def _update_threshold(self, entity_id: int) -> None:
+        if entity_id not in self._entity_index:
+            return
+            
         self._average_weight[entity_id] = 0.0
         for neighbor_id in self._valid_entities:
             self._average_weight[entity_id] = max(self._average_weight[entity_id], self._get_weight(entity_id, neighbor_id))
@@ -476,3 +493,20 @@ class ReciprocalWeightedNodePruning(WeightedNodePruning):
         return weight if ((self._average_weight[entity_id] <= weight and \
                              self._average_weight[neighbor_id] <= weight) and 
                                 entity_id < neighbor_id) else 0
+
+def get_meta_blocking_approach(acronym, w_scheme):
+    if acronym == "CEP":
+        return CardinalityEdgePruning(w_scheme)
+    elif acronym == "CNP":
+        return CardinalityNodePruning(w_scheme)
+    elif acronym == "RCNP":
+        return ReciprocalCardinalityNodePruning(w_scheme)
+    elif acronym == "RWNP":
+        return ReciprocalWeightedNodePruning(w_scheme)
+    elif acronym == "WEP":
+        return WeightedEdgePruning(w_scheme)
+    elif acronym == "WNP":
+        return WeightedNodePruning(w_scheme)
+    else:
+        print("Wrong meta-blocking approach selected. Returning Comparison Propagation.")
+        return ComparisonPropagation()

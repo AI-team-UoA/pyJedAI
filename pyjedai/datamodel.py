@@ -1,9 +1,4 @@
-import colorama
-from colorama import Fore
-import logging
-from typing import Dict
 import pandas as pd
-import sys, os
 
 class Data:
 
@@ -39,13 +34,12 @@ class Data:
         self.id_column_name_1 = id_column_name_1
         self.id_column_name_2 = id_column_name_2
 
-    def process(self, text_cleaning_method=None) -> None:
-        
-        self.entities = self.dataset_1 = self.dataset_1.astype(str).apply(text_cleaning_method)
+    def process(self) -> None:
+        self.entities = self.dataset_1 = self.dataset_1.astype(str)
         self.entities_d1 = self.dataset_1[self.attributes_1].apply(" ".join, axis=1)
         
         if not self.is_dirty_er:
-            self.dataset_2 = self.dataset_2.astype(str).apply(text_cleaning_method)
+            self.dataset_2 = self.dataset_2.astype(str)
             self.entities_d2 = self.dataset_2[self.attributes_2].apply(" ".join, axis=1)
             self.entities = pd.concat([self.dataset_1, self.dataset_2])
         self._create_gt_mapping()
@@ -67,7 +61,7 @@ class Data:
     def print_specs(self):
         print("Type of Entity Resolution: ", "Dirty" if self.is_dirty_er else "Clean-Clean" )
         print("Number of entities in D1: ", self.num_of_entities_1)
-        print("Attributes provided  for D1: ", self.attributes_2)
+        print("Attributes provided  for D1: ", self.attributes_1)
         if not self.is_dirty_er: 
             print("\nNumber of entities in D2: ", self.num_of_entities_2)
             print("Attributes provided  for D2: ", self.attributes_2)

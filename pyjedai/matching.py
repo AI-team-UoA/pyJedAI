@@ -1,34 +1,16 @@
-'''
-TODO
-'''
-import strsimpy
 from strsimpy.levenshtein import Levenshtein
 from strsimpy.normalized_levenshtein import NormalizedLevenshtein
-from strsimpy.weighted_levenshtein import WeightedLevenshtein
-from strsimpy.damerau import Damerau
-from strsimpy.optimal_string_alignment import OptimalStringAlignment
 from strsimpy.jaro_winkler import JaroWinkler
-from strsimpy.longest_common_subsequence import LongestCommonSubsequence
 from strsimpy.metric_lcs import MetricLCS
 from strsimpy.ngram import NGram
-from strsimpy.qgram import QGram
 from strsimpy.overlap_coefficient import OverlapCoefficient
-from strsimpy.cosine import Cosine
 from strsimpy.jaccard import Jaccard
 from strsimpy.sorensen_dice import SorensenDice
-from strsimpy import SIFT4
 
 import time
-import gensim
-from gensim import corpora
-from pprint import pprint
-
-import pandas as pd
 import tqdm
 from tqdm.notebook import tqdm
 import networkx
-import os
-import sys
 
 # pyJedAI
 from .datamodel import Block, Data

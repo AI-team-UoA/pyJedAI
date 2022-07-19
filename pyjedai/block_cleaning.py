@@ -1,18 +1,11 @@
-import logging
-import os
-import sys
-
-import pandas as pd
-import nltk
 import numpy as np
-from math import log10
 import time
 
 from tqdm.notebook import tqdm
 
 # pyJedAI
 from .datamodel import Data, Block
-from .utils import EMPTY, create_entity_index, drop_single_entity_blocks
+from .utils import create_entity_index, drop_big_blocks_by_size, drop_single_entity_blocks
 
 class BlockFiltering:
     '''
@@ -49,41 +42,39 @@ class BlockFiltering:
         start_time = time.time()
         self.data = data
         pbar = tqdm(total=3, desc="Block Filtering", dynamic_ncols =True)
-        # print("dataset_limit: ", dataset_limit)
+        
         sorted_blocks = sort_blocks_cardinality(blocks, self.data.is_dirty_er)
         pbar.update(1)
+        
         entity_index = create_entity_index(sorted_blocks, self.data.is_dirty_er)
         pbar.update(1)
-
+            
         filtered_blocks = {}
         for entity_id, block_keys in entity_index.items():
             # Create new blocks from the entity index
-            # print(int(self.ratio*len(block_keys)))
-            for key in block_keys[:int(self.ratio*len(block_keys))]:
+            for key in block_keys[:int(round(self.ratio*len(block_keys)))]:
                 filtered_blocks.setdefault(key, Block())
 
                 # Entities ids start to 0 ... n-1 for 1st dataset
                 # and n ... m for 2nd dataset
                 if entity_id < self.data.dataset_limit:
-                    # print(key)
                     filtered_blocks[key].entities_D1.add(entity_id)
                 else:
                     filtered_blocks[key].entities_D2.add(entity_id)
         pbar.update(1)
-        # print_blocks(filtered_blocks, self._is_dirty_er)
+        
         self.blocks = drop_single_entity_blocks(filtered_blocks, self.data.is_dirty_er)
+        
         pbar.close() 
         self.execution_time = time.time() - start_time
         
         return self.blocks
 
-    
-    
-class ComparisonsBasedBlockPurging:
+class BlockPurging:
     '''
-    ComparisonsBasedBlockPurging
+    BlockPurging
     '''
-    _method_name = "Comparison-based Block Purging"
+    _method_name = "Block Purging"
     _method_info = ": it discards the blocks exceeding a certain number of comparisons."
 
     def __init__(self, smoothing_factor: float = 1.025) -> any:
@@ -107,33 +98,28 @@ class ComparisonsBasedBlockPurging:
         
         new_blocks = blocks.copy()
         self._set_threshold(new_blocks)
-        num_of_purged_blocks = 0
-        total_comparisons = 0
-        for block_key, block in list(new_blocks.items()):            
-            if self._satisfies_threshold(block):
-                total_comparisons += block.get_cardinality(self.data.is_dirty_er)
-            else:
-                num_of_purged_blocks += 1
-                new_blocks.pop(block_key)
+        
+        all_keys = list(new_blocks.keys())
+        for key in all_keys:
+            if new_blocks[key].get_cardinality(self.data.is_dirty_er) > self.max_comparisons_per_block:
+                new_blocks.pop(key)
             self._progress_bar.update(1)
-                
-        # print("Purged blocks:", num_of_purged_blocks)
-        # print("Retained blocks: ", len(new_blocks))
-        # print("Retained comparisons: ", total_comparisons)
+        
         self.execution_time = time.time() - start_time
         self._progress_bar.close()
         return new_blocks
     
     
     def _set_threshold(self, blocks: dict) -> None:
-        
         sorted_blocks = sort_blocks_cardinality(blocks, self.data.is_dirty_er)
+        
         distinct_comparisons_level = set(b.get_cardinality(self.data.is_dirty_er) for k, b in sorted_blocks.items())
+        
         block_assignments = np.empty([len(distinct_comparisons_level)])
         comparisons_level = np.empty([len(distinct_comparisons_level)])
         total_comparisons_per_level = np.empty([len(distinct_comparisons_level)])
-        index = -1
         
+        index = -1
         for block_key, block in sorted_blocks.items():
             if index == -1:
                 index += 1
@@ -153,7 +139,6 @@ class ComparisonsBasedBlockPurging:
         
         current_bc = 0; current_cc = 0; current_size = 0
         previous_bc = 0; previous_cc = 0; previous_size = 0
-        
         for i in range(len(block_assignments)-1, 0, -1):
             previous_size = current_size
             previous_bc = current_bc
@@ -161,7 +146,7 @@ class ComparisonsBasedBlockPurging:
             current_size = comparisons_level[i]
             current_bc = block_assignments[i]
             current_cc = total_comparisons_per_level[i]
-            if current_bc * previous_cc < self.smoothing_factor * current_cc * previous_cc:
+            if current_bc * previous_cc < self.smoothing_factor * current_cc * previous_bc:
                 break
                 
         self.max_comparisons_per_block = previous_size

@@ -1,13 +1,7 @@
 '''
-Utility functions for all blocking modules
+Utility functions
 '''
-
-from .datamodel import Data, Block
-
-# Constants
-EMPTY = -1
-DISCRETIZATION_FACTOR = 100_000_000
-
+import numpy as np
 
 def create_entity_index(blocks: dict, is_dirty_er: bool):
     '''
@@ -26,12 +20,19 @@ def create_entity_index(blocks: dict, is_dirty_er: bool):
 
     return entity_index
 
+def drop_big_blocks_by_size(blocks: dict, max_block_size: int) -> dict:
+    all_keys = list(blocks.keys())
+    for key in all_keys:
+        if blocks[key].get_size() > max_block_size:
+            blocks.pop(key)
+    return blocks
+
 def drop_single_entity_blocks(blocks: dict, is_dirty_er: bool) -> dict:
     '''
      Removes one-size blocks for DER and empty for CCER
     '''
     all_keys = list(blocks.keys())
-    # print("All keys before: ", len(all_keys))
+    
     if is_dirty_er:
         for key in all_keys:
             if len(blocks[key].entities_D1) == 1:
@@ -40,18 +41,9 @@ def drop_single_entity_blocks(blocks: dict, is_dirty_er: bool) -> dict:
         for key in all_keys:
             if len(blocks[key].entities_D1) == 0 or len(blocks[key].entities_D2) == 0:
                 blocks.pop(key)
-    # print("All keys after: ", len(blocks.keys()))
-    return blocks
 
-def drop_big_blocks_by_size(blocks: dict, max_block_size: int) -> dict:
+    return blocks 
     
-    all_keys = list(blocks.keys())
-    for key in all_keys:
-        if blocks[key].get_size() > max_block_size:
-            blocks.pop(key)
-    return blocks
-    
-
 def print_blocks(blocks, is_dirty_er):
     print("Number of blocks: ", len(blocks))
     for key, block in blocks.items():
@@ -72,5 +64,17 @@ def print_clusters(clusters: list) -> None:
             str(len(entity_ids)) + " entities\033[0m]")
         print(entity_ids)
         
-def cora_text_cleaning_method(col):
+def text_cleaning_method(col):
     return col.str.lower()
+
+def chi_square(in_array: np.array) -> float:
+    row_sum = np.sum(in_array, axis=1)
+    column_sum = np.sum(in_array, axis=0)
+    total = np.sum(in_array)    
+    sum_sq = 0.0; expected = 0.0;
+    for r in range(0, in_array.shape[0]):
+        for c in range(0, in_array.shape[1]):
+            expected = (row_sum[r]*column_sum[c])/total
+            sum_sq += ((in_array[r][c]-expected)**2)/expected 
+    return sum_sq
+        

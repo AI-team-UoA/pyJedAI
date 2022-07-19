@@ -10,7 +10,7 @@
 Open demos are available in [Jupyter-nbViewer](https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/CleanCleanER-AbtBuy.ipynb) and in [GitHub](https://github.com/Nikoletos-K/pyJedAI/blob/main/CleanCleanER-AbtBuy.ipynb)
 
 
-## Dependendies
+## Dependencies
 
 <div align="center">
 <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/2560px-Pandas_logo.svg.png" width=150/> 
@@ -39,6 +39,6 @@ Open demos are available in [Jupyter-nbViewer](https://nbviewer.org/github/Nikol
 
 
 
-__Licence:__ Apache-2.0 license
+__License:__ Apache-2.0 license
 
-__Made by:__ Konstantinos Nikoletos & George Papadakis
+__Made by:__ Konstantinos Nikoletos & George Papadakis, 2022

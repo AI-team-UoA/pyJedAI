@@ -21,12 +21,13 @@ from strsimpy.cosine import Cosine
 from strsimpy.jaccard import Jaccard
 from strsimpy.sorensen_dice import SorensenDice
 from strsimpy import SIFT4
+from queue import PriorityQueue
 
 # pyJedAI
-from datamodel import Data
-from utils import EMPTY
+from .datamodel import Data
+from .utils import EMPTY
 
-from queue import PriorityQueue
+
 
 class AbstractJoin:
     

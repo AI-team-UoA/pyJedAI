@@ -8,26 +8,16 @@ One block is consisted of 1 set if Dirty ER and
 TODO: Change dict instertion like cleaning or use method insert_to_dict
 TODO: ids to CC as 0...n-1 and n..m can be merged in one set, no need of 2 sets?
 '''
-import logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-from operator import methodcaller
-import os
-import sys
-
-import pandas as pd
 import nltk
-import numpy as np
-import tqdm
-from tqdm.notebook import tqdm
 import math
 import re
 import time
-from typing import Dict, List, Callable
+
+from tqdm.notebook import tqdm
 
 # pyJedAI
 from .datamodel import Block, Data
-from .utils import drop_single_entity_blocks, drop_big_blocks_by_size
-
+from .utils import drop_big_blocks_by_size, drop_single_entity_blocks
 
 class AbstractBlockBuilding:
     '''
@@ -119,7 +109,7 @@ class QGramsBlocking(StandardBlocking):
                 "The q-gram must be shared by at least two entities."
 
     def __init__(
-            self, qgrams: int=6,
+            self, qgrams: int = 6,
     ) -> any:
         super().__init__()
         self.qgrams = qgrams
@@ -177,7 +167,7 @@ class ExtendedSuffixArraysBlocking(StandardBlocking):
     _method_info = _method_name + ": it creates one block for every substring (not just suffix) that appears in the tokens of at least two entities."
 
     def __init__(
-            self, suffix_length: int = 3, max_block_size : int = 39
+            self, suffix_length: int = 6, max_block_size : int = 39
     ) -> any:
         super().__init__()
         self.suffix_length = suffix_length
