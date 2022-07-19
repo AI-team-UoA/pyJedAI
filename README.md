@@ -1,11 +1,9 @@
-
+<br>
 <div align="center">
-  <h1 size="10">pyJedAI a lightsaber for Link Discovery</h1>
+  <img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="600"/>
 </div>
+<br>
 
-<div align="center">
-<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyJedAIarchitecture.png?raw=true" alt="pyJedAI-Architecture" width="500"/>
-</div>
 
 ## Demo
 
@@ -28,7 +26,18 @@ Open demos are available in [Jupyter-nbViewer](https://nbviewer.org/github/Nikol
 <img align="center" src="https://raw.githubusercontent.com/RDFLib/OWL-RL/master/OWL-RL.png" width=70/> 
 </div>
 
+
+## Architecture
+
+<div align="center">
+<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyJedAIarchitecture.png?raw=true" alt="pyJedAI-Architecture" width="500"/>
+</div>
+
+
+
 <br>
+
+
 
 __Licence:__ Apache-2.0 license
 
