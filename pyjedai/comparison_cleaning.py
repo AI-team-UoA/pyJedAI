@@ -167,6 +167,7 @@ class ComparisonPropagation(AbstractComparisonCleaning):
     
     def __init__(self) -> None:
         super().__init__()
+        self._node_centric = False
     
     def _apply_main_processing(self) -> dict:
         self.blocks = dict()
