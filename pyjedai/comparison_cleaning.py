@@ -108,11 +108,11 @@ class AbstractMetablocking(AbstractComparisonCleaning):
                     log10(self._distinct_comparisons / self._comparisons_per_entity[entity_id]) * \
                     log10(self._distinct_comparisons / self._comparisons_per_entity[neighbor_id]))
         elif ws == 'X2':
-            expected = [int(self._counters[neighbor_id]), 
+            observed = [int(self._counters[neighbor_id]), 
                         int(len(self._entity_index[entity_id])-self._counters[neighbor_id])]
-            observed = [int(len(self._entity_index[neighbor_id])-expected[0]), 
-                        int(self._num_of_blocks - (expected[0] + expected[1] + (len(self._entity_index[neighbor_id])-expected[0])))]
-            return chi_square(np.array([observed, expected])) 
+            expected = [int(len(self._entity_index[neighbor_id])-observed[0]), 
+                        int(self._num_of_blocks - (observed[0] + observed[1] - self._counters[neighbor_id]))]
+            return chi_square(np.array([observed, expected]))
         else:
             # TODO: Error handling
             print('This weighting scheme does not exist')
