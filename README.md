@@ -57,6 +57,6 @@ Discovery, in general.
 
 
 
-__License:__ Apache-2.0 license
+__License:__ [Apache-2.0 license](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE)
 
 __Made by:__ Konstantinos Nikoletos & George Papadakis, 2022
