@@ -1,0 +1,5 @@
+.ipynb_checkpoints/
+pyjedai/__pycache__/
+pyjedai/.ipynb_checkpoints/
+examples/.ipynb_checkpoints/
+examples/scripts/.ipynb_checkpoints/
