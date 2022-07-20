@@ -2,7 +2,7 @@
 <div align="center">
   <img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="600"/>
   <br><br>
-  An open-source library that leverages Python’s data science ecosystem to build powerful end-to-end Entity Resolution workflows.
+  An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
 </div>
 
 <br>
