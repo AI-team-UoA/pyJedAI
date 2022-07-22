@@ -1,12 +1,18 @@
 <br>
-<div align="center">
-  <img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="600"/>
-  <br><br>
-  An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
+<div >
+<br>
+  <img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="370"/>
+<img align="left" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="600"/>
 </div>
 
-<br>
 
+
+
+<br><br>
+<div align="center">
+An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
+</div>
+<br>
 
 __Open demos are available in:__
 
@@ -59,4 +65,4 @@ Discovery, in general.
 
 __License:__ [Apache-2.0 license](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE)
 
-__Made by:__ Konstantinos Nikoletos & George Papadakis, 2022
+__Made by:__ [Konstantinos Nikoletos](https://nikoletos-k.github.io), [George Papadakis](https://gpapadis.wordpress.com) and [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
