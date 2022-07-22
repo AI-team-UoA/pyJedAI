@@ -3,6 +3,9 @@ Utility functions
 '''
 import numpy as np
 
+# Constants
+EMPTY = -1
+
 def create_entity_index(blocks: dict, is_dirty_er: bool):
     '''
      Creates a dict of entity ids -> block ids

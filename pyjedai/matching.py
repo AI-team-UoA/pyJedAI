@@ -96,7 +96,7 @@ class EntityMatching:
                         similarity = self._similarity(
                             entities_array[index_1], entities_array[index_2]
                         )
-                        self._insert_to_graph(entity_id1, entity_id2, similarity)
+                        self._insert_to_graph(entities_array[index_1], entities_array[index_2], similarity)
                 self._progress_bar.update(1)
         else:
             for _, block in blocks.items():

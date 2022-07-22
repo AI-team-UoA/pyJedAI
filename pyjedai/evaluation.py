@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import timedelta
 from .datamodel import Data
+import networkx as nx
+import pandas as pd
 
 class Evaluation:
 
@@ -21,12 +23,13 @@ class Evaluation:
         self.total_matching_pairs = 0
         self.data: Data= data
         
-    def report(self, prediction: any, execution_time: int=None) -> None:
+    def report(self, prediction: any, execution_time: int=None, to_df=False) -> any:
         self.true_positives = 0
         self.true_negatives = 0
         self.false_positives = 0
         self.false_negatives = 0
         gt = self.data.ground_truth
+        
         all_gt_ids = set(self.data._ids_mapping_1.values()) if self.data.is_dirty_er else \
                         set(self.data._ids_mapping_1.values()).union(set(self.data._ids_mapping_2.values()))
         if isinstance(prediction, dict) and isinstance(list(prediction.values())[0], set):
@@ -38,8 +41,14 @@ class Evaluation:
                 if (id1 in prediction and id2 in prediction[id1]) or   \
                     (id2 in prediction and id1 in prediction[id2]):
                     self.true_positives += 1
-                else:
-                    self.false_negatives += 1
+        elif isinstance(prediction, nx.Graph):
+            self.total_matching_pairs = prediction.number_of_edges()
+            for _, (id1, id2) in gt.iterrows():
+                id1 = self.data._ids_mapping_1[id1]
+                id2 = self.data._ids_mapping_1[id2] if self.data.is_dirty_er else self.data._ids_mapping_2[id2]
+                if (id1 in prediction and id2 in prediction[id1]) or   \
+                     (id2 in prediction and id1 in prediction[id2]):
+                    self.true_positives += 1
         else: # blocks, clusters evaluation
             entity_index: dict = self._create_entity_index(prediction, all_gt_ids)
             for _, (id1, id2) in gt.iterrows():
@@ -49,23 +58,40 @@ class Evaluation:
                     id2 in entity_index and     \
                         self._are_matching(entity_index, id1, id2):
                     self.true_positives += 1
-                else:
-                    self.false_negatives += 1
+                    
+        if self.total_matching_pairs == 0:
+            print("No matches found at all") # TODO error
+            return
+
+        self.num_of_true_duplicates = len(gt) 
+        self.false_negatives = self.num_of_true_duplicates - self.true_positives
         self.false_positives = self.total_matching_pairs - self.true_positives
         cardinality = (self.data.num_of_entities_1*(self.data.num_of_entities_1-1))/2 if self.data.is_dirty_er else self.data.num_of_entities_1 * self.data.num_of_entities_2
         self.true_negatives = cardinality - self.false_negatives - self.false_positives
         self.precision = self.true_positives / self.total_matching_pairs
-        self.recall = self.true_positives / len(gt)
+        self.recall = self.true_positives / self.num_of_true_duplicates
         self.f1 = 2*((self.precision*self.recall)/(self.precision+self.recall))
-        
-        print("+-----------------------------+\n > Evaluation\n+-----------------------------+\nPrecision: {:9.2f}% \nRecall:    {:9.2f}%\nF1-score:  {:9.2f}%".format(self.precision*100, self.recall*100, self.f1*100))
-        if execution_time:
-            print("\nTotal execution time: ", str(timedelta(seconds=execution_time)))
-        print("\nTrue positives: {:d}\nFalse positives: {:d}\nTrue negatives: {:d}\nFalse negatives: {:d}\n\nTotal comparisons: {:d}".format(
-            int(self.true_positives), int(self.false_positives), int(self.true_negatives),int(self.false_negatives),int(self.total_matching_pairs)
+        if to_df:
+            pd.set_option("display.precision", 2)
+            results = pd.DataFrame.from_dict({
+                'Precision %': self.precision*100,
+                'Recall %': self.recall*100,
+                'F1 %': self.f1*100,
+                'True Positives': self.true_positives,
+                'False Positives': self.false_positives,
+                'True Negatives': self.true_negatives,
+                'False Negatives': self.false_negatives
+            }, orient='index').T
+            return results
+        else:
+            print("+-----------------------------+\n > Evaluation\n+-----------------------------+\nPrecision: {:9.2f}% \nRecall:    {:9.2f}%\nF1-score:  {:9.2f}%".format(self.precision*100, self.recall*100, self.f1*100))
+            if execution_time:
+                print("\nTotal execution time: ", str(timedelta(seconds=execution_time)))
+            print("\nTrue positives: {:d}\nFalse positives: {:d}\nTrue negatives: {:d}\nFalse negatives: {:d}\n\nTotal comparisons: {:d}".format(
+                int(self.true_positives), int(self.false_positives), int(self.true_negatives),int(self.false_negatives),int(self.total_matching_pairs)
+                )
             )
-        )
-        
+    
 
     def _create_entity_index(self, groups: any, all_ground_truth_ids: set) -> dict:
         
@@ -155,3 +181,39 @@ class Evaluation:
         plt.xlabel("Predicted pairs", fontsize=10, fontweight='bold')
         plt.ylabel("Real matching pairs", fontsize=10, fontweight='bold')
         plt.show()
+        
+
+def write(prediction: any, data: Data) -> pd.DataFrame:
+    pairs = {}
+    pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+    if isinstance(prediction, list): # clusters evaluation
+        for cluster in prediction:
+            lcluster = list(cluster)
+            for i1 in range(0, len(lcluster)):
+                for i2 in range(i1+1, len(lcluster)):
+                    pairs_df.append({'id1':lcluster[i1], 'id2':lcluster[i2]})
+    elif 'Block' in str(type(list(prediction.values())[0])): # blocks evaluation
+        for _, block in prediction.items():
+            if data.is_dirty_er:
+                lblock = list(block.entities_D1)
+                for i1 in range(0, len(lblock)):
+                    for i2 in range(i1+1, len(lblock)):
+                        pairs_df.append({'id1':lblock[i1], 'id2':lblock[i2]})
+            else:
+                for i1 in block.entities_D1:
+                    for i2 in block.entities_D2:
+                        id1 = data._ids_mapping_1[str(i1)]
+                        id2 = data._ids_mapping_1[str(i2)] if data.is_dirty_er else data._ids_mapping_2[str(i2)]
+                        pairs_df.append({'id1':id1, 'id2':id2})
+    elif isinstance(prediction, dict) and isinstance(list(prediction.values())[0], set):# candidate pairs
+        for entity_id, candidates in prediction:
+            for candiadate_id in candidates:
+                pairs_df.append({'id1':entity_id, 'id2':candiadate_id})
+    elif isinstance(prediction, nx.Graph): # graph
+        for edge in prediction.edges:
+            pairs_df.append({'id1':edge[0], 'id2':edge[1]})
+    else: # error
+        print("error")
+                            
+    
+    return pairs_df

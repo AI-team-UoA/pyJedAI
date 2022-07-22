@@ -496,7 +496,9 @@ class ReciprocalWeightedNodePruning(WeightedNodePruning):
                                 entity_id < neighbor_id) else 0
 
 def get_meta_blocking_approach(acronym, w_scheme):
-    if acronym == "CEP":
+    if acronym == "BLAST":
+        return BLAST(w_scheme)
+    elif acronym == "CEP":
         return CardinalityEdgePruning(w_scheme)
     elif acronym == "CNP":
         return CardinalityNodePruning(w_scheme)

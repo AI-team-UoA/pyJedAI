@@ -1,12 +1,8 @@
 '''
 Blocking methods
 ---
-
 One block is consisted of 1 set if Dirty ER and
 2 sets if Clean-Clean ER.
-
-TODO: Change dict instertion like cleaning or use method insert_to_dict
-TODO: ids to CC as 0...n-1 and n..m can be merged in one set, no need of 2 sets?
 '''
 import nltk
 import math
