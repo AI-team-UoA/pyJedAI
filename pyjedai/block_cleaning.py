@@ -26,13 +26,17 @@ class BlockFiltering:
     def __init__(self, ratio: float = 0.8) -> None:
         self.ratio = ratio
         self.blocks: dict
-
+        
     def __str__(self) -> str:
         print(self._method_name + self._method_info)
         print("Ratio: ", self.ratio)
         return super().__str__()
 
-    def process(self, blocks: dict = None, data: Data = None) -> dict:
+    def process(self, 
+                blocks: dict = None, 
+                data: Data = None, 
+                tqdm_disable: bool = False
+    ) -> dict:
         '''
         Main function of Block Filtering
         ---
@@ -40,14 +44,20 @@ class BlockFiltering:
         Returns: dict of keys -> Block
         '''
         start_time = time.time()
+        self.tqdm_disable = tqdm_disable
         self.data = data
-        pbar = tqdm(total=3, desc="Block Filtering", dynamic_ncols =True)
+        self._progress_bar = tqdm(
+            total=3, 
+            desc=self._method_name, 
+            dynamic_ncols =True, 
+            disable=self.tqdm_disable
+        )
         
         sorted_blocks = sort_blocks_cardinality(blocks, self.data.is_dirty_er)
-        pbar.update(1)
+        self._progress_bar.update(1)
         
         entity_index = create_entity_index(sorted_blocks, self.data.is_dirty_er)
-        pbar.update(1)
+        self._progress_bar.update(1)
             
         filtered_blocks = {}
         for entity_id, block_keys in entity_index.items():
@@ -61,11 +71,11 @@ class BlockFiltering:
                     filtered_blocks[key].entities_D1.add(entity_id)
                 else:
                     filtered_blocks[key].entities_D2.add(entity_id)
-        pbar.update(1)
+        self._progress_bar.update(1)
         
         self.blocks = drop_single_entity_blocks(filtered_blocks, self.data.is_dirty_er)
         
-        pbar.close() 
+        self._progress_bar.close() 
         self.execution_time = time.time() - start_time
         
         return self.blocks
@@ -73,6 +83,8 @@ class BlockFiltering:
 class BlockPurging:
     '''
     BlockPurging
+    ---
+    Discards the blocks exceeding a certain number of comparisons.
     '''
     _method_name = "Block Purging"
     _method_info = ": it discards the blocks exceeding a certain number of comparisons."
@@ -84,13 +96,15 @@ class BlockPurging:
     def process(
         self,
         blocks: dict,
-        data: Data
+        data: Data,
+        tqdm_disable: bool = False
     ) -> dict:
         '''
         TODO: add description
         '''
+        self.tqdm_disable = tqdm_disable
         start_time = time.time()
-        self._progress_bar = tqdm(total=2*len(blocks), desc=self._method_name)
+        self._progress_bar = tqdm(total=2*len(blocks), desc=self._method_name, disable=self.tqdm_disable)
         self.data = data
         if not blocks:
             print("Empty dict of blocks was given as input!") #TODO error

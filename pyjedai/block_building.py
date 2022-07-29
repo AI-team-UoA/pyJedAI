@@ -1,9 +1,3 @@
-'''
-Blocking methods
----
-One block is consisted of 1 set if Dirty ER and
-2 sets if Clean-Clean ER.
-'''
 import nltk
 import math
 import re
@@ -29,7 +23,8 @@ class AbstractBlockBuilding:
     def build_blocks(
             self, data: Data,
             attributes_1: list=None,
-            attributes_2: list=None,
+            attributes_2: list=None, 
+            tqdm_disable: bool = False
     ) -> dict:
         '''
         Main method of Standard Blocking
@@ -38,20 +33,30 @@ class AbstractBlockBuilding:
         Returns: dict of token -> Block
         '''
         start_time = time.time()
-        
+        self.tqdm_disable = tqdm_disable
         self.blocks: dict = dict()
         self.attributes_1 = attributes_1
         self.attributes_2 = attributes_2
-        self._progress_bar = tqdm(total=data.num_of_entities, desc=self._method_name)        
+        self._progress_bar = tqdm(
+            total=data.num_of_entities, desc=self._method_name, disable=self.tqdm_disable
+        )
+        
+        if attributes_1:
+            isolated_attr_dataset_1 = data.dataset_1[attributes_1].apply(" ".join, axis=1)
+        if attributes_2:
+            isolated_attr_dataset_2 = data.dataset_2[attributes_1].apply(" ".join, axis=1)
+        
         for i in range(0, data.num_of_entities_1, 1):
-            record = data.dataset_1.iloc[i, attributes_1] if attributes_1 else data.entities_d1.iloc[i]
+            record = isolated_attr_dataset_1.iloc[i] if attributes_1 \
+                        else data.entities_d1.iloc[i]
             for token in self._tokenize_entity(record):
                 self.blocks.setdefault(token, Block())
                 self.blocks[token].entities_D1.add(i)
             self._progress_bar.update(1)
         if not data.is_dirty_er:
             for i in range(0, data.num_of_entities_2, 1):
-                record = data.dataset_2.iloc[i, attributes_2] if attributes_2 else data.entities_d2.iloc[i]
+                record = isolated_attr_dataset_2.iloc[i] if attributes_2 \
+                            else data.entities_d2.iloc[i]
                 for token in self._tokenize_entity(record):
                     self.blocks.setdefault(token, Block())
                     self.blocks[token].entities_D2.add(data.dataset_limit+i)
@@ -59,10 +64,8 @@ class AbstractBlockBuilding:
                 
         self.blocks = drop_single_entity_blocks(self.blocks, data.is_dirty_er)
         self.blocks = self._clean_blocks(self.blocks)
-        
         self.execution_time = time.time() - start_time
         self._progress_bar.close()
-        
         return self.blocks
 
     def _tokenize_entity(self, entity: str) -> list:
@@ -105,7 +108,7 @@ class QGramsBlocking(StandardBlocking):
                 "The q-gram must be shared by at least two entities."
 
     def __init__(
-            self, qgrams: int = 6,
+            self, qgrams: int = 6
     ) -> any:
         super().__init__()
         self.qgrams = qgrams
@@ -132,8 +135,9 @@ class SuffixArraysBlocking(StandardBlocking):
     _method_name = "Suffix Arrays Blocking"
     _method_info = _method_name + ": it creates one block for every suffix that appears in the attribute value tokens of at least two entities."
 
-    def __init__(
-            self, suffix_length: int = 6, max_block_size : int = 53
+    def __init__(self,
+        suffix_length: int = 6, 
+        max_block_size : int = 53 
     ) -> any:
         super().__init__()
         self.suffix_length = suffix_length
@@ -162,8 +166,9 @@ class ExtendedSuffixArraysBlocking(StandardBlocking):
     _method_name = "Extended Suffix Arrays Blocking"
     _method_info = _method_name + ": it creates one block for every substring (not just suffix) that appears in the tokens of at least two entities."
 
-    def __init__(
-            self, suffix_length: int = 6, max_block_size : int = 39
+    def __init__(self, 
+        suffix_length: int = 6, 
+        max_block_size : int = 39
     ) -> any:
         super().__init__()
         self.suffix_length = suffix_length

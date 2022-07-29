@@ -13,7 +13,7 @@ from .datamodel import Data
 from .utils import EMPTY
 
 class AbstractJoin:
-    
+
     def __init__(
         self, 
         metric: str, 
@@ -51,18 +51,26 @@ class AbstractJoin:
         else:
             print("Tokenization not found")
             # TODO error
-        
+
     def fit(
-        self, data: Data, 
+        self, data: Data,
         reverse_order: bool=False,
         attributes_1: list=None,
-        attributes_2: list=None
+        attributes_2: list=None,
+        tqdm_disable: bool = False
     ) -> networkx.Graph:
+        start_time = time.time()
+        self.tqdm_disable = tqdm_disable
         self.reverse_order = reverse_order
         self.attributes_1 = attributes_1
         self.attributes_2 = attributes_2
         self.data = data
         
+        if attributes_1:
+            isolated_attr_dataset_1 = data.dataset_1[attributes_1].apply(" ".join, axis=1)
+        if attributes_2:
+            isolated_attr_dataset_2 = data.dataset_2[attributes_1].apply(" ".join, axis=1)
+            
         if reverse_order and data.is_dirty_er:
             print("Can't have reverse order in Dity ER") #TODO
         
@@ -73,7 +81,7 @@ class AbstractJoin:
         
         self._progress_bar = tqdm(
             total=self.data.num_of_entities if not self.data.is_dirty_er else num_of_entities*2,
-            desc=self._method_name+" ("+self.metric+")"
+            desc=self._method_name+" ("+self.metric+")", disable=self.tqdm_disable
         )
         
         self._flags = np.empty([num_of_entities])
@@ -97,7 +105,7 @@ class AbstractJoin:
         if self.data.is_dirty_er:
             for i in range(0, self.data.num_of_entities_1):
                 candidates = set()
-                record = self.data.dataset_1.iloc[i, self.attributes_1] \
+                record = isolated_attr_dataset_1.iloc[i] \
                             if self.attributes_1 else self.data.entities_d1.iloc[i]
                 tokens = self._tokenize_entity(record)
                 for token in tokens:
@@ -139,9 +147,11 @@ class AbstractJoin:
                                 self._flags[candidate_id] = entity_id
                             self._counters[candidate_id] += 1
                             candidates.add(candidate_id)
-                self._process_candidates(candidates, entity_id, len(tokens))
+                if 0 < len(candidates):
+                    self._process_candidates(candidates, entity_id, len(tokens))
                 self._progress_bar.update(1)
-        self._progress_bar.close()
+        self._progress_bar.close() 
+        self.execution_time = time.time() - start_time
         return self.pairs
     
     def _calc_similarity(self, common_tokens: int, source_frequency: int, tokens_size: int) -> float:
@@ -271,7 +281,7 @@ class TopKSchemaAgnosticJoin(AbstractJoin):
         for candidate_id in candidates:
             self.similarity_threshold = minimum_weight
             self._insert_to_graph(
-                candidate_id,
+                candidate_id + self.data.dataset_limit if self.reverse_order else candidate_id,
                 entity_id,
                 self._calc_similarity(
                     self._counters[candidate_id], 

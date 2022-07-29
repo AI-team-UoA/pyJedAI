@@ -22,7 +22,9 @@ from .utils import (
 
 class EntityMatching:
     '''
-    TODO
+    Entity Matching
+    ---
+    Calculates similarity from 0. to 1. for all blocks
     '''
     _method_name: str = "Entity Matching"
     _method_info: str = ": Calculates similarity from 0. to 1. for all blocks"
@@ -57,18 +59,23 @@ class EntityMatching:
         elif self.metric == 'overlap_coefficient':
             self._metric = OverlapCoefficient().distance
 
-    def predict(self, blocks: dict, data: Data) -> networkx.Graph:
+    def predict(self, blocks: dict, data: Data, tqdm_disable: bool = False) -> networkx.Graph:
         '''
         TODO
         '''
         start_time = time.time()
+        self.tqdm_disable = tqdm_disable
         if len(blocks) == 0:
             # TODO: Error
             return None
         self.data = data
         self.pairs = networkx.Graph()
         all_blocks = list(blocks.values())
-        self._progress_bar = tqdm(total=len(blocks), desc=self._method_name+" ("+self.metric+")") 
+        self._progress_bar = tqdm(
+            total=len(blocks), 
+            desc=self._method_name+" ("+self.metric+")",
+            disable=self.tqdm_disable
+        )
         
         if 'Block' in str(type(all_blocks[0])):
             self._predict_raw_blocks(blocks)

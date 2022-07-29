@@ -53,10 +53,13 @@ class Data:
             self.dataset_1[self.id_column_name_1].tolist(), range(0, self.num_of_entities_1)
         ))
         
+        self._gt_to_ids_reversed_1 = dict(zip(self._ids_mapping_1.values(), self._ids_mapping_1.keys()))
+        
         if not self.is_dirty_er:
             self._ids_mapping_2 = dict(zip(
                 self.dataset_2[self.id_column_name_2].tolist(), range(self.num_of_entities_1, self.num_of_entities_1+self.num_of_entities_2)
-            ))      
+            ))
+            self._gt_to_ids_reversed_2 = dict(zip(self._ids_mapping_2.values(), self._ids_mapping_2.keys()))
 
     def print_specs(self):
         print("Type of Entity Resolution: ", "Dirty" if self.is_dirty_er else "Clean-Clean" )
