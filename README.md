@@ -15,7 +15,7 @@ An open-source library that leverages Python’s data science ecosystem to build
 <br>
 <h2></h2>
 
-
+<!--
 __Open demos are available in:__
 
 <div align="center">
@@ -29,6 +29,7 @@ __Open demos are available in:__
 <img align="center" src="https://blog.educationecosystem.com/wp-content/uploads/2021/01/1_Lad06lrjlU9UZgSTHUoyfA.png" width=120/> 
 </a>
 </div>
+--->
 
 ## System overview
 
