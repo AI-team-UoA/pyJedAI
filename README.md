@@ -1,5 +1,3 @@
-[![Tests](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml)
-
 <h2></h2>
 <div align="center">
 <br>
@@ -32,6 +30,7 @@ __Open demos are available in:__
 </a>
 </div>
 --->
+[![Tests](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml)
 
 ## System overview
 
