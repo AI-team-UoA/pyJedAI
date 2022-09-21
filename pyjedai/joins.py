@@ -6,26 +6,34 @@ from queue import PriorityQueue
 import nltk, re
 import numpy as np
 import math
+from time import time
 from queue import PriorityQueue
-
-# pyJedAI
 from .datamodel import Data
-from .utils import EMPTY
 
 class AbstractJoin:
+    """Abstract class of Joins module
+    """
 
     def __init__(
-        self, 
-        metric: str, 
-        tokenization: str, 
-        qgrams: int = 2,
-        similarity_threshold: float = None
+            self,
+            metric: str,
+            tokenization: str,
+            qgrams: int = 2,
+            similarity_threshold: float = None
     ) -> None:
         self.metric = metric
         self.qgrams = qgrams
         self.tokenization = tokenization
         self._source_frequency: np.array
         self.similarity_threshold: float = similarity_threshold
+        self.data: Data
+        self.reverse_order: bool
+        self.attributes_1: list
+        self.attributes_2: list
+        self.tqdm_disable: bool
+        self._progress_bar: tqdm
+        self._flags: np.array
+        self.pairs: networkx.Graph
 
     def _tokenize_entity(self, entity: str) -> set:
         if self.tokenization == 'qgrams':
@@ -49,41 +57,45 @@ class AbstractJoin:
                 grams_ids_index[gram] = gram_id+1
             return qgrams
         else:
-            print("Tokenization not found")
-            # TODO error
+            raise AttributeError("Tokenization not found")
 
     def fit(
-        self, data: Data,
-        reverse_order: bool=False,
-        attributes_1: list=None,
-        attributes_2: list=None,
-        tqdm_disable: bool = False
+            self,
+            data: Data,
+            reverse_order: bool = False,
+            attributes_1: list = None,
+            attributes_2: list = None,
+            tqdm_disable: bool = False
     ) -> networkx.Graph:
-        start_time = time.time()
-        self.tqdm_disable = tqdm_disable
-        self.reverse_order = reverse_order
-        self.attributes_1 = attributes_1
-        self.attributes_2 = attributes_2
-        self.data = data
-        
+        """Joins main method
+        TODO
+        Args:
+            data (Data): dataset module
+            reverse_order (bool, optional): _description_. Defaults to False.
+            attributes_1 (list, optional): _description_. Defaults to None.
+            attributes_2 (list, optional): _description_. Defaults to None.
+            tqdm_disable (bool, optional): _description_. Defaults to False.
+
+        Returns:
+            networkx.Graph: _description_
+        """
+        start_time = time()
+        self.tqdm_disable, self.reverse_order, self.attributes_1, self.attributes_2, self.data = \
+            tqdm_disable, reverse_order, attributes_1, attributes_2, data
         if attributes_1:
             isolated_attr_dataset_1 = data.dataset_1[attributes_1].apply(" ".join, axis=1)
         if attributes_2:
             isolated_attr_dataset_2 = data.dataset_2[attributes_1].apply(" ".join, axis=1)
-            
         if reverse_order and data.is_dirty_er:
-            print("Can't have reverse order in Dity ER") #TODO
-        
+            raise ValueError("Can't have reverse order in Dity Entity Resolution")
         if reverse_order:
             num_of_entities = self.data.num_of_entities_2
         else:
             num_of_entities = self.data.num_of_entities_1
-        
         self._progress_bar = tqdm(
             total=self.data.num_of_entities if not self.data.is_dirty_er else num_of_entities*2,
             desc=self._method_name+" ("+self.metric+")", disable=self.tqdm_disable
         )
-        
         self._flags = np.empty([num_of_entities])
         self._flags[:] = -1
         self._counters = np.zeros([num_of_entities])
@@ -98,10 +110,10 @@ class AbstractJoin:
             entity_index = self._create_entity_index_d2()
         else:
             entity_index = self._create_entity_index_d1()
-        
+
         if self.attributes_2 and isinstance(self.attributes_2, dict):
             self.attributes_2 = list(self.attributes_2.keys())
-        
+
         if self.data.is_dirty_er:
             for i in range(0, self.data.num_of_entities_1):
                 candidates = set()
@@ -119,7 +131,7 @@ class AbstractJoin:
                             candidates.add(candidate_id)
                             
                 self._process_candidates(candidates, i, len(tokens))
-                self._progress_bar.update(1)  
+                self._progress_bar.update(1)
         else:
             if reverse_order:
                 dataset = self.data.dataset_1
@@ -150,10 +162,10 @@ class AbstractJoin:
                 if 0 < len(candidates):
                     self._process_candidates(candidates, entity_id, len(tokens))
                 self._progress_bar.update(1)
-        self._progress_bar.close() 
-        self.execution_time = time.time() - start_time
+        self._progress_bar.close()
+        self.execution_time = time() - start_time
         return self.pairs
-    
+
     def _calc_similarity(self, common_tokens: int, source_frequency: int, tokens_size: int) -> float:
         if self.metric == 'cosine':
             return common_tokens / math.sqrt(source_frequency*tokens_size)
@@ -161,7 +173,7 @@ class AbstractJoin:
             return 2 * common_tokens / (source_frequency+tokens_size)
         elif self.metric == 'jaccard':
             return common_tokens / (source_frequency+tokens_size-common_tokens)        
-    
+
     def _create_entity_index_d1(self):
         entity_index_d1 = {}
         for i in range(0, self.data.num_of_entities_1, 1):
@@ -174,7 +186,7 @@ class AbstractJoin:
             self._source_frequency[i] = len(tokens)
             self._progress_bar.update(1)
         return entity_index_d1
-    
+
     def _create_entity_index_d2(self):
         entity_index = {}
         for i in range(0, self.data.num_of_entities_2, 1):
@@ -216,23 +228,24 @@ class AbstractJoin:
     def _insert_to_graph(self, entity_id1, entity_id2, similarity):
         if self.similarity_threshold <= similarity:
             self.pairs.add_edge(entity_id1, entity_id2, weight=similarity)    
-            
+
 class SchemaAgnosticΕJoin(AbstractJoin):
-    '''
-    SchemaAgnosticΕJoin
-    '''
+    """
+    TODO
+    """
     
     _method_name = "Schema Agnostic Join"
+    # TODO _method_info = ""
 
     def __init__(
-        self, 
-        threshold: float = 0.82, 
-        metric: str = 'cosine', 
-        tokenization: str = 'qgrams', 
+        self,
+        threshold: float = 0.82,
+        metric: str = 'cosine',
+        tokenization: str = 'qgrams',
         qgrams: int = 2
     ) -> None:
         super().__init__(metric, tokenization, qgrams, threshold)
-    
+
     def _process_candidates(self, candidates: set, entity_id: int, tokens_size: int) -> None:
         for candidate_id in candidates:
             self._insert_to_graph(
@@ -246,28 +259,29 @@ class SchemaAgnosticΕJoin(AbstractJoin):
                 )
             )
 
-        
 class TopKSchemaAgnosticJoin(AbstractJoin):
-    '''
-    TopKSchemaAgnosticJoin
-    '''
-    
+    """_summary_
+    TODO
+    Args:
+        AbstractJoin (_type_): _description_
+    """
+
     _method_name = "Top-K Schema Agnostic Join"
+    # TODO _method_info = ""
 
     def __init__(
-        self, K: int, 
-        metric: str, 
-        tokenization: str, 
-        qgrams: int = 2
+            self, K: int,
+            metric: str,
+            tokenization: str,
+            qgrams: int = 2
     ) -> None:
-        
         super().__init__(metric, tokenization, qgrams)
         self.K = K
-        
+
     def _process_candidates(self, candidates: set, entity_id: int, tokens_size: int) -> None:
         minimum_weight=0
         pq = PriorityQueue()
-        
+
         for candidate_id in candidates:
             sim = self._calc_similarity(
                 self._counters[candidate_id], self._source_frequency[candidate_id], tokens_size
@@ -276,7 +290,7 @@ class TopKSchemaAgnosticJoin(AbstractJoin):
                 pq.put(sim)
                 if self.K < pq.qsize():
                     minimum_weight = pq.get()
-        
+
         minimum_weight = pq.get()
         for candidate_id in candidates:
             self.similarity_threshold = minimum_weight
