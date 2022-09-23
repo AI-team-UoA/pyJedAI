@@ -91,11 +91,13 @@ See the full list of dependencies and all versions used, in this [file](https://
 
 # Team & Authors
 
-<img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="250"/>
+<img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="400"/>
 
 - [Konstantinos Nikoletos](https://nikoletos-k.github.io)
 - [George Papadakis](https://gpapadis.wordpress.com)
 - [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
+
+Research and development is made under the supervision of the Pr. Manolis Koubarakis. This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
 
 <br>
 
