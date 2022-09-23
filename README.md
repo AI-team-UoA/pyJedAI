@@ -64,6 +64,7 @@ Install the latest version of pyjedai __[requires python >= 3.9]__:
 pip install pyjedai
 ```
 
+More on [PyPI](pypi.org/project/pyjedai/).
 
 # Dependencies
 
