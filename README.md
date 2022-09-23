@@ -6,10 +6,8 @@
 <div align="center">
 An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
 </div>
-<br>
 
-<h2></h2>
-
+---
 
 [![Tests](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml)
 [![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
@@ -21,9 +19,9 @@ An open-source library that leverages Python’s data science ecosystem to build
 
 pyJedAI is a Python framework that aims to provide experts and non-experts with robust and fast solutions to a variety of Entity Resolution problems. This framework constitutes the sole open-source Link Discovery tool that is capable of exploiting the latest breakthroughs in Deep Learning and NLP techniques, which are publicly available through the Python data science ecosystem. This applies to both blocking and matching, thus ensuring high time efficiency, high scalability as well as high effectiveness, without requiring any labelled instances from the user.
 
-### Main Features
+### Key-Features
 
-- Input data type independent. Both structured and semi-structured data can be processed.
+- Input data-type independent. Both structured and semi-structured data can be processed.
 - Various implemented algorithms.
 - Easy-to-use.
 - Utilizes some of the famous and cutting-edge machine learning packages.
@@ -85,17 +83,12 @@ pip install pyjedai
 
 See the full list of dependencies and all versions used, in this [file](https://github.com/Nikoletos-K/pyJedAI/blob/main/requirements.txt).
 
+# Bugs, Discussions & News
 
-# Bugs
+[GitHub Discussions](https://github.com/Nikoletos-K/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/Nikoletos-K/pyJedAI/issues).
 
-Please report any bugs that you find [here](https://github.com/Nikoletos-K/pyJedAI/issues).
-
-# Discussions & News
-
-[GitHub Discussions](https://github.com/Nikoletos-K/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point.
 
 # Team & Authors
-
 
 <img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="250"/>
 
