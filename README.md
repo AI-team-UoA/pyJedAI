@@ -25,7 +25,7 @@ pyJedAI is a Python framework that aims to provide experts and non-experts with 
 - Various implemented algorithms.
 - Easy-to-use.
 - Utilizes some of the famous and cutting-edge machine learning packages.
-- Offers Supervised and un-supervised ML techniques.
+- Offers supervised and un-supervised ML techniques.
 
 __Open demos are available in:__
 
