@@ -47,7 +47,7 @@ __Open demos are available in:__
 <details>
 <summary><h4>Details on the Architecture</h4></summary>
 <br>
-The purpose of this framework is to demonstrate how ER can be accomplished by expert and novice users in an intuitive, yet efficient and effective way. pyJedai addresses the following task: Given a source and a target dataset, S and T, respectively, discover the set of links L = {(s,owl:sameAS, t)|s ∈ S ∧ t ∈ T}. Its architecture appears in the bellow figure. The first module is the data reader, which specifies the user input. pyJedAI supports both semi-structured and structured data as input. The former, which include SPARQL endpoints and RDF/OWL dumps, are read by <a href="https://rdflib.dev">RDFLib</a>. The latter, which include relational databases as well as CSV and JSON files, are read by <a href="https://pandas.pydata.org">pandas</a>. In this way, pyJedAI is able to interlink any combination of semi-structured and structured data sources, which is a unique feature. <img align="right" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyJedAIarchitecture.png?raw=true" alt="pyJedAI-Architecture" width="500"/> The second step in pyJedAI’s pipeline performs block building, a coarsegrained process that clusters together similar entities. The end result consists of a set of candidate pairs, which are examined analytically by the subsequent steps. pyJedAI implements the same established methods for similarity joins and blocking as JedAI, such as Standard Blocking and Sorted Neighborhood, but goes beyond all Link Discovery tools by incorporating recent, state-of-the-art libraries for nearest neighbor search like <a href="https://falconn-lib.org">FALCONN</a> and <a href="https://github.com/facebookresearch/faiss">FAISS</a>. <br>
+The purpose of this framework is to demonstrate how ER can be accomplished by expert and novice users in an intuitive, yet efficient and effective way. pyJedai addresses the following task: Given a source and a target dataset, S and T, respectively, discover the set of links L = {(s,owl:sameAS, t)|s ∈ S ∧ t ∈ T}. Its architecture appears in the bellow figure. The first module is the data reader, which specifies the user input. pyJedAI supports both semi-structured and structured data as input. The former, which include SPARQL endpoints and RDF/OWL dumps, are read by <a href="https://rdflib.dev">RDFLib</a>. The latter, which include relational databases as well as CSV and JSON files, are read by <a href="https://pandas.pydata.org">pandas</a>. In this way, pyJedAI is able to interlink any combination of semi-structured and structured data sources, which is a unique feature. <img align="right" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/demo-architecture.png?raw=true?raw=true" alt="pyJedAI-Architecture" width="500"/> The second step in pyJedAI’s pipeline performs block building, a coarsegrained process that clusters together similar entities. The end result consists of a set of candidate pairs, which are examined analytically by the subsequent steps. pyJedAI implements the same established methods for similarity joins and blocking as JedAI, such as Standard Blocking and Sorted Neighborhood, but goes beyond all Link Discovery tools by incorporating recent, state-of-the-art libraries for nearest neighbor search like <a href="https://falconn-lib.org">FALCONN</a> and <a href="https://github.com/facebookresearch/faiss">FAISS</a>. <br>
 
 <br>
 
@@ -55,7 +55,6 @@ The purpose of this framework is to demonstrate how ER can be accomplished by ex
 Discovery, in general.
 
 </details>
-
 
 # Install
 
@@ -65,6 +64,17 @@ pip install pyjedai
 ```
 
 More on [PyPI](pypi.org/project/pyjedai/).
+
+
+### Tutorials
+
+| Tutorial | Notebook |
+|---|:-:|
+| Clean-Clean Entity Resolution.| [CleanCleanER.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/CleanCleanER.ipynb) |
+| Dirty Entity Resolution. | [DirtyER.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/DirtyER.ipynb)|
+| Fine-Tuning using Optuna. | [Optuna.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Optuna.ipynb) |
+| User-Friendly Approach. WorkFlow module. | [WorkFlow.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/WorkFlow.ipynb) |
+| Raw data to pandas DataFrame. | [Readers.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Readers.ipynb) |
 
 # Dependencies
 
@@ -81,6 +91,8 @@ More on [PyPI](pypi.org/project/pyjedai/).
 <img align="center" src="https://networkx.org/_static/networkx_logo.svg" width=150/> &nbsp;&nbsp;&nbsp;
 <img align="center" src="https://raw.githubusercontent.com/RDFLib/OWL-RL/master/OWL-RL.png" width=70/> 
 </div>
+
+<br>
 
 See the full list of dependencies and all versions used, in this [file](https://github.com/Nikoletos-K/pyJedAI/blob/main/requirements.txt).
 
