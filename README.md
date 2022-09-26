@@ -30,18 +30,13 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 __Open demos are available in:__
 
 <div align="center">
-<a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/Demo.ipynb">
+<a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
 <img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
 </a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/Demo.ipynb">
+<a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
 <img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
 </a>
 </div>
-<!--  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://colab.research.google.com/github/Nikoletos-K/pyJedAI/blob/main/CleanCleanER-AbtBuy.ipynb">
-<img align="center" src="https://blog.educationecosystem.com/wp-content/uploads/2021/01/1_Lad06lrjlU9UZgSTHUoyfA.png" width=120/> 
-</a>
---->
 
 
 <details>
