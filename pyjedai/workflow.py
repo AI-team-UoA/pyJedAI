@@ -7,11 +7,10 @@ import matplotlib.pyplot as plt
 import optuna
 import pandas as pd
 from networkx import Graph
-# import plotly.express as px
 from tqdm.notebook import tqdm
 
 from .datamodel import Data
-from .evaluation import Evaluation
+from .evaluation import Evaluation, write
 
 plt.style.use('seaborn-whitegrid')
 
@@ -43,23 +42,21 @@ class WorkFlow:
         self._id: int = next(self._id)
         self.name: str = name if name else "Workflow-" + str(self._id)
         self._workflow_bar: tqdm
+        self.final_pairs = None
 
     def run(
             self,
             data: Data,
             verbose=False,
-            tqdm_disable=False,
+            workflow_step_tqdm_disable=True,
             workflow_tqdm_enable=False
-        ) -> pd.DataFrame:
+        ) -> None:
         """Main function for creating an Entity resolution workflow.
 
         Args:
             data (Data): Dataset module.
             verbose (bool, optional): Print detailed report for each step. Defaults to False.
-            tqdm_disable (bool, optional): Tqdm progress bar. Defaults to False.
-
-        Returns:
-            pd.DataFrame: Dataframe with scores, params and times for each step. 
+            workflow_step_tqdm_disable (bool, optional): Tqdm progress bar. Defaults to False.
         """
         steps = [self.block_building, self.entity_matching, self.clustering, self.joins, self.block_cleaning, self.comparison_cleaning]
         num_of_steps = sum(x is not None for x in steps)
@@ -77,13 +74,13 @@ class WorkFlow:
         block_building_method = self.block_building['method'](**self.block_building["params"]) \
                                                     if "params" in self.block_building \
                                                     else self.block_building['method']()
-        block_building_blocks = block_building_method.build_blocks(
+        self.final_pairs = block_building_blocks = block_building_method.build_blocks(
             data,
             attributes_1=self.block_building["attributes_1"] \
                             if "attributes_1" in self.block_building else None,
             attributes_2=self.block_building["attributes_2"] \
                             if "attributes_2" in self.block_building else None,
-            tqdm_disable=tqdm_disable
+            tqdm_disable=workflow_step_tqdm_disable
         )
         pj_eval.report(
             block_building_blocks, block_building_method.method_configuration(), verbose=verbose
@@ -103,9 +100,9 @@ class WorkFlow:
                                                     if "params" in block_cleaning \
                                                     else block_cleaning['method']()
                 block_cleaning_blocks = block_cleaning_method.process(
-                    bblocks, data, tqdm_disable=tqdm_disable
+                    bblocks, data, tqdm_disable=workflow_step_tqdm_disable
                 )
-                bblocks = block_cleaning_blocks
+                self.final_pairs = bblocks = block_cleaning_blocks
                 pj_eval.report(
                     bblocks, block_cleaning_method.method_configuration(), verbose=verbose
                 )
@@ -119,11 +116,11 @@ class WorkFlow:
             comparison_cleaning_method = self.comparison_cleaning['method'](**self.comparison_cleaning["params"]) \
                                             if "params" in self.comparison_cleaning \
                                             else self.comparison_cleaning['method']()
-            comparison_cleaning_blocks = comparison_cleaning_method.process(
+            self.final_pairs = comparison_cleaning_blocks = comparison_cleaning_method.process(
                 block_cleaning_blocks if block_cleaning_blocks is not None \
                     else block_building_blocks,
                 data,
-                tqdm_disable=tqdm_disable
+                tqdm_disable=workflow_step_tqdm_disable
             )
             pj_eval.report(
                 comparison_cleaning_blocks,
@@ -138,11 +135,11 @@ class WorkFlow:
         entity_matching_method = self.entity_matching['method'](**self.entity_matching["params"]) \
                                         if "params" in self.entity_matching \
                                         else self.entity_matching['method']()
-        em_graph = entity_matching_method.predict(
+        self.final_pairs = em_graph = entity_matching_method.predict(
             comparison_cleaning_blocks if comparison_cleaning_blocks is not None \
                 else block_building_blocks,
             data,
-            tqdm_disable=tqdm_disable
+            tqdm_disable=workflow_step_tqdm_disable
         )
         pj_eval.report(
             em_graph, entity_matching_method.method_configuration(), verbose=verbose
@@ -156,7 +153,7 @@ class WorkFlow:
             clustering_method = self.clustering['method'](**self.clustering["params"]) \
                                             if "params" in self.entity_matching \
                                             else self.clustering['method']()
-            components = clustering_method.process(em_graph)
+            self.final_pairs = components = clustering_method.process(em_graph)
             pj_eval.report(
                 components, clustering_method.method_configuration(), verbose=verbose
             )
@@ -237,6 +234,9 @@ class WorkFlow:
         workflow_df['Params'] = [c['parameters'] for c in self.configurations]
         return workflow_df
 
+    def export_pairs(self) -> pd.DataFrame:
+        return write(self.final_pairs, self.data)
+
     def _save_step(self, evaluation: Evaluation, configuration: dict) -> None:
         self.f1.append(evaluation.f1*100)
         self.recall.append(evaluation.recall*100)
@@ -255,10 +255,13 @@ def compare_workflows(workflows: List[WorkFlow], with_visualization=True) -> pd.
         fig.subplots_adjust(top=0.88)
         axs[0, 0].set_ylabel("Scores %", fontsize=12)
         axs[0, 0].set_title("Precision", fontsize=12)
+        axs[0, 0].set_ylim([0, 100])
         axs[0, 1].set_ylabel("Scores %", fontsize=12)
         axs[0, 1].set_title("Recall", fontsize=12)
+        axs[0, 1].set_ylim([0, 100])
         axs[1, 0].set_ylabel("Scores %", fontsize=12)
         axs[1, 0].set_title("F1-Score", fontsize=12)
+        axs[1, 0].set_ylim([0, 100])
         axs[1, 1].set_ylabel("Time (sec)", fontsize=12)
         axs[1, 1].set_title("Execution time", fontsize=12)
     for w in workflows:
@@ -272,4 +275,4 @@ def compare_workflows(workflows: List[WorkFlow], with_visualization=True) -> pd.
     fig.autofmt_xdate()
     plt.show()
     return workflow_df
-
+ 

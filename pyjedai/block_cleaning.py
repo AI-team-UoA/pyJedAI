@@ -55,7 +55,6 @@ class BlockFiltering:
         self._progress_bar = tqdm(
             total=3,
             desc=self._method_name,
-            dynamic_ncols=True,
             disable=self.tqdm_disable
         )
         sorted_blocks = sort_blocks_cardinality(blocks, self.data.is_dirty_er)
