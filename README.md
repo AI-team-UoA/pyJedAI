@@ -109,4 +109,4 @@ Research and development is made under the supervision of Pr. Manolis Koubarakis
 
 Released under the Apache-2.0 license [(see LICENSE.txt)](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE).
 
-Copyright © 2022 pyJedAI Developers
+Copyright © 2022 AI-Team, University of Athens
