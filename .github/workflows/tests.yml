@@ -1,15 +1,15 @@
-name: pyJedAI Tests
+name: Tests
 
 on: [push]
 
 jobs:
   build:
-    name: ubuntu-test
-    runs-on: ubuntu-latest 
+    name: OS-and-Python
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10"]
-
+        os: [ubuntu-18.04, ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.7","3.8","3.9","3.10"]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
