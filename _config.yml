@@ -1,1 +1,10 @@
 theme: minima
+author:
+  name: AI-Team @ University of Athens
+#   email: "k.nikoletos@di.uoa.gr"
+minima:
+  github:  https://github.com/AI-team-UoA/pyJedAI
+google_analytics: UA-NNNNNNNN-N
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
