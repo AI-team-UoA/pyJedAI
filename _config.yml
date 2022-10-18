@@ -1,10 +1,9 @@
-theme: minima
+title: pyJedAI
+description: An open-source library that leverages Python’s data science ecosystem to build powerful end-to-end Entity Resolution workflows.
 author:
   name: AI-team-UoA
 minima:
   social_links:
     github: AI-team-UoA
-    mastodon:
-      - username: AI-team-UoA
-        instance:  https://ai.di.uoa.gr
+theme: minima
 google_analytics: UA-NNNNNNNN-N
