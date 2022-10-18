@@ -1,9 +1,16 @@
 theme: minima
 author:
-  name: AI-Team @ University of Athens
-#   email: "k.nikoletos@di.uoa.gr"
+  name: Konstantinos Nikoletos
+  email: "k.nikoletos@di.uoa.gr"
+author:
+  name: George Papadakis
+  email: "gpapadis84@dgmail.com"
 minima:
-  github:  https://github.com/AI-team-UoA/pyJedAI
+  social_links:
+    github: AI-team-UoA
+    mastodon:
+      - username: AI-team-UoA
+        instance:  https://ai.di.uoa.gr
 google_analytics: UA-NNNNNNNN-N
 plugins:
  - jekyll-feed
