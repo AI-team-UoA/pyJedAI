@@ -38,6 +38,15 @@ __Open demos are available in:__
 </a>
 </div>
 
+__Google Colab Hands-on demo:__ 
+
+<div align="center">
+<a href="https://colab.research.google.com/drive/18VgEOKAc2ObFFxDNb2sjhBLKKsNvfEPo?usp=sharing">
+<img align="center" src="https://3.bp.blogspot.com/-apoBeWFycKQ/XhKB8fEprwI/AAAAAAAACM4/Sl76yzNSNYwlShIBrheDAum8L9qRtWNdgCLcBGAsYHQ/s1600/colab.png" width=120/> 
+</a>
+</div>
+
+
 
 <details>
 <summary><h4>Details on the Architecture</h4></summary>
