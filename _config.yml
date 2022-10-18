@@ -1,10 +1,6 @@
 theme: minima
 author:
-  name: Konstantinos Nikoletos
-  email: "k.nikoletos@di.uoa.gr"
-author:
-  name: George Papadakis
-  email: "gpapadis84@dgmail.com"
+  name: AI-team-UoA
 minima:
   social_links:
     github: AI-team-UoA
@@ -12,6 +8,3 @@ minima:
       - username: AI-team-UoA
         instance:  https://ai.di.uoa.gr
 google_analytics: UA-NNNNNNNN-N
-plugins:
- - jekyll-feed
- - jekyll-seo-tag
