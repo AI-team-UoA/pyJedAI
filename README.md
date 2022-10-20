@@ -14,6 +14,9 @@ An open-source library that leverages Python’s data science ecosystem to build
 [![macOS](https://svgshare.com/i/ZjP.svg)](https://svgshare.com/i/ZjP.svg)
 [![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+<a href='https://pyjedai.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/pyjedai/badge/?version=latest' alt='Documentation Status' />
+</a>
 
 # Overview
 
