@@ -107,6 +107,10 @@ See the full list of dependencies and all versions used, in this [file](https://
 
 [GitHub Discussions](https://github.com/Nikoletos-K/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/Nikoletos-K/pyJedAI/issues).
 
+# Java - Wed Application 
+
+For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolkit). There you can find Java based code and a Web Application for interactive creation of ER workflows.
+
 # Team & Authors
 
 <img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="400"/>
