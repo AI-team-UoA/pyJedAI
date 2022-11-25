@@ -3,9 +3,9 @@
 # Comprehensive example: https://github.com/executablebooks/jupyter-book/blob/master/docs/_config.yml
 
 title: pyJedAI
-author: AI-Team @ University of Athens
-logo: logo.png
-
+author: AI-Team, University of Athens
+logo: ../documentation/pyjedai.logo.drawio.png
+copyright: Apache 2.0 License 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
 execute:
@@ -22,15 +22,21 @@ bibtex_bibfiles:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/readthedocs-examples/example-jupyter-book  # Online location of your book
+  url: https://github.com/AI-team-UoA/pyJedAI  # Online location of your book
   path_to_book: docs  # Optional path to your book, relative to the repository root
   branch: main  # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
+  favicon: "https://icons8.com/icon/DjOkazIQxsAg/darth-vader"
   use_issues_button: true
   use_repository_button: true
+  use_edit_page_button: false
+  google_analytics_id: ""
+  home_page_in_navbar: true
+  baseurl: "http://pyjedai.rtfd.io/"
+  announcement: ""
 
 sphinx:
   config:
@@ -72,3 +78,4 @@ sphinx:
     - sphinx_proof
     - sphinx_examples
     - hoverxref.extension
+
