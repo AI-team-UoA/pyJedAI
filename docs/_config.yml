@@ -29,7 +29,7 @@ repository:
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
-  favicon: "https://icons8.com/icon/DjOkazIQxsAg/darth-vader"
+  favicon: "icons8-droid-67.png"
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: false
