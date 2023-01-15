@@ -1,0 +1,1432 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Instalation &#8212; pyJedAI</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-examples.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster.custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-shadow.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-punk.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-noir.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-light.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-borderless.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/micromodal.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/tabs.js"></script>
+    <script src="_static/js/hoverxref.js"></script>
+    <script src="_static/js/tooltipster.bundle.min.js"></script>
+    <script src="_static/js/micromodal.min.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="http://pyjedai.rtfd.io/DirtyER.html" />
+    <link rel="shortcut icon" href="_static/icons8-droid-67.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Instalation" href="CleanCleanER.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/pyjedai.logo.drawio.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">pyJedAI</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Overview
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Demo.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Readers.html">
+   CSV Reader
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="WorkFlow.html">
+   User-Friendly Approach
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CleanCleanER.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Instalation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/AI-team-UoA/pyJedAI/main?urlpath=tree/docs/DirtyER.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/AI-team-UoA/pyJedAI"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/AI-team-UoA/pyJedAI/issues/new?title=Issue%20on%20page%20%2FDirtyER.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/DirtyER.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Instalation
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-the-dataset-dirty-er-example">
+   Reading the dataset - Dirty ER example
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pyjedai-data-module">
+     pyjedai &lt;Data&gt; module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow-with-block-cleaning-methods">
+   Workflow with Block Cleaning Methods
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#block-building">
+     Block Building
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#block-cleaning">
+     Block Cleaning
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparison-cleaning">
+     Comparison Cleaning
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#meta-blocking">
+       Meta Blocking
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entity-matching">
+     Entity Matching
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entity-clustering">
+     Entity Clustering
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow-with-similarity-joins">
+   Workflow with Similarity Joins
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-reading">
+     Data Reading
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#similarity-joins">
+     Similarity Joins
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Entity Clustering
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Instalation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Instalation
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-the-dataset-dirty-er-example">
+   Reading the dataset - Dirty ER example
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pyjedai-data-module">
+     pyjedai &lt;Data&gt; module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow-with-block-cleaning-methods">
+   Workflow with Block Cleaning Methods
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#block-building">
+     Block Building
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#block-cleaning">
+     Block Cleaning
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparison-cleaning">
+     Comparison Cleaning
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#meta-blocking">
+       Meta Blocking
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entity-matching">
+     Entity Matching
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entity-clustering">
+     Entity Clustering
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow-with-similarity-joins">
+   Workflow with Similarity Joins
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-reading">
+     Data Reading
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#similarity-joins">
+     Similarity Joins
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Entity Clustering
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <div align="center"> 
+    <br>
+    <br>
+    <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
+    <br>
+    <hr>
+    <font size="3">Dirty Entity Resolution Tutorial</font>
+    <br>
+</div>
+<hr>
+<p>In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Dirty ER, is the process of dedeplication of one set.</p>
+<section class="tex2jax_ignore mathjax_ignore" id="instalation">
+<h1>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">#</a></h1>
+<p>pyJedAI is an open-source library that can be installed from PyPI.</p>
+<p>For more: <a class="reference external" href="https://pypi.org/project/pyjedai/">pypi.org/project/pyjedai/</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip install pyjedai -U
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pyjedai in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (0.0.4)
+Requirement already satisfied: matplotlib-inline&gt;=0.1.3 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (0.1.6)
+Requirement already satisfied: matplotlib&gt;=3.5.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (3.5.2)
+Requirement already satisfied: gensim&gt;=4.2.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (4.2.0)
+Requirement already satisfied: pandas&gt;=0.25.3 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.4.2)
+Requirement already satisfied: numpy&gt;=1.21 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.22.4)
+Requirement already satisfied: tqdm&gt;=4.64 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (4.64.0)
+Requirement already satisfied: strsimpy&gt;=0.2.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (0.2.1)
+Requirement already satisfied: nltk&gt;=3.7 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (3.7)
+Requirement already satisfied: seaborn&gt;=0.11 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (0.11.2)
+Requirement already satisfied: transformers&gt;=4.21 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (4.21.3)
+Requirement already satisfied: pandocfilters&gt;=1.5 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.5.0)
+Requirement already satisfied: sentence-transformers&gt;=2.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (2.2.2)
+Requirement already satisfied: optuna&gt;=3.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (3.0.1)
+Requirement already satisfied: rdflib&gt;=6.1.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (6.1.1)
+Requirement already satisfied: faiss-cpu&gt;=1.7 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.7.2)
+Requirement already satisfied: networkx&gt;=2.3 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (2.8.4)
+Requirement already satisfied: tomli in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (2.0.1)
+Requirement already satisfied: strsim&gt;=0.0.3 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (0.0.3)
+Requirement already satisfied: rdfpandas&gt;=1.1.5 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.1.5)
+Requirement already satisfied: pandas-profiling&gt;=3.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (3.2.0)
+Requirement already satisfied: regex&gt;=2022.6.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (2022.6.2)
+Requirement already satisfied: scipy&gt;=1.7 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (1.8.1)
+Requirement already satisfied: PyYAML&gt;=6.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pyjedai) (6.0)
+Requirement already satisfied: smart-open&gt;=1.8.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from gensim&gt;=4.2.0-&gt;pyjedai) (6.2.0)
+Requirement already satisfied: Cython==0.29.28 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from gensim&gt;=4.2.0-&gt;pyjedai) (0.29.28)
+Requirement already satisfied: kiwisolver&gt;=1.0.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (1.4.4)
+Requirement already satisfied: fonttools&gt;=4.22.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (4.37.3)
+Requirement already satisfied: pillow&gt;=6.2.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (9.2.0)
+Requirement already satisfied: python-dateutil&gt;=2.7 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (2.8.2)
+Requirement already satisfied: pyparsing&gt;=2.2.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (3.0.9)
+Requirement already satisfied: cycler&gt;=0.10 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (0.11.0)
+Requirement already satisfied: packaging&gt;=20.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib&gt;=3.5.2-&gt;pyjedai) (21.3)
+Requirement already satisfied: traitlets in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from matplotlib-inline&gt;=0.1.3-&gt;pyjedai) (5.4.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: joblib in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from nltk&gt;=3.7-&gt;pyjedai) (1.1.0)
+Requirement already satisfied: click in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from nltk&gt;=3.7-&gt;pyjedai) (8.1.3)
+Requirement already satisfied: typing-extensions&gt;=3.10.0.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (4.3.0)
+Requirement already satisfied: colorlog in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (6.7.0)
+Requirement already satisfied: alembic in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (1.8.1)
+Requirement already satisfied: cmaes&gt;=0.8.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (0.8.2)
+Requirement already satisfied: sqlalchemy&gt;=1.1.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (1.4.41)
+Requirement already satisfied: cliff in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (4.0.0)
+Requirement already satisfied: pytz&gt;=2020.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas&gt;=0.25.3-&gt;pyjedai) (2022.2.1)
+Requirement already satisfied: markupsafe~=2.1.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (2.1.1)
+Requirement already satisfied: phik&gt;=0.11.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.12.2)
+Requirement already satisfied: missingno&gt;=0.4.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.5.1)
+Requirement already satisfied: requests&gt;=2.24.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (2.28.1)
+Requirement already satisfied: tangled-up-in-unicode==0.2.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.2.0)
+Requirement already satisfied: pydantic&gt;=1.8.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (1.10.2)
+Requirement already satisfied: jinja2&gt;=2.11.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (3.1.2)
+Requirement already satisfied: htmlmin&gt;=0.1.12 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.1.12)
+Requirement already satisfied: multimethod&gt;=1.4 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (1.9)
+Requirement already satisfied: visions[type_image_path]==0.7.4 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.7.4)
+Requirement already satisfied: attrs&gt;=19.3.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (21.4.0)
+Requirement already satisfied: imagehash in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (4.3.0)
+Requirement already satisfied: isodate in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from rdflib&gt;=6.1.1-&gt;pyjedai) (0.6.1)
+Requirement already satisfied: setuptools in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from rdflib&gt;=6.1.1-&gt;pyjedai) (63.4.1)
+Requirement already satisfied: torchvision in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.13.1)
+Requirement already satisfied: torch&gt;=1.6.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (1.12.1)
+Requirement already satisfied: scikit-learn in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (1.1.2)
+Requirement already satisfied: sentencepiece in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.1.97)
+Requirement already satisfied: huggingface-hub&gt;=0.4.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.9.1)
+Requirement already satisfied: colorama in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from tqdm&gt;=4.64-&gt;pyjedai) (0.4.5)
+Requirement already satisfied: tokenizers!=0.11.3,&lt;0.13,&gt;=0.11.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from transformers&gt;=4.21-&gt;pyjedai) (0.12.1)
+Requirement already satisfied: filelock in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from transformers&gt;=4.21-&gt;pyjedai) (3.8.0)
+Requirement already satisfied: six&gt;=1.5 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib&gt;=3.5.2-&gt;pyjedai) (1.16.0)
+Requirement already satisfied: certifi&gt;=2017.4.17 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (2022.9.24)
+Requirement already satisfied: charset-normalizer&lt;3,&gt;=2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (2.1.1)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (3.4)
+Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (1.26.12)
+Requirement already satisfied: greenlet!=0.4.17 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from sqlalchemy&gt;=1.1.0-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.1.3)
+Requirement already satisfied: Mako in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from alembic-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.2.2)
+Requirement already satisfied: cmd2&gt;=1.0.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (2.4.2)
+Requirement already satisfied: stevedore&gt;=2.0.1 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (4.0.0)
+Requirement already satisfied: autopage&gt;=0.4.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (0.5.1)
+Requirement already satisfied: PrettyTable&gt;=0.7.2 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (3.4.1)
+Requirement already satisfied: importlib-metadata&gt;=4.4 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (4.12.0)
+Requirement already satisfied: threadpoolctl&gt;=2.0.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from scikit-learn-&gt;sentence-transformers&gt;=2.2-&gt;pyjedai) (3.1.0)
+Requirement already satisfied: pyperclip&gt;=1.6 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.8.2)
+Requirement already satisfied: wcwidth&gt;=0.1.7 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (0.2.5)
+Requirement already satisfied: pyreadline3 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (3.4.1)
+Requirement already satisfied: zipp&gt;=0.5 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from importlib-metadata&gt;=4.4-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (3.8.1)
+Requirement already satisfied: pbr!=2.1.0,&gt;=2.0.0 in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from stevedore&gt;=2.0.1-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (5.10.0)
+Requirement already satisfied: PyWavelets in c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages (from imagehash-&gt;visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (1.4.1)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip show pyjedai
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Name: pyjedai
+Version: 0.0.4
+Summary: An open-source library that builds powerful end-to-end Entity Resolution workflows.
+Home-page: 
+Author: 
+Author-email: Konstantinos Nikoletos &lt;nikoletos.kon@gmail.com&gt;, George Papadakis &lt;gpapadis84@gmail.com&gt;
+License: Apache Software License 2.0
+Location: c:\users\nikol\anaconda3\envs\pyjedai391\lib\site-packages
+Requires: faiss-cpu, gensim, matplotlib, matplotlib-inline, networkx, nltk, numpy, optuna, pandas, pandas-profiling, pandocfilters, PyYAML, rdflib, rdfpandas, regex, scipy, seaborn, sentence-transformers, strsim, strsimpy, tomli, tqdm, transformers
+Required-by: 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Imports</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">networkx</span>
+<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">draw</span><span class="p">,</span> <span class="n">Graph</span>
+
+<span class="kn">from</span> <span class="nn">pyjedai.utils</span> <span class="kn">import</span> <span class="n">print_clusters</span><span class="p">,</span> <span class="n">print_blocks</span><span class="p">,</span> <span class="n">print_candidate_pairs</span>
+<span class="kn">from</span> <span class="nn">pyjedai.evaluation</span> <span class="kn">import</span> <span class="n">Evaluation</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="reading-the-dataset-dirty-er-example">
+<h1>Reading the dataset - Dirty ER example<a class="headerlink" href="#reading-the-dataset-dirty-er-example" title="Permalink to this headline">#</a></h1>
+<p>pyJedAI in order to perfrom needs only the tranformation of the initial data into a pandas DataFrame. Hence, pyJedAI can function in every structured or semi-structured data. In this case Abt-Buy dataset is provided as .csv files.</p>
+<div align="center">
+    <img align="center" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true" width="800" />
+</div>
+<section id="pyjedai-data-module">
+<h2>pyjedai &lt;Data&gt; module<a class="headerlink" href="#pyjedai-data-module" title="Permalink to this headline">#</a></h2>
+<p>Data module offers a numpber of options</p>
+<ul class="simple">
+<li><p>Selecting the parameters (columns) of the dataframe, in D1 (and in D2)</p></li>
+<li><p>Prints a detailed text analysis</p></li>
+<li><p>Stores a hidden mapping of the ids, and creates it if not exists.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
+
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Data is the connecting module of all steps of the workflow</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
+    <span class="n">dataset_1</span><span class="o">=</span><span class="n">d1</span><span class="p">,</span>
+    <span class="n">id_column_name_1</span><span class="o">=</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span>
+    <span class="n">ground_truth</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span>
+    <span class="n">attributes_1</span><span class="o">=</span><span class="n">attr</span>
+<span class="p">)</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="workflow-with-block-cleaning-methods">
+<h1>Workflow with Block Cleaning Methods<a class="headerlink" href="#workflow-with-block-cleaning-methods" title="Permalink to this headline">#</a></h1>
+<p>In this notebook we created the bellow architecture:</p>
+<p><img alt="workflow1-cora.png" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/workflow1-cora.png?raw=true" /></p>
+<section id="block-building">
+<h2>Block Building<a class="headerlink" href="#block-building" title="Permalink to this headline">#</a></h2>
+<p>It clusters entities into overlapping blocks in a lazy manner that relies on unsupervised blocking keys: every token in an attribute value forms a key. Blocks are then extracted, possibly using a transformation, based on its equality or on its similarity with other keys.</p>
+<p>The following methods are currently supported:</p>
+<ul class="simple">
+<li><p>Standard/Token Blocking</p></li>
+<li><p>Sorted Neighborhood</p></li>
+<li><p>Extended Sorted Neighborhood</p></li>
+<li><p>Q-Grams Blocking</p></li>
+<li><p>Extended Q-Grams Blocking</p></li>
+<li><p>Suffix Arrays Blocking</p></li>
+<li><p>Extended Suffix Arrays Blocking</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.block_building</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">StandardBlocking</span><span class="p">,</span>
+    <span class="n">QGramsBlocking</span><span class="p">,</span>
+    <span class="n">SuffixArraysBlocking</span><span class="p">,</span>
+    <span class="n">ExtendedSuffixArraysBlocking</span><span class="p">,</span>
+    <span class="n">ExtendedQGramsBlocking</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">blocks</span> <span class="o">=</span> <span class="n">SuffixArraysBlocking</span><span class="p">(</span>
+    <span class="n">suffix_length</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span><span class="o">.</span><span class="n">build_blocks</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "1a426c4ded8e4740bcf8677ce6cb9123"}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      4.28% 
+	Recall:        75.77%
+	F1-score:       8.10%
+Classification report:
+	True positives: 13021
+	False positives: 291336
+	True negatives: 542366
+	False negatives: 4163
+	Total comparisons: 304357
+---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="block-cleaning">
+<h2>Block Cleaning<a class="headerlink" href="#block-cleaning" title="Permalink to this headline">#</a></h2>
+<p><em><strong>Optional step</strong></em></p>
+<p>Its goal is to clean a set of overlapping blocks from unnecessary comparisons, which can be either redundant (i.e., repeated comparisons that have already been executed in a previously examined block) or superfluous (i.e., comparisons that involve non-matching entities). Its methods operate on the coarse level of individual blocks or entities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.block_cleaning</span> <span class="kn">import</span> <span class="n">BlockFiltering</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_blocks</span> <span class="o">=</span> <span class="n">BlockFiltering</span><span class="p">(</span>
+    <span class="n">ratio</span><span class="o">=</span><span class="mf">0.9</span>
+<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "873325c799e24a1f8ccf4515e883b3d6"}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      5.10% 
+	Recall:        73.46%
+	F1-score:       9.53%
+Classification report:
+	True positives: 12623
+	False positives: 235070
+	True negatives: 598234
+	False negatives: 4561
+	Total comparisons: 247693
+---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="comparison-cleaning">
+<h2>Comparison Cleaning<a class="headerlink" href="#comparison-cleaning" title="Permalink to this headline">#</a></h2>
+<p><em><strong>Optional step</strong></em></p>
+<p>Similar to Block Cleaning, this step aims to clean a set of blocks from both redundant and superfluous comparisons. Unlike Block Cleaning, its methods operate on the finer granularity of individual comparisons.</p>
+<p>The following methods are currently supported:</p>
+<ul class="simple">
+<li><p>Comparison Propagation</p></li>
+<li><p>Cardinality Edge Pruning (CEP)</p></li>
+<li><p>Cardinality Node Pruning (CNP)</p></li>
+<li><p>Weighed Edge Pruning (WEP)</p></li>
+<li><p>Weighed Node Pruning (WNP)</p></li>
+<li><p>Reciprocal Cardinality Node Pruning (ReCNP)</p></li>
+<li><p>Reciprocal Weighed Node Pruning (ReWNP)</p></li>
+<li><p>BLAST</p></li>
+</ul>
+<p>Most of these methods are Meta-blocking techniques. All methods are optional, but competive, in the sense that only one of them can part of an ER workflow. For more details on the functionality of these methods, see here. They can be combined with one of the following weighting schemes:</p>
+<ul class="simple">
+<li><p>Aggregate Reciprocal Comparisons Scheme (ARCS)</p></li>
+<li><p>Common Blocks Scheme (CBS)</p></li>
+<li><p>Enhanced Common Blocks Scheme (ECBS)</p></li>
+<li><p>Jaccard Scheme (JS)</p></li>
+<li><p>Enhanced Jaccard Scheme (EJS)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.block_cleaning</span> <span class="kn">import</span> <span class="n">BlockPurging</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cleaned_blocks</span> <span class="o">=</span> <span class="n">BlockPurging</span><span class="p">(</span>
+    <span class="n">smoothing_factor</span><span class="o">=</span><span class="mf">0.008</span>
+<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "a8a43f89b1e44ebf96f751234db832a3"}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">cleaned_blocks</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      7.67% 
+	Recall:         0.59%
+	F1-score:       1.09%
+Classification report:
+	True positives: 101
+	False positives: 1215
+	True negatives: 819567
+	False negatives: 17083
+	Total comparisons: 1316
+---
+</pre></div>
+</div>
+</div>
+</div>
+<section id="meta-blocking">
+<h3>Meta Blocking<a class="headerlink" href="#meta-blocking" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.comparison_cleaning</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">WeightedEdgePruning</span><span class="p">,</span>
+    <span class="n">WeightedNodePruning</span><span class="p">,</span>
+    <span class="n">CardinalityEdgePruning</span><span class="p">,</span>
+    <span class="n">CardinalityNodePruning</span><span class="p">,</span>
+    <span class="n">BLAST</span><span class="p">,</span>
+    <span class="n">ReciprocalCardinalityNodePruning</span><span class="p">,</span>
+    <span class="c1"># ReciprocalCardinalityWeightPruning,</span>
+    <span class="n">ComparisonPropagation</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">candidate_pairs_blocks</span> <span class="o">=</span> <span class="n">WeightedEdgePruning</span><span class="p">(</span>
+    <span class="n">weighting_scheme</span><span class="o">=</span><span class="s1">&#39;CBS&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "4d6465aa9ea64a20a7ac1efff150c553"}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">candidate_pairs_blocks</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:     74.46% 
+	Recall:        48.51%
+	F1-score:      58.75%
+Classification report:
+	True positives: 8336
+	False positives: 2860
+	True negatives: 826157
+	False negatives: 8848
+	Total comparisons: 11196
+---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="entity-matching">
+<h2>Entity Matching<a class="headerlink" href="#entity-matching" title="Permalink to this headline">#</a></h2>
+<p>It compares pairs of entity profiles, associating every pair with a similarity in [0,1]. Its output comprises the similarity graph, i.e., an undirected, weighted graph where the nodes correspond to entities and the edges connect pairs of compared entities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.matching</span> <span class="kn">import</span> <span class="n">EntityMatching</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
+<span class="c1"># or with weights</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;author&#39;</span> <span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="mf">0.4</span>
+<span class="p">}</span>
+
+<span class="n">EM</span> <span class="o">=</span> <span class="n">EntityMatching</span><span class="p">(</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">,</span> 
+    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+
+<span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "bc6780e192974fa8980dadce2e36cabc"}
+</script><div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_33844</span><span class="o">/</span><span class="mf">4068592613.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> 
+<span class="ne">---&gt; </span><span class="mi">13</span> <span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pyjedai\matching.py</span> in <span class="ni">predict</span><span class="nt">(self, blocks, data, tqdm_disable)</span>
+<span class="g g-Whitespace">     </span><span class="mi">85</span>         <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">86</span>         <span class="k">if</span> <span class="s1">&#39;Block&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">all_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+<span class="ne">---&gt; </span><span class="mi">87</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_predict_raw_blocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">88</span>         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">all_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">set</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">89</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_predict_prunned_blocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pyjedai\matching.py</span> in <span class="ni">_predict_raw_blocks</span><span class="nt">(self, blocks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">105</span>                 <span class="k">for</span> <span class="n">index_1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">entities_array</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span>                     <span class="k">for</span> <span class="n">index_2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">entities_array</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">107</span>                         <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_similarity</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">108</span>                             <span class="n">entities_array</span><span class="p">[</span><span class="n">index_1</span><span class="p">],</span> <span class="n">entities_array</span><span class="p">[</span><span class="n">index_2</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">109</span>                         <span class="p">)</span>
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pyjedai\matching.py</span> in <span class="ni">_similarity</span><span class="nt">(self, entity_id1, entity_id2)</span>
+<span class="g g-Whitespace">    </span><span class="mi">164</span>             <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">165</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">entity_id1</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">),</span>
+<span class="ne">--&gt; </span><span class="mi">166</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">entity_id2</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">167</span>             <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">168</span> 
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pandas\core\accessor.py</span> in <span class="ni">__get__</span><span class="nt">(self, obj, cls)</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span>             <span class="c1"># we&#39;re accessing the attribute of the class, i.e., Dataset.geo</span>
+<span class="g g-Whitespace">    </span><span class="mi">181</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessor</span>
+<span class="ne">--&gt; </span><span class="mi">182</span>         <span class="n">accessor_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessor</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span>         <span class="c1"># Replace the property with the accessor object. Inspired by:</span>
+<span class="g g-Whitespace">    </span><span class="mi">184</span>         <span class="c1"># https://www.pydanny.com/cached-property.html</span>
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pandas\core\strings\accessor.py</span> in <span class="ni">__init__</span><span class="nt">(self, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">175</span>         <span class="kn">from</span> <span class="nn">pandas.core.arrays.string_</span> <span class="kn">import</span> <span class="n">StringDtype</span>
+<span class="g g-Whitespace">    </span><span class="mi">176</span> 
+<span class="ne">--&gt; </span><span class="mi">177</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_inferred_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">178</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_is_categorical</span> <span class="o">=</span> <span class="n">is_categorical_dtype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">179</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_is_string</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">StringDtype</span><span class="p">)</span>
+
+<span class="nn">~\anaconda3\envs\pyjedai391\lib\site-packages\pandas\core\base.py</span> in <span class="ni">__setattr__</span><span class="nt">(self, key, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span> 
+<span class="g g-Whitespace">    </span><span class="mi">161</span>     <span class="c1"># prevent adding any attribute via s.xxx.new_attribute = ...</span>
+<span class="ne">--&gt; </span><span class="mi">162</span>     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">163</span>         <span class="c1"># _cache is used by a decorator</span>
+<span class="g g-Whitespace">    </span><span class="mi">164</span>         <span class="c1"># We need to check both 1.) cls.__dict__ and 2.) getattr(self, key)</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;author&#39;</span> <span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> 
+    <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="mf">0.4</span>
+<span class="p">}</span>
+
+<span class="n">EM</span> <span class="o">=</span> <span class="n">EntityMatching</span><span class="p">(</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
+    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+
+<span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">candidate_pairs_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "44930d8c639944bbaad1cc9a50b66999", "version_major": 2, "version_minor": 0}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">draw</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/DirtyER_31_0.png" src="_images/DirtyER_31_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      5.44% 
+	Recall:         6.30%
+	F1-score:       5.84%
+Classification report:
+	True positives: 1083
+	False positives: 18819
+	True negatives: 802945
+	False negatives: 16101
+	Total comparisons: 19902
+---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="entity-clustering">
+<h2>Entity Clustering<a class="headerlink" href="#entity-clustering" title="Permalink to this headline">#</a></h2>
+<p>It takes as input the similarity graph produced by Entity Matching and partitions it into a set of equivalence clusters, with every cluster corresponding to a distinct real-world object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.clustering</span> <span class="kn">import</span> <span class="n">ConnectedComponentsClustering</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusters</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      5.44% 
+	Recall:         6.30%
+	F1-score:       5.84%
+Classification report:
+	True positives: 1083
+	False positives: 18819
+	True negatives: 802945
+	False negatives: 16101
+	Total comparisons: 19902
+---
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/DirtyER_37_0.png" src="_images/DirtyER_37_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="workflow-with-similarity-joins">
+<h1>Workflow with Similarity Joins<a class="headerlink" href="#workflow-with-similarity-joins" title="Permalink to this headline">#</a></h1>
+<p>In this notebook we created the bellow archtecture:</p>
+<p><img alt="workflow2-cora.png" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/workflow2-cora.png?raw=true" /></p>
+<section id="data-reading">
+<h2>Data Reading<a class="headerlink" href="#data-reading" title="Permalink to this headline">#</a></h2>
+<p>Data is the connecting module of all steps of the workflow</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
+    <span class="n">dataset_1</span><span class="o">=</span><span class="n">d1</span><span class="p">,</span>
+    <span class="n">id_column_name_1</span><span class="o">=</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span>
+    <span class="n">ground_truth</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span>
+    <span class="n">attributes_1</span><span class="o">=</span><span class="n">attr</span>
+<span class="p">)</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="similarity-joins">
+<h2>Similarity Joins<a class="headerlink" href="#similarity-joins" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.joins</span> <span class="kn">import</span> <span class="n">SchemaAgnosticΕJoin</span><span class="p">,</span> <span class="n">TopKSchemaAgnosticJoin</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">SchemaAgnosticΕJoin</span><span class="p">(</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
+    <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams_multiset&#39;</span><span class="p">,</span>
+    <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "723b8f837cf94a42bb1430e2e57eb598", "version_major": 2, "version_minor": 0}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:     65.80% 
+	Recall:        93.03%
+	F1-score:      77.08%
+Classification report:
+	True positives: 15987
+	False positives: 8311
+	True negatives: 828357
+	False negatives: 1197
+	Total comparisons: 24298
+---
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">TopKSchemaAgnosticJoin</span><span class="p">(</span>
+    <span class="n">K</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
+    <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams&#39;</span><span class="p">,</span>
+    <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "50d8be87d8324be8b152bf47f53be99a", "version_major": 2, "version_minor": 0}
+</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/DirtyER_47_0.png" src="_images/DirtyER_47_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:     58.34% 
+	Recall:        63.75%
+	F1-score:      60.92%
+Classification report:
+	True positives: 10954
+	False positives: 7822
+	True negatives: 823813
+	False negatives: 6230
+	Total comparisons: 18776
+---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>Entity Clustering<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.clustering</span> <span class="kn">import</span> <span class="n">ConnectedComponentsClustering</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusters</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
+---
+Scores:
+	Precision:      2.05% 
+	Recall:       100.00%
+	F1-score:       4.02%
+Classification report:
+	True positives: 17184
+	False positives: 820681
+	True negatives: 17184
+	False negatives: 0
+	Total comparisons: 837865
+---
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/DirtyER_53_0.png" src="_images/DirtyER_53_0.png" />
+</div>
+</div>
+<hr>
+<div align="right">
+K. Nikoletos, G. Papadakis & M. Koubarakis
+</div>
+<div align="right">
+<a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE">Apache License 2.0</a>
+</div></section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="CleanCleanER.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Instalation</p>
+        </div>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By AI-Team, University of Athens<br/>
+  
+      &copy; Copyright Apache 2.0 License.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

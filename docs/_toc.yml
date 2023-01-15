@@ -4,18 +4,28 @@
 format: jb-book
 root: intro
 parts:
-- caption: Overview
-  chapters:
-  - file: markdown
-  - file: notebooks
-  - file: markdown-notebooks
-- caption: Build workflows
-  chapters:
-  - file: intersphinx
-  - file: sphinx-examples
-  - file: sphinx-hoverxref
-  - file: sphinx-proof
-  - url: https://github.com/AI-team-UoA/pyJedAI
-    title: AI-Team
+  - caption: Tutorials
+    chapters:
+    - file: Demo
+      title: Demo notebook
+    - file: Readers
+      title: Examples in transforming datasets to pandas
+    - file: WorkFlow
+      title: User-Friendly Approach
+    - file: CleanCleanER
+      title: Clean-Clean Entity Resolution for Devs
+    - file: DirtyER
+      title: Dirty Entity Resolution for Devs
 
 
+
+
+# - caption: Tutorials
+#   chapters:
+#   - file: CleanCleanER
+#     title: Building a simple workflow
+# - caption: Usefull links
+#   - url: https://github.com/AI-team-UoA/pyJedAI
+#     title: AI-Team
+#   - url: https://github.com/scify/JedAIToolkit
+#     title: Java JedAIToolkit

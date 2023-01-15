@@ -5,7 +5,7 @@
 title: pyJedAI
 author: AI-Team, University of Athens
 logo: ../documentation/pyjedai.logo.drawio.png
-copyright: Apache 2.0 License 
+copyright: Apache 2.0 License
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
 execute:
@@ -40,6 +40,8 @@ html:
 
 sphinx:
   config:
+    html_js_files:
+      - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     intersphinx_mapping:
       ebp:
         - "https://executablebooks.org/en/latest/"

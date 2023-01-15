@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Jupyter Book on Read the Docs &#8212; pyJedAI</title>
+    <title>Overview &#8212; pyJedAI</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -57,6 +57,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -71,7 +72,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="_static/icons8-droid-67.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Markdown Files" href="markdown.html" />
+    <link rel="next" title="Instalation" href="Demo.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -127,61 +128,39 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1 current active">
                 <a class="reference internal" href="#">
-                    Jupyter Book on Read the Docs
+                    Overview
                 </a>
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Overview
+  Tutorials
  </span>
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="markdown.html">
-   Markdown Files
+  <a class="reference internal" href="Demo.html">
+   Instalation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="notebooks.html">
-   Content with notebooks
+  <a class="reference internal" href="Readers.html">
+   CSV Reader
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="markdown-notebooks.html">
-   Notebooks with MyST Markdown
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Build workflows
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="intersphinx.html">
-   Intersphinx: Cross-reference other projects
+  <a class="reference internal" href="WorkFlow.html">
+   User-Friendly Approach
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="sphinx-examples.html">
-   sphinx-examples: Code examples simplified
+  <a class="reference internal" href="CleanCleanER.html">
+   Instalation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="sphinx-hoverxref.html">
-   sphinx-hoverxref: Preview tooltips for cross-references
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sphinx-proof.html">
-   sphinx-proof: advanced proofs, theorems &amp; more…
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI">
-   AI-Team
+  <a class="reference internal" href="DirtyER.html">
+   Instalation
   </a>
  </li>
 </ul>
@@ -361,22 +340,49 @@ title="Print to PDF"
     </div>
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#why-run-jupyter-book-with-read-the-docs">
-   Why run Jupyter Book with Read the Docs?
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Overview
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-in-this-example">
-   What is in this example?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#table-of-contents">
-   Table of Contents
-  </a>
-  <ul class="nav section-nav flex-column">
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#key-features">
+     Key-Features
+    </a>
+   </li>
   </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tutorials">
+     Tutorials
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dependencies">
+   Dependencies
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bugs-discussions-news">
+   Bugs, Discussions &amp; News
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#team-authors">
+   Team &amp; Authors
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
  </li>
 </ul>
 
@@ -387,7 +393,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Jupyter Book on Read the Docs</h1>
+                <h1>Overview</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -397,22 +403,49 @@ title="Print to PDF"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#why-run-jupyter-book-with-read-the-docs">
-   Why run Jupyter Book with Read the Docs?
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Overview
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-in-this-example">
-   What is in this example?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#table-of-contents">
-   Table of Contents
-  </a>
-  <ul class="nav section-nav flex-column">
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#key-features">
+     Key-Features
+    </a>
+   </li>
   </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tutorials">
+     Tutorials
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dependencies">
+   Dependencies
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bugs-discussions-news">
+   Bugs, Discussions &amp; News
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#team-authors">
+   Team &amp; Authors
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
  </li>
 </ul>
 
@@ -424,61 +457,137 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="jupyter-book-on-read-the-docs">
-<span id="intro"></span><h1>Jupyter Book on Read the Docs<a class="headerlink" href="#jupyter-book-on-read-the-docs" title="Permalink to this headline">#</a></h1>
-<p>This example shows a Jupyter Book project built and published on Read the Docs.
-You’re encouraged to use it to get inspiration and copy &amp; paste from the files in <a class="reference external" href="https://github.com/readthedocs-examples/example-jupyter-book/">the source code repository</a>. In the source repository, you will also find the relevant configuration and instructions for building Jupyter Book projects on Read the Docs.</p>
-<p>If you are using Read the Docs for the first time, have a look at the official <a class="reference external" href="https://docs.readthedocs.io/en/stable/tutorial/index.html">Read the Docs Tutorial</a>.
-If you are using Jupyter Book for the first time, have a look at the <a class="reference external" href="https://jupyterbook.org/en/stable/">official Jupyter Book documentation</a>.</p>
-<section id="why-run-jupyter-book-with-read-the-docs">
-<h2>Why run Jupyter Book with Read the Docs?<a class="headerlink" href="#why-run-jupyter-book-with-read-the-docs" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://readthedocs.org/">Read the Docs</a> simplifies developing Jupyter Book projects by automating building, versioning, and hosting of your project for you.
-You might be familiar with Read the Docs for software documentation projects, but these features are just as relevant for science.</p>
-<p>With Read the Docs, you can improve collaboration on your Jupyter Book project with Git (GitHub, GitLab, BitBucket etc.) and then connect the Git repository to Read the Docs.
-Once Read the Docs and the git repository are connected, your project will be built and published automatically every time you commit and push changes with git.
-Furthermore, if you open Pull Requests, you can preview the result as rendered by Jupyter Book.</p>
-</section>
-<section id="what-is-in-this-example">
-<h2>What is in this example?<a class="headerlink" href="#what-is-in-this-example" title="Permalink to this headline">#</a></h2>
-<p>Jupyter Book has a number of built-in features.
-This is a small example book to give you a feel for how book content is structured.
-It shows off a few of the major file types, as well as some sample content.
-It does not go in-depth into any particular topic - check out <a class="reference external" href="https://jupyterbook.org/en/stable/">the Jupyter Book documentation</a> for more information.</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="markdown.html"><span class="doc std std-doc">Examples of Markdown</span></a></p></li>
-<li><p><a class="reference internal" href="notebooks.html"><span class="doc std std-doc">Rendering a notebook Jupyter Notebook</span></a></p></li>
-<li><p><a class="reference internal" href="markdown-notebooks.html"><span class="doc std std-doc">A notebook written in MyST Markdown</span></a></p></li>
-</ul>
-<p>We have also added some popular features for Jupyter Book that really you shouldn’t miss when building your own project with Jupyter Book and Read the Docs:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="intersphinx.html"><span class="doc std std-doc">intersphinx to link to other documentation and Jupyter Book projects</span></a></p></li>
-<li><p><a class="reference internal" href="sphinx-examples.html"><span class="doc std std-doc">sphinx-examples to show examples and results side-by-side</span></a></p></li>
-<li><p><a class="reference internal" href="sphinx-hoverxref.html"><span class="doc std std-doc">sphinx-hoverxref to preview cross-references</span></a></p></li>
-<li><p><a class="reference internal" href="sphinx-proof.html"><span class="doc std std-doc">sphinx-proof for logic and math, to write proofs, theorems, lemmas etc.</span></a></p></li>
-</ul>
-</section>
-<section id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">#</a></h2>
-<p>Here is an automatically generated Tabel of Contents:</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="markdown.html">Markdown Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Content with notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown-notebooks.html">Notebooks with MyST Markdown</a></li>
-</ul>
+  <div align="center">
+<br>
+<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="400"/>
 </div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Build workflows</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intersphinx.html">Intersphinx: Cross-reference other projects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx-examples.html">sphinx-examples: Code examples simplified</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx-hoverxref.html">sphinx-hoverxref: Preview tooltips for cross-references</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx-proof.html">sphinx-proof: advanced proofs, theorems &amp; more…</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI">AI-Team</a></li>
+<br><br>
+<div align="center">
+An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
+</div>
+<br>
+<hr class="docutils" />
+<br>
+<p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main" /></a>
+<a class="reference external" href="https://svgshare.com/i/Zhy.svg"><img alt="Linux" src="https://svgshare.com/i/Zhy.svg" /></a>
+<a class="reference external" href="https://svgshare.com/i/ZjP.svg"><img alt="macOS" src="https://svgshare.com/i/ZjP.svg" /></a>
+<a class="reference external" href="https://svgshare.com/i/ZhY.svg"><img alt="Windows" src="https://svgshare.com/i/ZhY.svg" /></a>
+<a class="reference external" href="https://www.python.org/"><img alt="made-with-python" src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg" /></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">#</a></h1>
+<p>pyJedAI is a python framework, aiming to offer experts and novice users, robust and fast solutions for multiple types of Entity Resolution problems. It is builded using state-of-the-art python frameworks. pyJedAI constitutes the sole open-source Link Discovery tool that is capable of exploiting the latest breakthroughs in Deep Learning and NLP techniques, which are publicly available through the Python data science ecosystem. This applies to both blocking and matching, thus ensuring high time efficiency, high scalability as well as high effectiveness, without requiring any labelled instances from the user.</p>
+<section id="key-features">
+<h2>Key-Features<a class="headerlink" href="#key-features" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Input data-type independent. Both structured and semi-structured data can be processed.</p></li>
+<li><p>Various implemented algorithms.</p></li>
+<li><p>Easy-to-use.</p></li>
+<li><p>Utilizes some of the famous and cutting-edge machine learning packages.</p></li>
+<li><p>Offers supervised and un-supervised ML techniques.</p></li>
 </ul>
+<p><strong>Open demos are available in:</strong></p>
+<div align="center">
+<a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
+<img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
+</a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
+<img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
+</a>
+</div>
+<p><strong>Google Colab Hands-on demo:</strong></p>
+<div align="center">
+<a href="https://colab.research.google.com/drive/18VgEOKAc2ObFFxDNb2sjhBLKKsNvfEPo?usp=sharing">
+<img align="center" src="https://3.bp.blogspot.com/-apoBeWFycKQ/XhKB8fEprwI/AAAAAAAACM4/Sl76yzNSNYwlShIBrheDAum8L9qRtWNdgCLcBGAsYHQ/s1600/colab.png" width=120/> 
+</a>
 </div>
 </section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="install">
+<h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h1>
+<p>Install the latest version of pyjedai <strong>[requires python &gt;= 3.7]</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pyjedai</span>
+</pre></div>
+</div>
+<p>More on <span class="xref myst">PyPI</span>.</p>
+<p><strong>Find last release source code in <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI">GitHub</a>.</strong></p>
+<section id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">#</a></h2>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tutorial</p></th>
+<th class="text-align:center head"><p>Notebook</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Clean-Clean Entity Resolution.</p></td>
+<td class="text-align:center"><p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/CleanCleanER.ipynb">CleanCleanER.ipynb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dirty Entity Resolution.</p></td>
+<td class="text-align:center"><p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/DirtyER.ipynb">DirtyER.ipynb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Fine-Tuning using Optuna.</p></td>
+<td class="text-align:center"><p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Optuna.ipynb">Optuna.ipynb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>User-Friendly Approach. WorkFlow module.</p></td>
+<td class="text-align:center"><p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/WorkFlow.ipynb">WorkFlow.ipynb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Raw data to pandas DataFrame.</p></td>
+<td class="text-align:center"><p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Readers.ipynb">Readers.ipynb</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="dependencies">
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">#</a></h1>
+<div align="center">
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/2560px-Pandas_logo.svg.png" width=120/> &nbsp;&nbsp;
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/NumPy_logo_2020.svg/1280px-NumPy_logo_2020.svg.png" width=120/> &nbsp;&nbsp;
+<img align="center" src="https://logoeps.com/wp-content/uploads/2012/10/python-logo-vector.png" width=120/> &nbsp;&nbsp;&nbsp;
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/883px-Jupyter_logo.svg.png" width=70/>  <br>
+<img align="center" src="https://raw.githubusercontent.com/optuna/optuna/master/docs/image/optuna-logo.png" width=150/>
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Plotly_logo_for_digital_final_%286%29.png/1200px-Plotly_logo_for_digital_final_%286%29.png" width=150/>
+<img align="center" src="https://www.fullstackpython.com/img/logos/scipy.png" width=150/>  <br><br>
+<img align="center" src="https://www.kornosk.me/resources/language-model/featured.png" width=150/> &nbsp;&nbsp;&nbsp;
+<img align="center" src="https://repository-images.githubusercontent.com/1349775/202c4680-8f7c-11e9-91c6-745fdcbeffe8" width=150/> &nbsp;&nbsp;&nbsp;
+<img align="center" src="https://networkx.org/_static/networkx_logo.svg" width=150/> &nbsp;&nbsp;&nbsp;
+<img align="center" src="https://raw.githubusercontent.com/RDFLib/OWL-RL/master/OWL-RL.png" width=70/> 
+</div>
+<br>
+<p>See the full list of dependencies and all versions used, in this <a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/requirements.txt">file</a>.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="bugs-discussions-news">
+<h1>Bugs, Discussions &amp; News<a class="headerlink" href="#bugs-discussions-news" title="Permalink to this headline">#</a></h1>
+<p><a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/discussions">GitHub Discussions</a> is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find <a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/issues">here</a>.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="team-authors">
+<h1>Team &amp; Authors<a class="headerlink" href="#team-authors" title="Permalink to this headline">#</a></h1>
+<img align="right" src="https://www.di.uoa.gr/themes/corporate_lite/logo_en.png" alt="pyJedAI" width="400"/>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nikoletos-k.github.io">Konstantinos Nikoletos</a></p></li>
+<li><p><a class="reference external" href="https://gpapadis.wordpress.com">George Papadakis</a></p></li>
+<li><p><a class="reference external" href="https://cgi.di.uoa.gr/~koubarak/">Manolis Koubarakis</a></p></li>
+</ul>
+<p>Research and development is made under the supervision of Pr. Manolis Koubarakis. This is a research project by the <a class="reference external" href="https://ai.di.uoa.gr">AI-Team</a> of the Department of Informatics and Telecommunications at the University of Athens.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">#</a></h1>
+<p>Released under the Apache-2.0 license <a class="reference external" href="https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE">(see LICENSE.txt)</a>.</p>
+<p>Copyright © 2022 AI-Team, University of Athens</p>
+<div align="center">
+ <hr>
+  <br>
+ <a href="https://stelar-project.eu">
+  <img align="center" src="https://stelar-project.eu/wp-content/uploads/2022/08/Logo-Stelar-1-f.png" width=180/>
+ </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <a href="https://ec.europa.eu/info/index_en">
+  <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Flag_of_Europe.svg/1200px-Flag_of_Europe.svg.png" width=140/>
+ </a>
+ <br><br>
+ <b>This project is being funded in the context of <a href="https://stelar-project.eu">STELAR</a>, an <a href="https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-europe_en">HORIZON-Europe</a> project.</b><br>
+</div>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -508,10 +617,10 @@ It does not go in-depth into any particular topic - check out <a class="referenc
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='right-next' id="next-link" href="markdown.html" title="next page">
+    <a class='right-next' id="next-link" href="Demo.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Markdown Files</p>
+        <p class="prev-next-title">Instalation</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
