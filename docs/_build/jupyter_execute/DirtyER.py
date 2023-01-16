@@ -3,7 +3,7 @@
 
 # # Dirty Entity Resolution
 # 
-# ---
+# ----
 # 
 # In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Dirty ER, is the process of dedeplication of one set.
 

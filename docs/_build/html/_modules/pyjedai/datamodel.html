@@ -138,39 +138,144 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="../../Demo.html">
-   Instalation
+   Build workflow from scratch
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../Readers.html">
-   CSV Reader
+   Data Reading examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../WorkFlow.html">
-   User-Friendly Approach
+   User-Friendly Workflow
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../CleanCleanER.html">
-   Instalation
+   Clean-Clean Entity Resolution
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../DirtyER.html">
-   Instalation
+   Dirty Entity Resolution
   </a>
  </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Code documentation
+  Benchmarks
  </span>
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../../api.html">
-   API
+  <a class="reference internal" href="../../benchmarks.html">
+   Results and Performance Demo
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Releases and News
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../newsfeed.html">
+   Newsfeed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI/releases">
+   Releases
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Get a Demo now!
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../demos.html">
+   Web Applications with pyJedAI
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Publications &amp; Fundings
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../publications.html">
+   Publications
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Code
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../datamodel.html">
+   Datamodel
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../block_cleaning.html">
+   Block cleaning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../clustering.html">
+   Clustering
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../similarity_joins.html">
+   Similarity Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../matching.html">
+   Entity Matching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../evaluation.html">
+   Evaluation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../comparison_cleaning.html">
+   Comparison Cleaning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../utils.html">
+   Utilities
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Usefull links
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI">
+   AI-Team @ University of Athens
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/scify/JedAIToolkit">
+   Java JedAIToolkit
   </a>
  </li>
 </ul>
@@ -310,7 +415,7 @@ title="Open an issue"
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">concat</span>
 
-<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../api.html#pyjedai.datamodel.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../datamodel.html#pyjedai.datamodel.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class that is the contains the corpus of the dataset that will be processed with pyjedai. \</span>
 <span class="sd">        Contains all the information of the dataset and will be passed to each step \</span>
 <span class="sd">        of the ER workflow.</span>
@@ -347,7 +452,7 @@ title="Open an issue"
         <span class="bp">self</span><span class="o">.</span><span class="n">_ids_mapping_2</span><span class="p">:</span> <span class="nb">dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gt_to_ids_reversed_2</span><span class="p">:</span> <span class="nb">dict</span>
 
-<div class="viewcode-block" id="Data.process"><a class="viewcode-back" href="../../api.html#pyjedai.datamodel.Data.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Data.process"><a class="viewcode-back" href="../../datamodel.html#pyjedai.datamodel.Data.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Creates the appropriate dataframes and the mapping \</span>
 <span class="sd">            if ground-truth file has been provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -394,7 +499,7 @@ title="Open an issue"
                 <span class="p">)</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="Data.print_specs"><a class="viewcode-back" href="../../api.html#pyjedai.datamodel.Data.print_specs">[docs]</a>    <span class="k">def</span> <span class="nf">print_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.print_specs"><a class="viewcode-back" href="../../datamodel.html#pyjedai.datamodel.Data.print_specs">[docs]</a>    <span class="k">def</span> <span class="nf">print_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dataset report.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Type of Entity Resolution: &quot;</span><span class="p">,</span> <span class="s2">&quot;Dirty&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_dirty_er</span> <span class="k">else</span> <span class="s2">&quot;Clean-Clean&quot;</span> <span class="p">)</span>
@@ -407,7 +512,7 @@ title="Open an issue"
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_truth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of matching pairs in ground-truth: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ground_truth</span><span class="p">))</span></div></div>
 
-<div class="viewcode-block" id="Block"><a class="viewcode-back" href="../../api.html#pyjedai.datamodel.Block">[docs]</a><span class="k">class</span> <span class="nc">Block</span><span class="p">:</span>
+<div class="viewcode-block" id="Block"><a class="viewcode-back" href="../../datamodel.html#pyjedai.datamodel.Block">[docs]</a><span class="k">class</span> <span class="nc">Block</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;The main module used for storing entities in the blocking steps of pyjedai module. \</span>
 <span class="sd">        Consists of 2 sets of profile entities 1 for Dirty ER and 2 for Clean-Clean ER.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

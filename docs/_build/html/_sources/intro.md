@@ -25,7 +25,7 @@ An open-source library that leverages Python’s data science ecosystem to build
 
 pyJedAI is a python framework, aiming to offer experts and novice users, robust and fast solutions for multiple types of Entity Resolution problems. It is builded using state-of-the-art python frameworks. pyJedAI constitutes the sole open-source Link Discovery tool that is capable of exploiting the latest breakthroughs in Deep Learning and NLP techniques, which are publicly available through the Python data science ecosystem. This applies to both blocking and matching, thus ensuring high time efficiency, high scalability as well as high effectiveness, without requiring any labelled instances from the user.
 
-### Key-Features
+## Key-Features
 
 - Input data-type independent. Both structured and semi-structured data can be processed.
 - Various implemented algorithms.
@@ -64,7 +64,7 @@ More on [PyPI](https://pypi.org/project/pyjedai/).
 __Find last release source code in [GitHub](https://github.com/AI-team-UoA/pyJedAI).__
 
 
-### Tutorials
+# Tutorials
 
 | Tutorial | Notebook |
 |---|:-:|
