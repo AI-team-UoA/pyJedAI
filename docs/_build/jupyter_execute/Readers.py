@@ -6,7 +6,7 @@
 # 
 # ![reading-process.jpg](https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true)
 
-# In[1]:
+# In[6]:
 
 
 import pandas as pd
@@ -16,7 +16,7 @@ import pandas as pd
 # 
 # Example Dataset: CORA
 
-# In[2]:
+# In[94]:
 
 
 d1 = pd.read_csv("./data/cora/cora.csv", sep='|')

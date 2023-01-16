@@ -13,13 +13,13 @@
 # 
 # For more: [pypi.org/project/pyjedai/](https://pypi.org/project/pyjedai/)
 
-# In[1]:
+# In[ ]:
 
 
 get_ipython().system('pip install pyjedai -U')
 
 
-# In[2]:
+# In[3]:
 
 
 get_ipython().system('pip show pyjedai')
@@ -27,7 +27,7 @@ get_ipython().system('pip show pyjedai')
 
 # Imports
 
-# In[3]:
+# In[4]:
 
 
 import os
@@ -56,7 +56,7 @@ from pyjedai.evaluation import Evaluation
 # - Prints a detailed text analysis
 # - Stores a hidden mapping of the ids, and creates it if not exists.
 
-# In[4]:
+# In[5]:
 
 
 from pyjedai.datamodel import Data
@@ -68,7 +68,7 @@ attr = ['Entity Id','author', 'title']
 
 # Data is the connecting module of all steps of the workflow
 
-# In[5]:
+# In[6]:
 
 
 data = Data(
@@ -103,7 +103,7 @@ data.process()
 # - Suffix Arrays Blocking
 # - Extended Suffix Arrays Blocking
 
-# In[6]:
+# In[7]:
 
 
 from pyjedai.block_building import (
@@ -115,7 +115,7 @@ from pyjedai.block_building import (
 )
 
 
-# In[7]:
+# In[8]:
 
 
 blocks = SuffixArraysBlocking(
@@ -123,7 +123,7 @@ blocks = SuffixArraysBlocking(
 ).build_blocks(data)
 
 
-# In[8]:
+# In[9]:
 
 
 Evaluation(data).report(blocks)
@@ -135,13 +135,13 @@ Evaluation(data).report(blocks)
 # 
 # Its goal is to clean a set of overlapping blocks from unnecessary comparisons, which can be either redundant (i.e., repeated comparisons that have already been executed in a previously examined block) or superfluous (i.e., comparisons that involve non-matching entities). Its methods operate on the coarse level of individual blocks or entities.
 
-# In[9]:
+# In[10]:
 
 
 from pyjedai.block_cleaning import BlockFiltering
 
 
-# In[10]:
+# In[11]:
 
 
 filtered_blocks = BlockFiltering(
@@ -149,7 +149,7 @@ filtered_blocks = BlockFiltering(
 ).process(blocks, data)
 
 
-# In[11]:
+# In[12]:
 
 
 Evaluation(data).report(filtered_blocks)
@@ -180,13 +180,13 @@ Evaluation(data).report(filtered_blocks)
 # - Jaccard Scheme (JS)
 # - Enhanced Jaccard Scheme (EJS)
 
-# In[12]:
+# In[13]:
 
 
 from pyjedai.block_cleaning import BlockPurging
 
 
-# In[13]:
+# In[14]:
 
 
 cleaned_blocks = BlockPurging(
@@ -194,7 +194,7 @@ cleaned_blocks = BlockPurging(
 ).process(blocks, data)
 
 
-# In[14]:
+# In[15]:
 
 
 Evaluation(data).report(cleaned_blocks)
@@ -202,7 +202,7 @@ Evaluation(data).report(cleaned_blocks)
 
 # ### Meta Blocking
 
-# In[15]:
+# In[16]:
 
 
 from pyjedai.comparison_cleaning import (
@@ -217,7 +217,7 @@ from pyjedai.comparison_cleaning import (
 )
 
 
-# In[16]:
+# In[17]:
 
 
 candidate_pairs_blocks = WeightedEdgePruning(
@@ -225,7 +225,7 @@ candidate_pairs_blocks = WeightedEdgePruning(
 ).process(filtered_blocks, data)
 
 
-# In[17]:
+# In[18]:
 
 
 Evaluation(data).report(candidate_pairs_blocks)
@@ -235,13 +235,13 @@ Evaluation(data).report(candidate_pairs_blocks)
 # 
 # It compares pairs of entity profiles, associating every pair with a similarity in [0,1]. Its output comprises the similarity graph, i.e., an undirected, weighted graph where the nodes correspond to entities and the edges connect pairs of compared entities.
 
-# In[18]:
+# In[19]:
 
 
 from pyjedai.matching import EntityMatching
 
 
-# In[19]:
+# In[20]:
 
 
 attr = ['author', 'title']

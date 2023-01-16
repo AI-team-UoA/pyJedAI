@@ -17,13 +17,13 @@
 # 
 # For more: [pypi.org/project/pyjedai/](https://pypi.org/project/pyjedai/)
 
-# In[1]:
+# In[ ]:
 
 
 get_ipython().system('pip install pyjedai -U')
 
 
-# In[2]:
+# In[1]:
 
 
 get_ipython().system('pip show pyjedai')
@@ -31,7 +31,7 @@ get_ipython().system('pip show pyjedai')
 
 # Imports
 
-# In[3]:
+# In[2]:
 
 
 import os
@@ -41,7 +41,7 @@ import networkx
 from networkx import draw, Graph
 
 
-# In[4]:
+# In[3]:
 
 
 from pyjedai.utils import (
@@ -62,13 +62,13 @@ from pyjedai.evaluation import Evaluation, write
 # pyJedAI in order to perfrom needs only the tranformation of the initial data into a pandas DataFrame. Hence, pyJedAI can function in every structured or semi-structured data. In this case Abt-Buy dataset is provided as .csv files. 
 # 
 
-# In[5]:
+# In[4]:
 
 
 from pyjedai.datamodel import Data
 
 
-# In[6]:
+# In[5]:
 
 
 d1 = pd.read_csv("./../data/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str)
@@ -90,25 +90,25 @@ data.process()
 
 # pyJedAI offers also dataset analysis methods (more will be developed)
 
-# In[7]:
+# In[6]:
 
 
 data.print_specs()
 
 
-# In[8]:
+# In[7]:
 
 
 data.dataset_1.head(5)
 
 
-# In[9]:
+# In[8]:
 
 
 data.dataset_2.head(5)
 
 
-# In[10]:
+# In[9]:
 
 
 data.ground_truth.head(3)
@@ -128,7 +128,7 @@ data.ground_truth.head(3)
 # - Suffix Arrays Blocking
 # - Extended Suffix Arrays Blocking
 
-# In[11]:
+# In[10]:
 
 
 from pyjedai.block_building import (

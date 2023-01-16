@@ -12,13 +12,13 @@
 # 
 # For more: [pypi.org/project/pyjedai/](https://pypi.org/project/pyjedai/)
 
-# In[1]:
+# In[ ]:
 
 
 get_ipython().system('pip install pyjedai -U')
 
 
-# In[2]:
+# In[6]:
 
 
 get_ipython().system('pip show pyjedai')
@@ -41,7 +41,7 @@ get_ipython().system('pip show pyjedai')
 # - Stores a hidden mapping of the ids, and creates if it is not exist.
 # 
 
-# In[3]:
+# In[10]:
 
 
 import pandas as pd
@@ -65,25 +65,25 @@ data = Data(
 data.process()
 
 
-# In[4]:
+# In[11]:
 
 
 data.print_specs()
 
 
-# In[5]:
+# In[12]:
 
 
 data.dataset_1.head(2)
 
 
-# In[6]:
+# In[13]:
 
 
 data.dataset_2.head(2)
 
 
-# In[7]:
+# In[14]:
 
 
 data.ground_truth.head(2)
@@ -95,7 +95,7 @@ data.ground_truth.head(2)
 # 
 # For example we demostrate a variety of algorithms in each step, as it is shown in the bellow cell.
 
-# In[8]:
+# In[15]:
 
 
 from pyjedai.workflow import WorkFlow, compare_workflows
@@ -129,7 +129,7 @@ from pyjedai.clustering import ConnectedComponentsClustering
 # 
 # ![workflow-example.png](https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/workflow-example.png?raw=true)
 
-# In[9]:
+# In[16]:
 
 
 w = WorkFlow(
@@ -161,7 +161,7 @@ w = WorkFlow(
 
 # # Evaluation and detailed reporting
 
-# In[10]:
+# In[17]:
 
 
 w.run(data, workflow_tqdm_enable=True, verbose=False)

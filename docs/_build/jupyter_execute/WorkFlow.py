@@ -13,7 +13,7 @@
 # 
 # For more: [pypi.org/project/pyjedai/](https://pypi.org/project/pyjedai/)
 
-# In[1]:
+# In[ ]:
 
 
 get_ipython().system('pip install pyjedai -U')
