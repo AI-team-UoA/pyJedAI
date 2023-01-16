@@ -10,5 +10,5 @@ sphinx_proof
 # sphinx.ext.viewcode
 sphinxcontrib.prettyproof
 sphinx-design
-myst-parser
+sphinx-inline-tabs
 ipython

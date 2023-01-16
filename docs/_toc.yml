@@ -52,7 +52,7 @@ parts:
       title: Comparison Cleaning
     - file: utils.rst
       title: Utilities
-  - caption: Usefull links
+  - caption: Useful links
     chapters:
     - url: https://github.com/AI-team-UoA/pyJedAI
       title: AI-Team @ University of Athens
