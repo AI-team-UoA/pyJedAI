@@ -1,17 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <div align="center"> 
-#     <br>
-#     <br>
-#     <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
-#     <br>
-#     <hr>
-#     <font size="3">pyJedAI Data Reading examples</font>
-#     <br>
-# </div>
-# <hr>
-# 
+# # Data Reading examples
 # pyJedAI needs as input a pandas.DataFrame. In this notebook we provide some examples of data reading and transformation to DataFrame.
 # 
 # ![reading-process.jpg](https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true)

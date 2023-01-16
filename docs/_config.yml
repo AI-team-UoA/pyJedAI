@@ -38,6 +38,12 @@ html:
   baseurl: "http://pyjedai.rtfd.io/"
   announcement: ""
 
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default!
+    - deflist
+
 sphinx:
   config:
     html_js_files:
@@ -73,11 +79,18 @@ sphinx:
           "floor": ["\\lfloor#1\\rfloor", 1]
           "bmat": ["\\left[\\begin{array}"]
           "emat": ["\\end{array}\\right]"]
-        
+  extensions:
+    - sphinx_design
+    - myst_parser
+  myst_enable_extensions: 
+    - colon_fence
   extra_extensions:
     - sphinx.ext.intersphinx
     - sphinx_inline_tabs
     - sphinx_proof
     - sphinx_examples
     - hoverxref.extension
+    - sphinx.ext.autodoc
+    - sphinx.ext.napoleon
+    - sphinx.ext.viewcode
 

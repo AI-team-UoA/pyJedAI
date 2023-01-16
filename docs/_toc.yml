@@ -6,26 +6,61 @@ root: intro
 parts:
   - caption: Tutorials
     chapters:
-    - file: Demo
-      title: Demo notebook
-    - file: Readers
+    - file: Demo.ipynb
+      title: Build a simple workflow
+    - file: Readers.ipynb
       title: Examples in transforming datasets to pandas
-    - file: WorkFlow
-      title: User-Friendly Approach
-    - file: CleanCleanER
+    - file: WorkFlow.ipynb
+      title: User-Friendly approach
+    - file: CleanCleanER.ipynb
       title: Clean-Clean Entity Resolution for Devs
-    - file: DirtyER
+    - file: DirtyER.ipynb
       title: Dirty Entity Resolution for Devs
-
-
-
+  - caption: Benchmarks
+    chapters:
+    - file: benchmarks.md
+      title: Results and Performance Demo
+  - caption: Releases and News
+    chapters:
+    - file: newsfeed.md
+      title: Newsfeed
+    - url: https://github.com/AI-team-UoA/pyJedAI/releases
+      title: Releases
+  - caption: Get a Demo now!
+    chapters:
+    - file: demos.md
+      title: Web Applications with pyJedAI
+  - caption: Publications & Fundings
+    chapters:
+    - file: publications.md
+      title: Publications
+  - caption: Code
+    chapters:
+    - file: datamodel.rst
+      title: Datamodel
+    - file: block_cleaning.rst
+      title: Block cleaning
+    - file: clustering.rst
+      title: Clustering    
+    - file: similarity_joins.rst
+      title: Similarity Joins
+    - file: matching.rst
+      title: Entity Matching
+    - file: evaluation.rst
+      title: Evaluation    
+    - file: comparison_cleaning.rst
+      title: Comparison Cleaning
+    - file: utils.rst
+      title: Utilities
+  - caption: Usefull links
+    chapters:
+    - url: https://github.com/AI-team-UoA/pyJedAI
+      title: AI-Team @ University of Athens
+    - url: https://github.com/scify/JedAIToolkit
+      title: Java JedAIToolkit
 
 # - caption: Tutorials
 #   chapters:
 #   - file: CleanCleanER
 #     title: Building a simple workflow
-# - caption: Usefull links
-#   - url: https://github.com/AI-team-UoA/pyJedAI
-#     title: AI-Team
-#   - url: https://github.com/scify/JedAIToolkit
-#     title: Java JedAIToolkit
+

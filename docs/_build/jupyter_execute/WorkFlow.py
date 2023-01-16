@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <div align="center"> 
-#     <br>
-#     <br>
-#     <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
-#     <br>
-#     <hr>
-#     <font size="3">User-Friendly Workflow Tutorial</font>
-#     <br>
-# </div>
+# 
+# # User-Friendly Workflow
 # <hr>
 # 
 # In this notebook we present the a __user-friendly approach__ in the well-known ABT-BUY dataset. This is a simple approach, specially developed for novice users in ER.

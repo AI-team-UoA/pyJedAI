@@ -33,7 +33,7 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 - Utilizes some of the famous and cutting-edge machine learning packages.
 - Offers supervised and un-supervised ML techniques.
 
-__Open demos are available in:__
+<!-- __Open demos are available in:__
 
 <div align="center">
 <a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
@@ -50,7 +50,7 @@ __Google Colab Hands-on demo:__
 <a href="https://colab.research.google.com/drive/18VgEOKAc2ObFFxDNb2sjhBLKKsNvfEPo?usp=sharing">
 <img align="center" src="https://3.bp.blogspot.com/-apoBeWFycKQ/XhKB8fEprwI/AAAAAAAACM4/Sl76yzNSNYwlShIBrheDAum8L9qRtWNdgCLcBGAsYHQ/s1600/colab.png" width=120/> 
 </a>
-</div>
+</div> -->
 
 # Install
 
@@ -59,7 +59,7 @@ Install the latest version of pyjedai __[requires python >= 3.7]__:
 pip install pyjedai
 ```
 
-More on [PyPI](pypi.org/project/pyjedai/).
+More on [PyPI](https://pypi.org/project/pyjedai/).
 
 __Find last release source code in [GitHub](https://github.com/AI-team-UoA/pyJedAI).__
 

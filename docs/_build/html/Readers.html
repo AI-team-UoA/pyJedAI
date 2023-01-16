@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>CSV Reader &#8212; pyJedAI</title>
+    <title>Data Reading examples &#8212; pyJedAI</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -66,14 +66,16 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="http://pyjedai.rtfd.io/Readers.html" />
     <link rel="shortcut icon" href="_static/icons8-droid-67.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Instalation" href="WorkFlow.html" />
-    <link rel="prev" title="Instalation" href="Demo.html" />
+    <link rel="next" title="User-Friendly Workflow" href="WorkFlow.html" />
+    <link rel="prev" title="Build workflow from scratch" href="Demo.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -141,27 +143,144 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="Demo.html">
-   Instalation
+   Build workflow from scratch
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   CSV Reader
+   Data Reading examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="WorkFlow.html">
-   User-Friendly Approach
+   User-Friendly Workflow
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="CleanCleanER.html">
-   Instalation
+   Clean-Clean Entity Resolution
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="DirtyER.html">
-   Instalation
+   Dirty Entity Resolution
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Benchmarks
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="benchmarks.html">
+   Results and Performance Demo
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Releases and News
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="newsfeed.html">
+   Newsfeed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI/releases">
+   Releases
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Get a Demo now!
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="demos.html">
+   Web Applications with pyJedAI
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Publications &amp; Fundings
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="publications.html">
+   Publications
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Code
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="datamodel.html">
+   Datamodel
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="block_cleaning.html">
+   Block cleaning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="clustering.html">
+   Clustering
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="similarity_joins.html">
+   Similarity Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="matching.html">
+   Entity Matching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="evaluation.html">
+   Evaluation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="comparison_cleaning.html">
+   Comparison Cleaning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="utils.html">
+   Utilities
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Usefull links
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/AI-team-UoA/pyJedAI">
+   AI-Team @ University of Athens
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/scify/JedAIToolkit">
+   Java JedAIToolkit
   </a>
  </li>
 </ul>
@@ -372,6 +491,11 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
+   Data Reading examples
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#csv-reader">
    CSV Reader
   </a>
  </li>
@@ -416,7 +540,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>CSV Reader</h1>
+                <h1>Data Reading examples</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -428,6 +552,11 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
+   Data Reading examples
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#csv-reader">
    CSV Reader
   </a>
  </li>
@@ -473,16 +602,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <div align="center"> 
-    <br>
-    <br>
-    <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
-    <br>
-    <hr>
-    <font size="3">pyJedAI Data Reading examples</font>
-    <br>
-</div>
-<hr>
+  <section class="tex2jax_ignore mathjax_ignore" id="data-reading-examples">
+<h1>Data Reading examples<a class="headerlink" href="#data-reading-examples" title="Permalink to this headline">#</a></h1>
 <p>pyJedAI needs as input a pandas.DataFrame. In this notebook we provide some examples of data reading and transformation to DataFrame.</p>
 <p><img alt="reading-process.jpg" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true" /></p>
 <div class="cell docutils container">
@@ -492,6 +613,7 @@ title="Print to PDF"
 </div>
 </div>
 </div>
+</section>
 <section class="tex2jax_ignore mathjax_ignore" id="csv-reader">
 <h1>CSV Reader<a class="headerlink" href="#csv-reader" title="Permalink to this headline">#</a></h1>
 <p>Example Dataset: CORA</p>
@@ -505,7 +627,7 @@ title="Print to PDF"
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">FileNotFoundError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_13588</span><span class="o">/</span><span class="mf">2677034417.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_30276</span><span class="o">/</span><span class="mf">2677034417.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -1386,13 +1508,13 @@ title="Print to PDF"
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Instalation</p>
+            <p class="prev-next-title">Build workflow from scratch</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="WorkFlow.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Instalation</p>
+        <p class="prev-next-title">User-Friendly Workflow</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

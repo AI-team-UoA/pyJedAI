@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <div align="center"> 
-#     <br>
-#     <br>
-#     <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
-#     <br>
-#     <hr>
-#     <font size="3">Dirty Entity Resolution Tutorial</font>
-#     <br>
-# </div>
-# <hr>
+# # Dirty Entity Resolution
+# 
+# ---
 # 
 # In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Dirty ER, is the process of dedeplication of one set.
 

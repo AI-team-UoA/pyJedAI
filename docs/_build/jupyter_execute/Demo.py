@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <div align="center"> 
-#     <br>
-#     <br>
-#     <img src="https://raw.githubusercontent.com/AI-team-UoA/pyJedAI/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="drawing" width="400"/>
-#     <br>
-#     <br>
-# </div>
+# # Build workflow from scratch
 # <hr>
 # 
 # In this notebook we present the pyJedAI approach. pyJedAI is a an end-to-end and an upcoming python framework for Entity Resolution that will be a manual of the Entity Resolution. Its usages will outperform other state-of-the-art ER frameworks as it's easy-to-use and highly optimized as it is consisted from other established python libraries (i.e pandas, networkX, ..).

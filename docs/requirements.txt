@@ -5,3 +5,6 @@ sphinx-inline-tabs
 sphinx-examples
 sphinx-proof
 sphinx-hoverxref
+sphinx.ext.intersphinx
+sphinx_inline_tabs
+sphinx-proof

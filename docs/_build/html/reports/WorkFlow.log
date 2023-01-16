@@ -32,8 +32,6 @@ nbclient.exceptions.CellTimeoutError: A cell timed out while it was being execut
 The message was: Cell execution timed out.
 Here is a preview of the cell contents:
 -------------------
-['w1 = WorkFlow(', '    block_building = dict(', '        method=QGramsBlocking, ', '        params=dict(qgrams=4),', "        attributes_1=['name'],"]
-...
-["        attributes = ['description']", '    ),', '    clustering = dict(method=ConnectedComponentsClustering)', ')', 'w2.run(data, verbose=False, workflow_tqdm_enable=True)']
+w.run(data, verbose=True)
 -------------------
 
