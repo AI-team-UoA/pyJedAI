@@ -85,7 +85,6 @@ sphinx:
   myst_enable_extensions: 
     - colon_fence
   extra_extensions:
-    - sphinx.ext.intersphinx
     - sphinx_inline_tabs
     - sphinx_proof
     - sphinx_examples
