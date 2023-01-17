@@ -10,5 +10,5 @@ sphinx
 # sphinx.ext.viewcode
 # sphinxcontrib.prettyproof
 sphinx-design
-myst-parser
+# myst-parser
 ipython
