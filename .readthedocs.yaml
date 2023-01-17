@@ -14,8 +14,9 @@ python:
    install:
    - requirements: docs/requirements.txt
    - method: pip
-     path: ./docs
-
+     path: .
+     extra_requirements:
+      - sphinx
 
 sphinx:
   builder: html

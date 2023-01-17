@@ -4,7 +4,6 @@
 # re-generate this one.
 ###############################################################################
 author = 'AI-Team, University of Athens'
-bibtex_bibfiles = ['references.bib']
 comments_config = {'hypothesis': False, 'utterances': False}
 copyright = 'Apache 2.0 License'
 exclude_patterns = ['**.ipynb_checkpoints', '.DS_Store', 'Thumbs.db', '_build']
@@ -12,7 +11,7 @@ execution_allow_errors = False
 execution_excludepatterns = []
 execution_in_temp = False
 execution_timeout = 30
-extensions = ['sphinx_togglebutton', 'sphinx_copybutton', 'myst_nb', 'jupyter_book', 'sphinx_thebe', 'sphinx_comments', 'sphinx_external_toc', 'sphinx.ext.intersphinx', 'sphinx_design', 'sphinx_book_theme', 'sphinx_inline_tabs', 'sphinx_proof', 'sphinx_examples', 'hoverxref.extension', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinxcontrib.prettyproof', 'sphinxcontrib.bibtex', 'sphinx_jupyterbook_latex']
+extensions = ['sphinx_togglebutton', 'sphinx_copybutton', 'myst_nb', 'jupyter_book', 'sphinx_thebe', 'sphinx_comments', 'sphinx_external_toc', 'sphinx.ext.intersphinx', 'sphinx_design', 'sphinx_book_theme', 'sphinx_inline_tabs', 'sphinx_proof', 'sphinx_examples', 'hoverxref.extension', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinxcontrib.prettyproof', 'sphinx_jupyterbook_latex']
 external_toc_exclude_missing = False
 external_toc_path = '_toc.yml'
 hoverxref_intersphinx = ['sphinxproof']
