@@ -37,7 +37,6 @@
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -58,7 +57,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -461,58 +459,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pyjedai.evaluation">
-<span id="evaluation-evaluation-py"></span><h1>Evaluation - evaluation.py<a class="headerlink" href="#module-pyjedai.evaluation" title="Permalink to this headline">#</a></h1>
-<p>Evaluation module
-This file contains all the methods for evaluating every module in pyjedai.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.evaluation.Evaluation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.evaluation.</span></span><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyjedai/evaluation.html#Evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.evaluation.Evaluation" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluation class. Contains multiple methods for all the fitted &amp; predicted data.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.evaluation.Evaluation.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">any</span></span></span><a class="reference internal" href="_modules/pyjedai/evaluation.html#Evaluation.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.evaluation.Evaluation.report" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculates the F1, Recall, Presicion and produces a classification report.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prediction</strong> (<em>any</em>) – Blocks dict, Candidate Pairs dict, Graph produced by a workflow step.</p></li>
-<li><p><strong>configuration</strong> (<em>dict</em><em>, </em><em>optional</em>) – Configuaration of the method evaluated. Defaults to None.</p></li>
-<li><p><strong>to_df</strong> (<em>bool</em><em>, </em><em>optional</em>) – Return report as a dataframe. Defaults to False.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Logs scores and classification report. Defaults to True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pd.DataFrame, dict or str</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>any</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyjedai.evaluation.write">
-<span class="sig-prename descclassname"><span class="pre">pyjedai.evaluation.</span></span><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><span class="pre">pyjedai.datamodel.Data</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="_modules/pyjedai/evaluation.html#write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.evaluation.write" title="Permalink to this definition">#</a></dt>
-<dd><p>creates a dataframe for the evaluation report</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prediction</strong> (<em>any</em>) – Predicted pairs, blocks, candidate pairs or graph</p></li>
-<li><p><strong>data</strong> (<a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><em>Data</em></a>) – initial dataset</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Dataframe containg evaluation scores and stats</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="evaluation-evaluation-py">
+<h1>Evaluation - evaluation.py<a class="headerlink" href="#evaluation-evaluation-py" title="Permalink to this headline">#</a></h1>
 </section>
 
     <script type="text/x-thebe-config">

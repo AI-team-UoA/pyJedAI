@@ -37,7 +37,6 @@
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -58,7 +57,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -461,43 +459,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pyjedai.clustering">
-<span id="clustering-clustering-py"></span><h1>Clustering - clustering.py<a class="headerlink" href="#module-pyjedai.clustering" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.clustering.ConnectedComponentsClustering">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.clustering.</span></span><span class="sig-name descname"><span class="pre">ConnectedComponentsClustering</span></span><a class="reference internal" href="_modules/pyjedai/clustering.html#ConnectedComponentsClustering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.clustering.ConnectedComponentsClustering" title="Permalink to this definition">#</a></dt>
-<dd><p>Creates the connected components of the graph.         Applied to graph created from entity matching.         Input graph consists of the entity ids (nodes) and the similarity scores (edges).</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.clustering.ConnectedComponentsClustering.method_configuration">
-<span class="sig-name descname"><span class="pre">method_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/pyjedai/clustering.html#ConnectedComponentsClustering.method_configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.clustering.ConnectedComponentsClustering.method_configuration" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns configuration details</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.clustering.ConnectedComponentsClustering.process">
-<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">networkx.classes.graph.Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/pyjedai/clustering.html#ConnectedComponentsClustering.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.clustering.ConnectedComponentsClustering.process" title="Permalink to this definition">#</a></dt>
-<dd><p>NetworkX Connected Components Algorithm in the produced graph.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>graph</strong> (<em>Graph</em>) – Consists of the entity ids (nodes) and the similarity scores (edges).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of clusters</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.clustering.ConnectedComponentsClustering.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyjedai/clustering.html#ConnectedComponentsClustering.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.clustering.ConnectedComponentsClustering.report" title="Permalink to this definition">#</a></dt>
-<dd><p>Prints Block Building method configuration</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="clustering-clustering-py">
+<h1>Clustering - clustering.py<a class="headerlink" href="#clustering-clustering-py" title="Permalink to this headline">#</a></h1>
 </section>
 
     <script type="text/x-thebe-config">

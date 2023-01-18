@@ -37,7 +37,6 @@
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -58,7 +57,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -461,32 +459,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pyjedai.datamodel">
-<span id="datamodel-datamodel-py"></span><h1>Datamodel - datamodel.py<a class="headerlink" href="#module-pyjedai.datamodel" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.datamodel.Block">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.datamodel.</span></span><span class="sig-name descname"><span class="pre">Block</span></span><a class="reference internal" href="_modules/pyjedai/datamodel.html#Block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.datamodel.Block" title="Permalink to this definition">#</a></dt>
-<dd><p>The main module used for storing entities in the blocking steps of pyjedai module.         Consists of 2 sets of profile entities 1 for Dirty ER and 2 for Clean-Clean ER.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.datamodel.Data">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.datamodel.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column_name_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column_name_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyjedai/datamodel.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.datamodel.Data" title="Permalink to this definition">#</a></dt>
-<dd><p>Class that is the contains the corpus of the dataset that will be processed with pyjedai.         Contains all the information of the dataset and will be passed to each step         of the ER workflow.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.datamodel.Data.print_specs">
-<span class="sig-name descname"><span class="pre">print_specs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyjedai/datamodel.html#Data.print_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.datamodel.Data.print_specs" title="Permalink to this definition">#</a></dt>
-<dd><p>Dataset report.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.datamodel.Data.process">
-<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyjedai/datamodel.html#Data.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.datamodel.Data.process" title="Permalink to this definition">#</a></dt>
-<dd><p>Creates the appropriate dataframes and the mapping             if ground-truth file has been provided.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="datamodel-datamodel-py">
+<h1>Datamodel - datamodel.py<a class="headerlink" href="#datamodel-datamodel-py" title="Permalink to this headline">#</a></h1>
 </section>
 
     <script type="text/x-thebe-config">

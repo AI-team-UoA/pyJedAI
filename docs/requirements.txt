@@ -1,7 +1,10 @@
 jupyter-book
 matplotlib
 numpy
-sphinx
+sphinx-inline-tabs
+sphinx-examples
+sphinx-proof
+sphinx-hoverxref
 # sphinx-inline-tabs
 # sphinx_proof
 # sphinx_examples
@@ -9,6 +12,6 @@ sphinx
 # sphinx.ext.napoleon
 # sphinx.ext.viewcode
 # sphinxcontrib.prettyproof
-sphinx-design
+# sphinx-design
 # myst-parser
-ipython
+# ipython

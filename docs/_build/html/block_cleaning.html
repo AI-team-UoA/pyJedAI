@@ -37,7 +37,6 @@
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -58,7 +57,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -461,89 +459,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pyjedai.block_cleaning">
-<span id="block-cleaning-block-cleaning-py"></span><h1>Block Cleaning - block_cleaning.py<a class="headerlink" href="#module-pyjedai.block_cleaning" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockFiltering">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.block_cleaning.</span></span><span class="sig-name descname"><span class="pre">BlockFiltering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockFiltering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockFiltering" title="Permalink to this definition">#</a></dt>
-<dd><p>Retains every entity in a subset of its smallest blocks.
-Filtering consists of 3 steps:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Blocks sort in ascending cardinality</p></li>
-<li><p>Creation of Entity Index: inversed block dictionary</p></li>
-<li><p>Retain every entity in ratio % of its smallest blocks</p></li>
-<li><p>Blocks reconstruction</p></li>
-</ul>
-</div></blockquote>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockFiltering.method_configuration">
-<span class="sig-name descname"><span class="pre">method_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockFiltering.method_configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockFiltering.method_configuration" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns configuration details</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockFiltering.process">
-<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><span class="pre">pyjedai.datamodel.Data</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tqdm_disable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockFiltering.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockFiltering.process" title="Permalink to this definition">#</a></dt>
-<dd><p>Main method of Block Filtering</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>blocks</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict of keys to Blocks. Defaults to None.</p></li>
-<li><p><strong>data</strong> (<a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><em>Data</em></a><em>, </em><em>optional</em>) – input dataset module. Defaults to None.</p></li>
-<li><p><strong>tqdm_disable</strong> (<em>bool</em><em>, </em><em>optional</em>) – disable progress bars. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>dict of keys to Blocks</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockFiltering.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockFiltering.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockFiltering.report" title="Permalink to this definition">#</a></dt>
-<dd><p>Prints Block Building method configuration</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockPurging">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyjedai.block_cleaning.</span></span><span class="sig-name descname"><span class="pre">BlockPurging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoothing_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockPurging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockPurging" title="Permalink to this definition">#</a></dt>
-<dd><p>Discards the blocks exceeding a certain number of comparisons.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockPurging.process">
-<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><span class="pre">pyjedai.datamodel.Data</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tqdm_disable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockPurging.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockPurging.process" title="Permalink to this definition">#</a></dt>
-<dd><p>Main method of Block Purging</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>blocks</strong> (<em>dict</em>) – _description_</p></li>
-<li><p><strong>data</strong> (<a class="reference internal" href="datamodel.html#pyjedai.datamodel.Data" title="pyjedai.datamodel.Data"><em>Data</em></a>) – _description_</p></li>
-<li><p><strong>tqdm_disable</strong> (<em>bool</em><em>, </em><em>optional</em>) – _description_. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyjedai.block_cleaning.BlockPurging.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyjedai/block_cleaning.html#BlockPurging.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyjedai.block_cleaning.BlockPurging.report" title="Permalink to this definition">#</a></dt>
-<dd><p>Prints method configuration</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="block-cleaning-block-cleaning-py">
+<h1>Block Cleaning - block_cleaning.py<a class="headerlink" href="#block-cleaning-block-cleaning-py" title="Permalink to this headline">#</a></h1>
 </section>
 
     <script type="text/x-thebe-config">
