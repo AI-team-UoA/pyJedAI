@@ -1,5 +1,5 @@
 Utilities - utils.py
 ======================
 
-.. automodule:: pyjedai.utils
-    :members:
+.. .. automodule:: pyjedai.utils
+..     :members:

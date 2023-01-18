@@ -1,5 +1,5 @@
 Datamodel - datamodel.py
 ========================
 
-.. automodule:: pyjedai.datamodel
-    :members:
+.. .. automodule:: pyjedai.datamodel
+..     :members:

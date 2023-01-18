@@ -34,24 +34,24 @@ parts:
     chapters:
     - file: publications.md
       title: Publications
-  - caption: Code
-    chapters:
-    - file: datamodel.rst
-      title: Datamodel
-    - file: block_cleaning.rst
-      title: Block cleaning
-    - file: clustering.rst
-      title: Clustering    
-    - file: similarity_joins.rst
-      title: Similarity Joins
-    - file: matching.rst
-      title: Entity Matching
-    - file: evaluation.rst
-      title: Evaluation    
-    - file: comparison_cleaning.rst
-      title: Comparison Cleaning
-    - file: utils.rst
-      title: Utilities
+  # - caption: Code
+  #   chapters:
+  #   - file: datamodel.rst
+  #     title: Datamodel
+  #   - file: block_cleaning.rst
+  #     title: Block cleaning
+  #   - file: clustering.rst
+  #     title: Clustering    
+  #   - file: similarity_joins.rst
+  #     title: Similarity Joins
+  #   - file: matching.rst
+  #     title: Entity Matching
+  #   - file: evaluation.rst
+  #     title: Evaluation    
+  #   - file: comparison_cleaning.rst
+  #     title: Comparison Cleaning
+  #   - file: utils.rst
+  #     title: Utilities
   - caption: Useful links
     chapters:
     - url: https://github.com/AI-team-UoA/pyJedAI

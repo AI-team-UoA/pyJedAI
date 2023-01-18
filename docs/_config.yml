@@ -42,7 +42,22 @@ parse:
   myst_enable_extensions:
     # don't forget to list any other extensions you want enabled,
     # including those that are enabled by default!
+    - amsmath
+    - colon_fence
     - deflist
+    - dollarmath
+    - html_admonition
+    - html_image
+    - linkify
+    - replacements
+    - smartquotes
+    - substitution
+
+launch_buttons:
+  notebook_interface: "jupyterlab" # The interface interactive links will activate ["classic", "jupyterlab"]
+  binderhub_url: "https://mybinder.org"
+  colab_url: "https://colab.research.google.com"
+  thebe: true
 
 sphinx:
   config:
@@ -84,3 +99,8 @@ sphinx:
     - sphinx_proof
     - sphinx_examples
     - hoverxref.extension
+    - sphinx.ext.autodoc
+    - sphinx.ext.napoleon
+    - sphinx.ext.viewcode
+  autosummary_generate: True
+  add_module_names: False

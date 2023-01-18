@@ -1,5 +1,5 @@
 Block Cleaning - block_cleaning.py
 ==================================
 
-.. automodule:: pyjedai.block_cleaning
-    :members:
+.. .. automodule:: pyjedai.block_cleaning
+..     :members:

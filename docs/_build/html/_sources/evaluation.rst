@@ -1,5 +1,5 @@
 Evaluation - evaluation.py
 ===========================
 
-.. automodule:: pyjedai.evaluation
-    :members:
+.. .. automodule:: pyjedai.evaluation
+..     :members:

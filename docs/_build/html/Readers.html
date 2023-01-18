@@ -219,53 +219,6 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Code
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="datamodel.html">
-   Datamodel
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="block_cleaning.html">
-   Block cleaning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="clustering.html">
-   Clustering
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="similarity_joins.html">
-   Similarity Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="matching.html">
-   Entity Matching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="evaluation.html">
-   Evaluation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="comparison_cleaning.html">
-   Comparison Cleaning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="utils.html">
-   Utilities
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
   Useful links
  </span>
 </p>
@@ -339,7 +292,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/AI-team-UoA/pyJedAI/main?urlpath=tree/docs/Readers.ipynb"
+        <a href="https://mybinder.org/v2/gh/AI-team-UoA/pyJedAI/main?urlpath=lab/tree/docs/Readers.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -353,6 +306,42 @@ title="Launch on Binder"
   </span>
 <span class="headerbtn__text-container">Binder</span>
 </a>
+
+      </li>
+      
+      <li>
+        <a href="https://colab.research.google.com/github/AI-team-UoA/pyJedAI/blob/main/docs/Readers.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Colab"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="_static/images/logo_colab.png">
+  </span>
+<span class="headerbtn__text-container">Colab</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="initThebeSBT()"
+  class="headerbtn headerbtn-launch-thebe"
+  data-toggle="tooltip"
+data-placement="left"
+title="Launch Thebe"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="headerbtn__text-container">Live Code</span>
+</button>
 
       </li>
       
@@ -1425,8 +1414,8 @@ title="Print to PDF"
     {
         requestKernel: true,
         binderOptions: {
-            repo: "binder-examples/jupyter-stacks-datascience",
-            ref: "master",
+            repo: "AI-team-UoA/pyJedAI",
+            ref: "main",
         },
         codeMirrorConfig: {
             theme: "abcdef",

@@ -1,5 +1,5 @@
 Clustering - clustering.py
 ============================
 
-.. automodule:: pyjedai.clustering
-    :members:
+.. .. automodule:: pyjedai.clustering
+..     :members:

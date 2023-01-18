@@ -219,53 +219,6 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Code
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="datamodel.html">
-   Datamodel
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="block_cleaning.html">
-   Block cleaning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="clustering.html">
-   Clustering
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="similarity_joins.html">
-   Similarity Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="matching.html">
-   Entity Matching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="evaluation.html">
-   Evaluation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="comparison_cleaning.html">
-   Comparison Cleaning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="utils.html">
-   Utilities
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
   Useful links
  </span>
 </p>
@@ -339,7 +292,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/AI-team-UoA/pyJedAI/main?urlpath=tree/docs/CleanCleanER.ipynb"
+        <a href="https://mybinder.org/v2/gh/AI-team-UoA/pyJedAI/main?urlpath=lab/tree/docs/CleanCleanER.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -353,6 +306,42 @@ title="Launch on Binder"
   </span>
 <span class="headerbtn__text-container">Binder</span>
 </a>
+
+      </li>
+      
+      <li>
+        <a href="https://colab.research.google.com/github/AI-team-UoA/pyJedAI/blob/main/docs/CleanCleanER.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Colab"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="_static/images/logo_colab.png">
+  </span>
+<span class="headerbtn__text-container">Colab</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="initThebeSBT()"
+  class="headerbtn headerbtn-launch-thebe"
+  data-toggle="tooltip"
+data-placement="left"
+title="Launch Thebe"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="headerbtn__text-container">Live Code</span>
+</button>
 
       </li>
       
@@ -624,7 +613,7 @@ title="Print to PDF"
 <hr>
 <p>In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Clean-Clean ER in the link discovery/deduplication between two sets of entities.</p>
 <p>Dataset: <strong>Abt-Buy dataset</strong></p>
-<p>The Abt-Buy dataset for entity resolution derives from the online retailers Abt.com and Buy.com. The dataset contains 1076 entities from abt.com and 1076 entities from buy.com as well as a gold standard (perfect mapping) with 1076 matching record pairs between the two data sources. The common attributes between the two data sources are: product name, product description and product price.</p>
+<p>The Abt-Buy dataset for entity resolution derives from the online retailers <a class="reference external" href="http://Abt.com">Abt.com</a> and <a class="reference external" href="http://Buy.com">Buy.com</a>. The dataset contains 1076 entities from <a class="reference external" href="http://abt.com">abt.com</a> and 1076 entities from <a class="reference external" href="http://buy.com">buy.com</a> as well as a gold standard (perfect mapping) with 1076 matching record pairs between the two data sources. The common attributes between the two data sources are: product name, product description and product price.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="instalation">
 <h1>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">#</a></h1>
@@ -1363,8 +1352,8 @@ K. Nikoletos, G. Papadakis & M. Koubarakis
     {
         requestKernel: true,
         binderOptions: {
-            repo: "binder-examples/jupyter-stacks-datascience",
-            ref: "master",
+            repo: "AI-team-UoA/pyJedAI",
+            ref: "main",
         },
         codeMirrorConfig: {
             theme: "abcdef",
