@@ -8,7 +8,7 @@ Benchmarks
 
 |  	| D1 	|  	|  	| D2 	|  	|  	| D3 	|  	|  	| D5 	|  	|  	| D8 	|  	|  	| D10 	|  	|  	|
 |---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|
-|  	| Recall 	| Precision 	| F-Measure 	| Recall 	| Precision 	| F-Measure 	| Recall 	| Precision 	| F-Measure 	| Recall 	| Precision 	| F-Measure 	| Recall 	| Precision 	| F-Measure 	| Recall 	| Precision 	| F-Measure 	|
+|  	| Recall 	| Precision 	| F1 	| Recall 	| Precision 	| F1 	| Recall 	| Precision 	| F1 	| Recall 	| Precision 	| F1 	| Recall 	| Precision 	| F1 	| Recall 	| Precision 	| F1 	|
 | D1 	| 1.000 	| 0.788 	| 0.881 	| 1.000 	| 0.263 	| 0.416 	| 0.989 	| 0.281 	| 0.438 	| 1.000 	| 0.322 	| 0.488 	| 0.933 	| 0.417 	| 0.576 	| 1.000 	| 0.263 	| 0.416 	|
 | D2 	| 0.000 	| 0.000 	| 0.000 	| 0.942 	| 0.952 	| 0.947 	| 0.695 	| 0.798 	| 0.743 	| 0.851 	| 0.922 	| 0.885 	| 0.270 	| 0.997 	| 0.424 	| 0.746 	| 0.853 	| 0.796 	|
 | D3 	| 0.037 	| 0.539 	| 0.069 	| 0.431 	| 0.354 	| 0.389 	| 0.674 	| 0.584 	| 0.625 	| 0.486 	| 0.425 	| 0.454 	| 0.092 	| 0.545 	| 0.158 	| 0.523 	| 0.472 	| 0.496 	|
