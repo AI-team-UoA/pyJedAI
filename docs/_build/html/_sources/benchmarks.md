@@ -1,10 +1,7 @@
 Benchmarks
 =============
 
-
-# Open Benchmark for Filtering Techniques in Entity Resolution
-
-### Dataset specifying the best configuration
+## Dataset specifying the best configuration
 
 |  	| D1 	|  	|  	| D2 	|  	|  	| D3 	|  	|  	| D5 	|  	|  	| D8 	|  	|  	| D10 	|  	|  	|
 |---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|:---:	|:---:	|---	|
