@@ -3,3 +3,4 @@ pyjedai/__pycache__/
 pyjedai/.ipynb_checkpoints/
 examples/.ipynb_checkpoints/
 examples/scripts/.ipynb_checkpoints/
+tests/__pycache__/
