@@ -1,0 +1,865 @@
+id|name|addr|phone|city|type
+0|arnie morton's of chicago|435 s. la cienega blv.|310/246-1501|los angeles|american
+1|arnie morton's of chicago|435 s. la cienega blvd.|310-246-1501|los angeles|steakhouses
+2|art's delicatessen|12224 ventura blvd.|818/762-1221|studio city|american
+3|art's deli|12224 ventura blvd.|818-762-1221|studio city|delis
+4|hotel bel-air|701 stone canyon rd.|310/472-1211|bel air|californian
+5|bel-air hotel|701 stone canyon rd.|310-472-1211|bel air|californian
+6|cafe bizou|14016 ventura blvd.|818/788-3536|sherman oaks|french
+7|cafe bizou|14016 ventura blvd.|818-788-3536|sherman oaks|french bistro
+8|campanile|624 s. la brea ave.|213/938-1447|los angeles|american
+9|campanile|624 s. la brea ave.|213-938-1447|los angeles|californian
+10|chinois on main|2709 main st.|310/392-9025|santa monica|french
+11|chinois on main|2709 main st.|310-392-9025|santa monica|pacific new wave
+12|citrus|6703 melrose ave.|213/857-0034|los angeles|californian
+13|citrus|6703 melrose ave.|213-857-0034|los angeles|californian
+14|fenix|8358 sunset blvd. west|213/848-6677|hollywood|american
+15|fenix at the argyle|8358 sunset blvd.|213-848-6677|w. hollywood|french (new)
+16|granita|23725 w. malibu rd.|310/456-0488|malibu|californian
+17|granita|23725 w. malibu rd.|310-456-0488|malibu|californian
+18|grill on the alley|9560 dayton way|310/276-0615|los angeles|american
+19|grill  the|9560 dayton way|310-276-0615|beverly hills|american (traditional)
+20|restaurant katsu|1972 n. hillhurst ave.|213/665-1891|los angeles|asian
+21|katsu|1972 hillhurst ave.|213-665-1891|los feliz|japanese
+22|l'orangerie|903 n. la cienega blvd.|310/652-9770|los angeles|french
+23|l'orangerie|903 n. la cienega blvd.|310-652-9770|w. hollywood|french (classic)
+24|le chardonnay|8284 melrose ave.|213/655-8880|los angeles|french
+25|le chardonnay (los angeles)|8284 melrose ave.|213-655-8880|los angeles|french bistro
+26|locanda veneta|3rd st.|310/274-1893|los angeles|italian
+27|locanda veneta|8638 w. third st.|310-274-1893|los angeles|italian
+28|matsuhisa|129 n. la cienega blvd.|310/659-9639|beverly hills|asian
+29|matsuhisa|129 n. la cienega blvd.|310-659-9639|beverly hills|seafood
+30|the palm|9001 santa monica blvd.|310/550-8811|los angeles|american
+31|palm  the (los angeles)|9001 santa monica blvd.|310-550-8811|w. hollywood|steakhouses
+32|patina|5955 melrose ave.|213/467-1108|los angeles|californian
+33|patina|5955 melrose ave.|213-467-1108|los angeles|californian
+34|philippe's the original|1001 n. alameda st.|213/628-3781|los angeles|american
+35|philippe the original|1001 n. alameda st.|213-628-3781|chinatown|cafeterias
+36|pinot bistro|12969 ventura blvd.|818/990-0500|los angeles|french
+37|pinot bistro|12969 ventura blvd.|818-990-0500|studio city|french bistro
+38|rex il ristorante|617 s. olive st.|213/627-2300|los angeles|italian
+39|rex il ristorante|617 s. olive st.|213-627-2300|los angeles|nuova cucina italian
+40|spago|1114 horn ave.|310/652-4025|los angeles|californian
+41|spago (los angeles)|8795 sunset blvd.|310-652-4025|w. hollywood|californian
+42|valentino|3115 pico blvd.|310/829-4313|santa monica|italian
+43|valentino|3115 pico blvd.|310-829-4313|santa monica|italian
+44|yujean kang's gourmet chinese cuisine|67 n. raymond ave.|818/585-0855|los angeles|asian
+45|yujean kang's|67 n. raymond ave.|818-585-0855|pasadena|chinese
+46|21 club|21 w. 52nd st.|212/582-7200|new york|american
+47|21 club|21 w. 52nd st.|212-582-7200|new york city|american (new)
+48|aquavit|13 w. 54th st.|212/307-7311|new york|continental
+49|aquavit|13 w. 54th st.|212-307-7311|new york city|scandinavian
+50|aureole|34 e. 61st st.|212/ 319-1660|new york|american
+51|aureole|34 e. 61st st.|212-319-1660|new york city|american (new)
+52|cafe lalo|201 w. 83rd st.|212/496-6031|new york|coffee bar
+53|cafe lalo|201 w. 83rd st.|212-496-6031|new york city|coffeehouses
+54|cafe des artistes|1 w. 67th st.|212/877-3500|new york|continental
+55|cafe des artistes|1 w. 67th st.|212-877-3500|new york city|french (classic)
+56|carmine's|2450 broadway  between 90th and 91st sts.|212/362-2200|new york|italian
+57|carmine's|2450 broadway|212-362-2200|new york city|italian
+58|carnegie deli|854 7th ave.  between 54th and 55th sts.|212/757-2245|new york|delicatessen
+59|carnegie deli|854 seventh ave.|212-757-2245|new york city|delis
+60|chanterelle|2 harrison st.  near hudson st.|212/966-6960|new york|american
+61|chanterelle|2 harrison st.|212-966-6960|new york city|french (new)
+62|daniel|20 e. 76th st.|212/288-0033|new york|french
+63|daniel|20 e. 76th st.|212-288-0033|new york city|french (new)
+64|dawat|210 e. 58th st.|212/355-7555|new york|asian
+65|dawat|210 e. 58th st.|212-355-7555|new york city|indian
+66|felidia|243 e. 58th st.|212/758-1479|new york|italian
+67|felidia|243 e. 58th st.|212-758-1479|new york city|italian
+68|four seasons grill room|99 e. 52nd st.|212/754-9494|new york|american
+69|four seasons|99 e. 52nd st.|212-754-9494|new york city|american (new)
+70|gotham bar & grill|12 e. 12th st.|212/620-4020|new york|american
+71|gotham bar & grill|12 e. 12th st.|212-620-4020|new york city|american (new)
+72|gramercy tavern|42 e. 20th st.  between park ave. s and broadway|212/477-0777|new york|american
+73|gramercy tavern|42 e. 20th st.|212-477-0777|new york city|american (new)
+74|island spice|402 w. 44th st.|212/765-1737|new york|tel caribbean
+75|island spice|402 w. 44th st.|212-765-1737|new york city|caribbean
+76|jo jo|160 e. 64th st.|212/223-5656|new york|american
+77|jo jo|160 e. 64th st.|212-223-5656|new york city|french bistro
+78|la caravelle|33 w. 55th st.|212/586-4252|new york|french
+79|la caravelle|33 w. 55th st.|212-586-4252|new york city|french (classic)
+80|la cote basque|60 w. 55th st.  between 5th and 6th ave.|212/688-6525|new york|french
+81|la cote basque|60 w. 55th st.|212-688-6525|new york city|french (classic)
+82|le bernardin|155 w. 51st st.|212/489-1515|new york|french
+83|le bernardin|155 w. 51st st.|212-489-1515|new york city|seafood
+84|les celebrites|160 central park s|212/484-5113|new york|french
+85|les celebrites|155 w. 58th st.|212-484-5113|new york city|french (classic)
+86|lespinasse|2 e. 55th st.|212/339-6719|new york|american
+87|lespinasse (new york city)|2 e. 55th st.|212-339-6719|new york city|asian
+88|lutece|249 e. 50th st.|212/752-2225|new york|french
+89|lutece|249 e. 50th st.|212-752-2225|new york city|french (classic)
+90|manhattan ocean club|57 w. 58th st.|212/ 371-7777|new york|seafood
+91|manhattan ocean club|57 w. 58th st.|212-371-7777|new york city|seafood
+92|march|405 e. 58th st.|212/754-6272|new york|american
+93|march|405 e. 58th st.|212-754-6272|new york city|american (new)
+94|mesa grill|102 5th ave.  between 15th and 16th sts.|212/807-7400|new york|american
+95|mesa grill|102 fifth ave.|212-807-7400|new york city|southwestern
+96|mi cocina|57 jane st.  off hudson st.|212/627-8273|new york|mexican
+97|mi cocina|57 jane st.|212-627-8273|new york city|mexican
+98|montrachet|239 w. broadway  between walker and white sts.|212/ 219-2777|new york|french
+99|montrachet|239 w. broadway|212-219-2777|new york city|french bistro
+100|oceana|55 e. 54th st.|212/759-5941|new york|seafood
+101|oceana|55 e. 54th st.|212-759-5941|new york city|seafood
+102|park avenue cafe|100 e. 63rd st.|212/644-1900|new york|american
+103|park avenue cafe (new york city)|100 e. 63rd st.|212-644-1900|new york city|american (new)
+104|petrossian|182 w. 58th st.|212/245-2214|new york|french
+105|petrossian|182 w. 58th st.|212-245-2214|new york city|russian
+106|picholine|35 w. 64th st.|212/724-8585|new york|mediterranean
+107|picholine|35 w. 64th st.|212-724-8585|new york city|mediterranean
+108|pisces|95 ave. a at 6th st.|212/260-6660|new york|seafood
+109|pisces|95 ave. a|212-260-6660|new york city|seafood
+110|rainbow room|30 rockefeller plaza|212/632-5000|new york|or 212/632-5100 american
+111|rainbow room|30 rockefeller plaza|212-632-5000|new york city|american (new)
+112|river cafe|1 water st. at the east river|718/522-5200|brooklyn|american
+113|river cafe|1 water st.|718-522-5200|brooklyn|american (new)
+114|san domenico|240 central park s|212/265-5959|new york|italian
+115|san domenico|240 central park s.|212-265-5959|new york city|italian
+116|second avenue deli|156 2nd ave. at 10th st.|212/677-0606|new york|delicatessen
+117|second avenue deli|156 second ave.|212-677-0606|new york city|delis
+118|seryna|11 e. 53rd st.|212/980-9393|new york|asian
+119|seryna|11 e. 53rd st.|212-980-9393|new york city|japanese
+120|shun lee west|43 w. 65th st.|212/371-8844|new york|asian
+121|shun lee palace|155 e. 55th st.|212-371-8844|new york city|chinese
+122|sign of the dove|1110 3rd ave. at 65th st.|212/861-8080|new york|american
+123|sign of the dove|1110 third ave.|212-861-8080|new york city|american (new)
+124|smith & wollensky|201 e. 49th st.|212/753-1530|new york|american
+125|smith & wollensky|797 third ave.|212-753-1530|new york city|steakhouses
+126|tavern on the green|in central park at 67th st.|212/873-3200|new york|american
+127|tavern on the green|central park west|212-873-3200|new york city|american (new)
+128|uncle nick's|747 9th ave.  between 50th and 51st sts.|212/315-1726|new york|mediterranean
+129|uncle nick's|747 ninth ave.|212-245-7992|new york city|greek
+130|union square cafe|21 e. 16th st.|212/243-4020|new york|american
+131|union square cafe|21 e. 16th st.|212-243-4020|new york city|american (new)
+132|virgil's|152 w. 44th st.|212/ 921-9494|new york|american
+133|virgil's real bbq|152 w. 44th st.|212-921-9494|new york city|bbq
+134|chin's|3200 las vegas blvd. s|702/733-8899|las vegas|asian
+135|chin's|3200 las vegas blvd. s.|702-733-8899|las vegas|chinese
+136|coyote cafe|3799 las vegas blvd. s|702/891-7349|las vegas|southwestern
+137|coyote cafe (las vegas)|3799 las vegas blvd. s.|702-891-7349|las vegas|southwestern
+138|le montrachet|3000 w. paradise rd.|702/732-5111|las vegas|continental
+139|le montrachet bistro|3000 paradise rd.|702-732-5651|las vegas|french bistro
+140|palace court|3570 las vegas blvd. s|702/731-7547|las vegas|continental
+141|palace court|3570 las vegas blvd. s.|702-731-7110|las vegas|french (new)
+142|second street grille|200 e. fremont st.|702/385-3232|las vegas|seafood
+143|second street grill|200 e. fremont st.|702-385-6277|las vegas|pacific rim
+144|steak house|2880 las vegas blvd. s|702/734-0410|las vegas|steak houses
+145|steak house  the|2880 las vegas blvd. s.|702-734-0410|las vegas|steakhouses
+146|tillerman|2245 e. flamingo rd.|702/731-4036|las vegas|seafood
+147|tillerman  the|2245 e. flamingo rd.|702-731-4036|las vegas|steakhouses
+148|abruzzi|2355 peachtree rd.  peachtree battle shopping center|404/261-8186|atlanta|italian
+149|abruzzi|2355 peachtree rd. ne|404-261-8186|atlanta|italian
+150|bacchanalia|3125 piedmont rd.  near peachtree rd.|404/365-0410|atlanta|international
+151|bacchanalia|3125 piedmont rd.|404-365-0410|atlanta|californian
+152|bone's|3130 piedmont road|404/237-2663|atlanta|american
+153|bone's restaurant|3130 piedmont rd. ne|404-237-2663|atlanta|steakhouses
+154|brasserie le coze|3393 peachtree rd.  lenox square mall  near neiman marcus|404/266-1440|atlanta|french
+155|brasserie le coze|3393 peachtree rd.|404-266-1440|atlanta|french bistro
+156|buckhead diner|3073 piedmont road|404/262-3336|atlanta|american
+157|buckhead diner|3073 piedmont rd.|404-262-3336|atlanta|american (new)
+158|ciboulette|1529 piedmont ave.|404/874-7600|atlanta|french
+159|ciboulette restaurant|1529 piedmont ave.|404-874-7600|atlanta|french (new)
+160|delectables|1 margaret mitchell sq.|404/681-2909|atlanta|american
+161|delectables|1 margaret mitchell sq.|404-681-2909|atlanta|cafeterias
+162|georgia grille|2290 peachtree rd.  peachtree square shopping center|404/352-3517|atlanta|american
+163|georgia grille|2290 peachtree rd.|404-352-3517|atlanta|southwestern
+164|hedgerose heights inn|490 e. paces ferry rd.|404/233-7673|atlanta|international
+165|hedgerose heights inn  the|490 e. paces ferry rd. ne|404-233-7673|atlanta|continental
+166|heera of india|595 piedmont ave.  rio shopping mall|404/876-4408|atlanta|asian
+167|heera of india|595 piedmont ave.|404-876-4408|atlanta|indian
+168|indigo coastal grill|1397 n. highland ave.|404/876-0676|atlanta|caribbean
+169|indigo coastal grill|1397 n. highland ave.|404-876-0676|atlanta|eclectic
+170|la grotta|2637 peachtree rd.  peachtree house condominium|404/231-1368|atlanta|italian
+171|la grotta|2637 peachtree rd. ne|404-231-1368|atlanta|italian
+172|mary mac's tea room|224 ponce de leon ave.|404/876-1800|atlanta|southern
+173|mary mac's tea room|224 ponce de leon ave.|404-876-1800|atlanta|southern/soul
+174|nikolai's roof|255 courtland st.  at harris st.|404/221-6362|atlanta|continental
+175|nikolai's roof|255 courtland st.|404-221-6362|atlanta|continental
+176|pano's and paul's|1232 w. paces ferry rd.|404/261-3662|atlanta|international
+177|pano's & paul's|1232 w. paces ferry rd.|404-261-3662|atlanta|american (new)
+178|cafe  ritz-carlton  buckhead|3434 peachtree rd.|404/237-2700|atlanta|ext 6108 international
+179|ritz-carlton cafe (buckhead)|3434 peachtree rd. ne|404-237-2700|atlanta|american (new)
+180|dining room  ritz-carlton  buckhead|3434 peachtree rd.|404/237-2700|atlanta|international
+181|ritz-carlton dining room (buckhead)|3434 peachtree rd. ne|404-237-2700|atlanta|american (new)
+182|restaurant  ritz-carlton  atlanta|181 peachtree st.|404/659-0400|atlanta|continental
+183|ritz-carlton restaurant|181 peachtree st.|404-659-0400|atlanta|french (classic)
+184|toulouse|b peachtree rd.|404/351-9533|atlanta|french
+185|toulouse|293-b peachtree rd.|404-351-9533|atlanta|french (new)
+186|veni vidi vici|41 14th st.|404/875-8424|atlanta|italian
+187|veni vidi vici|41 14th st.|404-875-8424|atlanta|italian
+188|alain rondelli|126 clement st.|415/387-0408|san francisco|french
+189|alain rondelli|126 clement st.|415-387-0408|san francisco|french (new)
+190|aqua|252 california st.|415/956-9662|san francisco|seafood
+191|aqua|252 california st.|415-956-9662|san francisco|american (new)
+192|boulevard|1 mission st.|415/543-6084|san francisco|american
+193|boulevard|1 mission st.|415-543-6084|san francisco|american (new)
+194|cafe claude|7 claude la.|415/392-3505|san francisco|french
+195|cafe claude|7 claude ln.|415-392-3505|san francisco|french bistro
+196|campton place|340 stockton st.|415/955-5555|san francisco|american
+197|campton place|340 stockton st.|415-955-5555|san francisco|american (new)
+198|chez michel|804 northpoint|415/775-7036|san francisco|french
+199|chez michel|804 north point st.|415-775-7036|san francisco|californian
+200|fleur de lys|777 sutter st.|415/673-7779|san francisco|french
+201|fleur de lys|777 sutter st.|415-673-7779|san francisco|french (new)
+202|fringale|570 4th st.|415/543-0573|san francisco|french
+203|fringale|570 fourth st.|415-543-0573|san francisco|french bistro
+204|hawthorne lane|22 hawthorne st.|415/777-9779|san francisco|american
+205|hawthorne lane|22 hawthorne st.|415-777-9779|san francisco|californian
+206|khan toke thai house|5937 geary blvd.|415/668-6654|san francisco|asian
+207|khan toke thai house|5937 geary blvd.|415-668-6654|san francisco|thai
+208|la folie|2316 polk st.|415/776-5577|san francisco|french
+209|la folie|2316 polk st.|415-776-5577|san francisco|french (new)
+210|lulu|816 folsom st.|415/495-5775|san francisco|mediterranean
+211|lulu restaurant-bis-cafe|816 folsom st.|415-495-5775|san francisco|mediterranean
+212|masa's|648 bush st.|415/989-7154|san francisco|french
+213|masa's|648 bush st.|415-989-7154|san francisco|french (new)
+214|mifune japan center  kintetsu building|1737 post st.|415/922-0337|san francisco|asian
+215|mifune|1737 post st.|415-922-0337|san francisco|japanese
+216|plumpjack cafe|3201 fillmore st.|415/563-4755|san francisco|mediterranean
+217|plumpjack cafe|3127 fillmore st.|415-563-4755|san francisco|american (new)
+218|postrio|545 post st.|415/776-7825|san francisco|american
+219|postrio|545 post st.|415-776-7825|san francisco|californian
+220|ritz-carlton restaurant and dining room|600 stockton st.|415/296-7465|san francisco|american
+221|ritz-carlton dining room (san francisco)|600 stockton st.|415-296-7465|san francisco|french (new)
+222|rose pistola|532 columbus ave.|415/399-0499|san francisco|italian
+223|rose pistola|532 columbus ave.|415-399-0499|san francisco|italian
+224|adriano's ristorante|2930 beverly glen circle|310/475-9807|los angeles|italian
+225|barney greengrass|9570 wilshire blvd.|310/777-5877|beverly hills|american
+226|beaurivage|26025 pacific coast hwy.|310/456-5733|malibu|french
+227|bistro garden|176 n. canon dr.|310/550-3900|los angeles|californian
+228|border grill|4th st.|310/451-1655|los angeles|mexican
+229|broadway deli|3rd st. promenade|310/451-0616|santa monica|american
+230|ca'brea|346 s. la brea ave.|213/938-2863|los angeles|italian
+231|ca'del sol|4100 cahuenga blvd.|818/985-4669|los angeles|italian
+232|cafe pinot|700 w. fifth st.|213/239-6500|los angeles|californian
+233|california pizza kitchen|207 s. beverly dr.|310/275-1101|los angeles|californian
+234|canter's|419 n. fairfax ave.|213/651-2030.|los angeles|american
+235|cava|3rd st.|213/658-8898|los angeles|mediterranean
+236|cha cha cha|656 n. virgil ave.|213/664-7723|los angeles|caribbean
+237|chan dara|310 n. larchmont blvd.|213/467-1052|los angeles|asian
+238|clearwater cafe|168 w. colorado blvd.|818/356-0959|los angeles|health food
+239|dining room|9500 wilshire blvd.|310/275-5200|los angeles|californian
+240|dive!|10250 santa monica blvd.|310/788-|los angeles|dive american
+241|drago|2628 wilshire blvd.|310/828-1585|santa monica|italian
+242|drai's|730 n. la cienega blvd.|310/358-8585|los angeles|french
+243|dynasty room|930 hilgard ave.|310/208-8765|los angeles|continental
+244|eclipse|8800 melrose ave.|310/724-5959|los angeles|californian
+245|ed debevic's|134 n. la cienega|310/659-1952|los angeles|american
+246|el cholo|1121 s. western ave.|213/734-2773|los angeles|mexican
+247|gilliland's|2424 main st.|310/392-3901|santa monica|american
+248|gladstone's|4 fish 17300 pacific coast hwy. at sunset blvd.|310/454-3474|pacific palisades|american
+249|hard rock cafe|8600 beverly blvd.|310/276-7605|los angeles|american
+250|harry's bar & american grill|2020 ave. of the stars|310/277-2333|los angeles|italian
+251|il fornaio cucina italiana|301 n. beverly dr.|310/550-8330|los angeles|italian
+252|jack sprat's grill|10668 w. pico blvd.|310/837-6662|los angeles|health food
+253|jackson's farm|439 n. beverly drive|310/273-5578|los angeles|californian
+254|jimmy's|201 moreno dr.|310/552-2394|los angeles|continental
+255|joss|9255 sunset blvd.|310/276-1886|los angeles|asian
+256|le colonial|8783 beverly blvd.|310/289-0660|los angeles|asian
+257|le dome|8720 sunset blvd.|310/659-6919|los angeles|french
+258|louise's trattoria|4500 los feliz blvd.|213/667-0777|los angeles|italian
+259|mon kee seafood restaurant|679 n. spring st.|213/628-6717|los angeles|asian
+260|morton's|8764 melrose ave.|310/276-5205|los angeles|american
+261|nate 'n' al's|414 n. beverly dr.|310/274-0101|los angeles|american
+262|nicola|601 s. figueroa st.|213/485-0927|los angeles|american
+263|ocean avenue|1401 ocean ave.|310/394-5669|santa monica|american
+264|orleans|11705 national blvd.|310/479-4187|los angeles|cajun
+265|pacific dining car|6th st.|213/483-6000|los angeles|american
+266|paty's|10001 riverside dr.|818/761-9126|toluca lake|american
+267|pinot hollywood|1448 n. gower st.|213/461-8800|los angeles|californian
+268|posto|14928 ventura blvd.|818/784-4400|sherman oaks|italian
+269|prego|362 n. camden dr.|310/277-7346|los angeles|italian
+270|rj's the rib joint|252 n. beverly dr.|310/274-7427|los angeles|american
+271|remi|3rd st. promenade|310/393-6545|santa monica|italian
+272|restaurant horikawa|111 s. san pedro st.|213/680-9355|los angeles|asian
+273|roscoe's house of chicken 'n' waffles|1514 n. gower st.|213/466-9329|los angeles|american
+274|schatzi on main|3110 main st.|310/399-4800|los angeles|continental
+275|sofi|3rd st.|213/651-0346|los angeles|mediterranean
+276|swingers|8020 beverly blvd.|213/653-5858|los angeles|american
+277|tavola calda|7371 melrose ave.|213/658-6340|los angeles|italian
+278|the mandarin|430 n. camden dr.|310/859-0926|los angeles|asian
+279|tommy tang's|7313 melrose ave.|213/937-5733|los angeles|asian
+280|tra di noi|3835 cross creek rd.|310/456-0169|los angeles|italian
+281|trader vic's|9876 wilshire blvd.|310/276-6345|los angeles|asian
+282|vida|1930 north hillhurst ave.|213/660-4446|los feliz|american
+283|west beach cafe|60 n. venice blvd.|310/823-5396|los angeles|american
+284|20 mott|20 mott st.  between bowery and pell st.|212/964-0380|new york|asian
+285|9 jones street|9 jones st.|212/989-1220|new york|american
+286|adrienne|700 5th ave. at 55th st.|212/903-3918|new york|french
+287|agrotikon|322 e. 14 st.  between 1st and 2nd aves.|212/473-2602|new york|mediterranean
+288|aja|937 broadway at 22nd st.|212/473-8388|new york|american
+289|alamo|304 e. 48th st.|212/ 759-0590|new york|mexican
+290|alley's end|311 w. 17th st.|212/627-8899|new york|american
+291|ambassador grill|1 united nations plaza at 44th st.|212/702-5014|new york|american
+292|american place|2 park ave. at 32nd st.|212/684-2122|new york|american
+293|anche vivolo|222 e. 58th st.  between 2nd and 3rd aves.|212/308-0112|new york|italian
+294|arizona|206 206 e. 60th st.|212/838-0440|new york|american
+295|arturo's|106 w. houston st.  off thompson st.|212/677-3820|new york|italian
+296|au mandarin|200-250 vesey st. world financial center|212/385-0313|new york|asian
+297|bar anise|1022 3rd ave.  between 60th and 61st sts.|212/355-1112|new york|mediterranean
+298|barbetta|321 w. 46th st.|212/246-9171|new york|italian
+299|ben benson's|123 w. 52nd st.|212/581-8888|new york|american
+300|big cup|228 8th ave.  between 21st and 22nd sts.|212/206-0059|new york|coffee bar
+301|billy's|948 1st ave.  between 52nd and 53rd sts.|212/753-1870|new york|american
+302|boca chica|13 1st ave.  near 1st st.|212/473-0108|new york|latin american
+303|bolo|23 e. 22nd st.|212/228-2200|new york|mediterranean
+304|boonthai|1393a 2nd ave.  between 72nd and 73rd sts.|212/249-8484|new york|asian
+305|bouterin|420 e. 59th st.  off 1st ave.|212/758-0323|new york|french
+306|brothers bar-b-q|225 varick st. at clarkston st.|212/727-2775|new york|american
+307|bruno|240 e. 58th st.|212/688-4190|new york|italian
+308|bryant park grill  roof restaurant and bp cafe|25 w. 40th st.  between 5th and 6th aves.|212/840-6500|new york|american
+309|c3|103 waverly pl.  near washington sq.|212/254-1200|new york|american
+310|ct|111 e. 22nd st.  between park ave. s and lexington ave.|212/995-8500|new york|french
+311|cafe bianco|1486 2nd ave.  between 77th and 78th sts.|212/988-2655|new york|coffee bar
+312|cafe botanica|160 central park s|212/484-5120|new york|french
+313|cafe la fortuna|69 w. 71st st.|212/724-5846|new york|coffee bar
+314|cafe luxembourg|200 w. 70th st.|212/873-7411|new york|french
+315|cafe pierre|2 e. 61st st.|212/940-8185|new york|french
+316|cafe centro|200 park ave.  between 45th st. and vanderbilt ave.|212/818-1222|new york|french
+317|cafe fes|246 w. 4th st. at charles st.|212/924-7653|new york|mediterranean
+318|caffe dante|81 macdougal st.  between houston and bleeker sts.|212/982-5275|new york|coffee bar
+319|caffe dell'artista|46 greenwich ave.|212/645-4431|new york|coffee bar
+320|caffe lure|169 sullivan st.  between houston and bleecker sts.|212/473-2642|new york|french
+321|caffe reggio|119 macdougal st.  between 3rd and bleecker sts.|212/475-9557|new york|coffee bar
+322|caffe roma|385 broome st. at mulberry|212/226-8413|new york|coffee bar
+323|caffe vivaldi|32 jones st. at bleecker st.|212/691-7538|new york|coffee bar
+324|caffe bondi ristorante|7 w. 20th st.|212/691-8136|new york|italian
+325|capsouto freres|451 washington st.  near watts st.|212/966-4900|new york|french
+326|captain's table|860 2nd ave. at 46th st.|212/697-9538|new york|seafood
+327|casa la femme|150 wooster st.  between houston and prince sts.|212/505-0005|new york|middle eastern
+328|cendrillon asian grill & marimba bar|45 mercer st.  between broome and grand sts.|212/343-9012|new york|asian
+329|chez jacqueline|72 macdougal st.  between w. houston and bleecker sts.|212/505-0727|new york|french
+330|chiam|160 e. 48th st.|212/371-2323|new york|asian
+331|china grill|60 w. 53rd st.|212/333-7788|new york|american
+332|cite|120 w. 51st st.|212/956-7100|new york|french
+333|coco pazzo|23 e. 74th st.|212/794-0205|new york|italian
+334|columbus bakery|53rd sts.|212/421-0334|new york|coffee bar
+335|corrado cafe|1013 3rd ave.  between 60th and 61st sts.|212/753-5100|new york|coffee bar
+336|cupcake cafe|522 9th ave. at 39th st.|212/465-1530|new york|coffee bar
+337|da nico|164 mulberry st.  between grand and broome sts.|212/343-1212|new york|italian
+338|dean & deluca|121 prince st.|212/254-8776|new york|coffee bar
+339|diva|341 w. broadway  near grand st.|212/941-9024|new york|italian
+340|dix et sept|181 w. 10th st.|212/645-8023|new york|french
+341|docks|633 3rd ave. at 40th st.|212/ 986-8080|new york|seafood
+342|duane park cafe|157 duane st.  between w. broadway and hudson st.|212/732-5555|new york|american
+343|el teddy's|219 w. broadway  between franklin and white sts.|212/941-7070|new york|mexican
+344|emily's|1325 5th ave. at 111th st.|212/996-1212|new york|american
+345|empire korea|6 e. 32nd st.|212/725-1333|new york|asian
+346|ernie's|2150 broadway  between 75th and 76th sts.|212/496-1588|new york|american
+347|evergreen cafe|1288 1st ave. at 69th st.|212/744-3266|new york|asian
+348|f. ille ponte ristorante|39 desbrosses st.  near west st.|212/226-4621|new york|italian
+349|felix|340 w. broadway at grand st.|212/431-0021|new york|french
+350|ferrier|29 e. 65th st.|212/772-9000|new york|french
+351|fifty seven fifty seven|57 e. 57th st.|212/758-5757|new york|american
+352|film center cafe|635 9th ave.  between 44th and 45th sts.|212/ 262-2525|new york|american
+353|fiorello's roman cafe|1900 broadway  between 63rd and 64th sts.|212/595-5330|new york|italian
+354|firehouse|522 columbus ave.  between 85th and 86th sts.|212/595-3139|new york|american
+355|first|87 1st ave.  between 5th and 6th sts.|212/674-3823|new york|american
+356|fishin eddie|73 w. 71st st.|212/874-3474|new york|seafood
+357|fleur de jour|348 e. 62nd st.|212/355-2020|new york|coffee bar
+358|flowers|21 west 17th st.  between 5th and 6th aves.|212/691-8888|new york|american
+359|follonico|6 w. 24th st.|212/691-6359|new york|italian
+360|fraunces tavern|54 pearl st. at broad st.|212/269-0144|new york|american
+361|french roast|458 6th ave. at 11th st.|212/533-2233|new york|french
+362|french roast cafe|2340 broadway at 85th st.|212/799-1533|new york|coffee bar
+363|frico bar|402 w. 43rd st.  off 9th ave.|212/564-7272|new york|italian
+364|fujiyama mama|467 columbus ave.  between 82nd and 83rd sts.|212/769-1144|new york|asian
+365|gabriela's|685 amsterdam ave. at 93rd st.|212/961-0574|new york|mexican
+366|gallagher's|228 w. 52nd st.|212/245-5336|new york|american
+367|gianni's|15 fulton st.|212/608-7300|new york|seafood
+368|girafe|208 e. 58th st.  between 2nd and 3rd aves.|212/752-3054|new york|italian
+369|global|33 93 2nd ave.  between 5th and 6th sts.|212/477-8427|new york|american
+370|golden unicorn|18 e. broadway at catherine st.|212/ 941-0911|new york|asian
+371|grand ticino|228 thompson st.  between w. 3rd and bleecker sts.|212/777-5922|new york|italian
+372|halcyon|151 w. 54th st.  in the rihga royal hotel|212/468-8888|new york|american
+373|hard rock cafe|221 w. 57th st.|212/489-6565|new york|american
+374|hi-life restaurant and lounge|1340 1st ave. at 72nd st.|212/249-3600|new york|american
+375|home|20 cornelia st.  between bleecker and w. 4th st.|212/243-9579|new york|american
+376|hudson river club|4 world financial center|212/786-1500|new york|american
+377|i trulli|122 e. 27th st.  between lexington and park aves.|212/481-7372|new york|italian
+378|il cortile|125 mulberry st.  between canal and hester sts.|212/226-6060|new york|italian
+379|il nido|251 e. 53rd st.|212/753-8450|new york|italian
+380|inca grill|492 broome st.  near w. broadway|212/966-3371|new york|latin american
+381|indochine|430 lafayette st.  between 4th st. and astor pl.|212/505-5111|new york|asian
+382|internet cafe|82 e. 3rd st.  between 1st and 2nd aves.|212/ 614-0747|new york|coffee bar
+383|ipanema|13 w. 46th st.|212/730-5848|new york|latin american
+384|jean lafitte|68 w. 58th st.|212/751-2323|new york|french
+385|jewel of india|15 w. 44th st.|212/869-5544|new york|asian
+386|jimmy sung's|219 e. 44th st.  between 2nd and 3rd aves.|212/682-5678|new york|asian
+387|joe allen|326 w. 46th st.|212/581-6464|new york|american
+388|judson grill|152 w. 52nd st.|212/582-5252|new york|american
+389|l'absinthe|227 e. 67th st.|212/794-4950|new york|french
+390|l'auberge|1191 1st ave.  between 64th and 65th sts.|212/288-8791|new york|middle eastern
+391|l'auberge du midi|310 w. 4th st.  between w. 12th and bank sts.|212/242-4705|new york|french
+392|l'udo|432 lafayette st.  near astor pl.|212/388-0978|new york|french
+393|la reserve|4 w. 49th st.|212/247-2993|new york|french
+394|lanza restaurant|168 1st ave.  between 10th and 11th sts.|212/674-7014|new york|italian
+395|lattanzi ristorante|361 w. 46th st.|212/315-0980|new york|italian
+396|layla|211 w. broadway at franklin st.|212/431-0700|new york|middle eastern
+397|le chantilly|106 e. 57th st.|212/751-2931|new york|french
+398|le colonial|149 e. 57th st.|212/ 752-0808|new york|asian
+399|le gamin|50 macdougal st.  between houston and prince sts.|212/254-4678|new york|coffee bar
+400|le jardin|25 cleveland pl.  near spring st.|212/343-9599|new york|french
+401|le madri|168 w. 18th st.|212/727-8022|new york|italian
+402|le marais|150 w. 46th st.|212/869-0900|new york|american
+403|le perigord|405 e. 52nd st.|212/755-6244|new york|french
+404|le select|507 columbus ave.  between 84th and 85th sts.|212/875-1993|new york|american
+405|les halles|411 park ave. s  between 28th and 29th sts.|212/679-4111|new york|french
+406|lincoln tavern|51 w. 64th st.|212/721-8271|new york|american
+407|lola|30 west 22nd st.  between 5th and 6th ave.|212/675-6700|new york|american
+408|lucky strike|59 grand st.  between wooster st. and w. broadway|212/941-0479|new york|or 212/941-0772 american
+409|mad fish|2182 broadway  between 77th and 78th sts.|212/787-0202|new york|seafood
+410|main street|446 columbus ave.  between 81st and 82nd sts.|212/873-5025|new york|american
+411|mangia e bevi|800 9th ave. at 53rd st.|212/956-3976|new york|italian
+412|manhattan cafe|1161 1st ave.  between 63rd and 64th sts.|212/888-6556|new york|american
+413|manila garden|325 e. 14th st.  between 1st and 2nd aves.|212/777-6314|new york|asian
+414|marichu|342 e. 46th st.  between 1st and 2nd aves.|212/370-1866|new york|french
+415|marquet patisserie|15 e. 12th st.  between 5th ave. and university pl.|212/229-9313|new york|coffee bar
+416|match|160 mercer st.  between houston and prince sts.|212/906-9173|new york|american
+417|matthew's|1030 3rd ave. at 61st st.|212/838-4343|new york|american
+418|mavalli palace|46 e. 29th st.|212/679-5535|new york|asian
+419|milan cafe and coffee bar|120 w. 23rd st.|212/807-1801|new york|coffee bar
+420|monkey bar|60 e. 54th st.|212/838-2600|new york|american
+421|montien|1134 1st ave.   between 62nd and 63rd sts.|212/421-4433|new york|asian
+422|morton's|551 5th ave. at 45th st.|212/972-3315|new york|american
+423|motown cafe|104 w. 57th st.  near 6th ave.|212/581-8030|new york|american
+424|new york kom tang soot bul house|32 w. 32nd st.|212/ 947-8482|new york|asian
+425|new york noodletown|28 1/2 bowery at bayard st.|212/349-0923|new york|asian
+426|newsbar|2 w. 19th st.|212/255-3996|new york|coffee bar
+427|odeon|145 w. broadway at thomas st.|212/233-0507|new york|american
+428|orso|322 w. 46th st.|212/489-7212|new york|italian
+429|osteria al droge|142 w. 44th st.|212/944-3643|new york|italian
+430|otabe|68 e. 56th st.|212/223-7575|new york|asian
+431|pacifica|138 lafayette st.  between canal and howard sts.|212/941-4168|new york|asian
+432|palio|151 w. 51st. st.|212/245-4850|new york|italian
+433|pamir|1065 1st ave.  at 58th st.|212/644-9258|new york|middle eastern
+434|parioli romanissimo|24 e. 81st st.|212/288-2391|new york|italian
+435|patria|250 park ave. s at 20th st.|212/777-6211|new york|latin american
+436|peacock alley|301 park ave.  between 49th and 50th sts.|212/872-4895|new york|french
+437|pen & pencil|205 e. 45th st.|212/682-8660|new york|american
+438|penang soho|109 spring st.  between greene and mercer sts.|212/274-8883|new york|asian
+439|persepolis|1423 2nd ave.  between 74th and 75th sts.|212/535-1100|new york|middle eastern
+440|planet hollywood|140 w. 57th st.|212/333-7827|new york|american
+441|pomaire|371 w. 46th st.  off 9th ave.|212/ 956-3055|new york|latin american
+442|popover cafe|551 amsterdam ave.  between 86th and 87th sts.|212/595-8555|new york|american
+443|post house|28 e. 63rd st.|212/935-2888|new york|american
+444|rain|100 w. 82nd st.|212/501-0776|new york|asian
+445|red tulip|439 e. 75th st.|212/734-4893|new york|eastern european
+446|remi|145 w. 53rd st.|212/581-4242|new york|italian
+447|republic|37a union sq. w  between 16th and 17th sts.|212/627-7172|new york|asian
+448|roettelle a. g|126 e. 7th st.  between 1st ave. and ave. a|212/674-4140|new york|continental
+449|rosa mexicano|1063 1st ave. at 58th st.|212/753-7407|new york|mexican
+450|ruth's chris|148 w. 51st st.|212/245-9600|new york|american
+451|s.p.q.r|133 mulberry st.  between hester and grand sts.|212/925-3120|new york|italian
+452|sal anthony's|55 irving pl.|212/982-9030|new york|italian
+453|sammy's roumanian steak house|157 chrystie st. at delancey st.|212/673-0330|new york|east european
+454|san pietro|18 e. 54th st.|212/753-9015|new york|italian
+455|sant ambroeus|1000 madison ave.  between 77th and 78th sts.|212/570-2211|new york|coffee bar
+456|sarabeth's kitchen|423 amsterdam ave.  between 80th and 81st sts.|212/496-6280|new york|american
+457|sea grill|19 w. 49th st.|212/332-7610|new york|seafood
+458|serendipity|3 225 e. 60th st.|212/838-3531|new york|american
+459|seventh regiment mess and bar|643 park ave. at 66th st.|212/744-4107|new york|american
+460|sfuzzi|58 w. 65th st.|212/873-3700|new york|american
+461|shaan|57 w. 48th st.|212/ 977-8400|new york|asian
+462|sofia fabulous pizza|1022 madison ave.  near 79th st.|212/734-2676|new york|italian
+463|spring street natural restaurant & bar|62 spring st. at lafayette st.|212/966-0290|new york|american
+464|stage deli|834 7th ave.  between 53rd and 54th sts.|212/245-7850|new york|delicatessen
+465|stingray|428 amsterdam ave.  between 80th and 81st sts.|212/501-7515|new york|seafood
+466|sweet'n'tart cafe|76 mott st. at canal st.|212/334-8088|new york|asian
+467|t salon|143 mercer st. at prince st.|212/925-3700|new york|coffee bar
+468|tang pavillion|65 w. 55th st.|212/956-6888|new york|asian
+469|tapika|950 8th ave. at 56th st.|212/ 397-3737|new york|american
+470|teresa's|103 1st ave.  between 6th and 7th sts.|212/228-0604|new york|east european
+471|terrace|400 w. 119th st.  between amsterdam and morningside aves.|212/666-9490|new york|continental
+472|the coffee pot|350 9th ave. at 49th st.|212/265-3566|new york|coffee bar
+473|the savannah club|2420 broadway at 89th st.|212/496-1066|new york|american
+474|trattoria dell'arte|900 7th ave.  between 56th and 57th sts.|212/245-9800|new york|italian
+475|triangolo|345 e. 83rd st.|212/472-4488|new york|italian
+476|tribeca grill|375 greenwich st.  near franklin st.|212/941-3900|new york|american
+477|trois jean|154 e. 79th st.  between lexington and 3rd aves.|212/988-4858|new york|coffee bar
+478|tse yang|34 e. 51st st.|212/688-5447|new york|asian
+479|turkish kitchen|386 3rd ave.  between 27th and 28th sts.|212/679-1810|new york|middle eastern
+480|two two two|222 w. 79th st.|212/799-0400|new york|american
+481|veniero's pasticceria|342 e. 11th st.  near 1st ave.|212/674-7264|new york|coffee bar
+482|verbena|54 irving pl. at 17th st.|212/260-5454|new york|american
+483|victor's cafe|52 236 w. 52nd st.|212/586-7714|new york|latin american
+484|vince & eddie's|70 w. 68th st.|212/721-0068|new york|american
+485|vong|200 e. 54th st.|212/486-9592|new york|american
+486|water club|500 e. 30th st.|212/683-3333|new york|american
+487|west|63rd street steakhouse 44 w. 63rd st.|212/246-6363|new york|american
+488|xunta|174 1st ave.  between 10th and 11th sts.|212/614-0620|new york|mediterranean
+489|zen palate|34 union sq. e at 16th st.|212/614-9291|new york|and 212/614-9345 asian
+490|zoe|90 prince st.  between broadway and mercer st.|212/966-6722|new york|american
+491|abbey|163 ponce de leon ave.|404/876-8532|atlanta|international
+492|aleck's barbecue heaven|783 martin luther king jr. dr.|404/525-2062|atlanta|barbecue
+493|annie's thai castle|3195 roswell rd.|404/264-9546|atlanta|asian
+494|anthonys|3109 piedmont rd.  just south of peachtree rd.|404/262-7379|atlanta|american
+495|atlanta fish market|265 pharr rd.|404/262-3165|atlanta|american
+496|beesley's of buckhead|260 e. paces ferry road|404/264-1334|atlanta|continental
+497|bertolini's|3500 peachtree rd.  phipps plaza|404/233-2333|atlanta|italian
+498|bistango|1100 peachtree st.|404/724-0901|atlanta|mediterranean
+499|cafe renaissance|7050 jimmy carter blvd.  norcross|770/441--0291|atlanta|american
+500|camille's|1186 n. highland ave.|404/872-7203|atlanta|italian
+501|cassis|3300 peachtree rd.  grand hyatt|404/365-8100|atlanta|mediterranean
+502|city grill|50 hurt plaza|404/524-2489|atlanta|international
+503|coco loco|40  buckhead crossing mall on the sidney marcus blvd.|404/364-0212|atlanta|caribbean
+504|colonnade restaurant|1879 cheshire bridge rd.|404/874-5642|atlanta|southern
+505|dante's down the hatch  buckhead|3380 peachtree rd.|404/266-1600|atlanta|continental
+506|dante's down the hatch|underground underground mall  underground atlanta|404/577-1800|atlanta|continental
+507|fat matt's rib shack|1811 piedmont ave.  near cheshire bridge rd.|404/607-1622|atlanta|barbecue
+508|french quarter food shop|923 peachtree st.  at 8th st.|404/875-2489|atlanta|southern
+509|holt bros. bar-b-q|6359 jimmy carter blvd.  at buford hwy.  norcross|770/242-3984|atlanta|barbecue
+510|horseradish grill|4320 powers ferry rd.|404/255-7277|atlanta|southern
+511|hsu's gourmet|192 peachtree center ave.  at international blvd.|404/659-2788|atlanta|asian
+512|imperial fez|2285 peachtree rd.  peachtree battle condominium|404/351-0870|atlanta|mediterranean
+513|kamogawa|3300 peachtree rd.  grand hyatt|404/841-0314|atlanta|asian
+514|la grotta at ravinia dunwoody rd.|holiday inn/crowne plaza at ravinia  dunwoody|770/395-9925|atlanta|italian
+515|little szechuan|c buford hwy.  northwoods plaza  doraville|770/451-0192|atlanta|asian
+516|lowcountry barbecue|6301 roswell rd.  sandy springs plaza  sandy springs|404/255-5160|atlanta|barbecue
+517|luna si|1931 peachtree rd.|404/355-5993|atlanta|continental
+518|mambo restaurante cubano|1402 n. highland ave.|404/874-2626|atlanta|caribbean
+519|mckinnon's louisiane|3209 maple dr.|404/237-1313|atlanta|southern
+520|mi spia dunwoody rd.|park place  across from perimeter mall  dunwoody|770/393-1333|atlanta|italian
+521|nickiemoto's: a sushi bar|247 buckhead ave.  east village sq.|404/842-0334|atlanta|fusion
+522|palisades|1829 peachtree rd.|404/350-6755|atlanta|continental
+523|pleasant peasant|555 peachtree st.  at linden ave.|404/874-3223|atlanta|american
+524|pricci|500 pharr rd.|404/237-2941|atlanta|italian
+525|r.j.'s uptown kitchen & wine bar|870 n. highland ave.|404/875-7775|atlanta|american
+526|rib ranch|25 irby ave.|404/233-7644|atlanta|barbecue
+527|sa tsu ki|3043 buford hwy.|404/325-5285|atlanta|asian
+528|sato sushi and thai|6050 peachtree pkwy.  norcross|770/449-0033|atlanta|asian
+529|south city kitchen|1144 crescent ave.|404/873-7358|atlanta|southern
+530|south of france|2345 cheshire bridge rd.|404/325-6963|atlanta|french
+531|stringer's fish camp and oyster bar|3384 shallowford rd.  chamblee|770/458-7145|atlanta|southern
+532|sundown cafe|2165 cheshire bridge rd.|404/321-1118|atlanta|american
+533|taste of new orleans|889 w. peachtree st.|404/874-5535|atlanta|southern
+534|tomtom|3393 peachtree rd.|404/264-1163|atlanta|continental
+535|antonio's|3700 w. flamingo|702/252-7737|las vegas|italian
+536|bally's big kitchen|3645 las vegas blvd. s|702/739-4111|las vegas|buffets
+537|bamboo garden|4850 flamingo rd.|702/871-3262|las vegas|asian
+538|battista's hole in the wall|4041 audrie st. at flamingo rd.|702/732-1424|las vegas|italian
+539|bertolini's|3570 las vegas blvd. s|702/735-4663|las vegas|italian
+540|binion's coffee shop|128 fremont st.|702/382-1600|las vegas|coffee shops/diners
+541|bistro|3400 las vegas blvd. s|702/791-7111|las vegas|continental
+542|broiler|4111 boulder hwy.|702/432-7777|las vegas|american
+543|bugsy's diner|3555 las vegas blvd. s|702/733-3111|las vegas|coffee shops/diners
+544|cafe michelle|1350 e. flamingo rd.|702/735-8686|las vegas|american
+545|cafe roma|3570 las vegas blvd. s|702/731-7547|las vegas|coffee shops/diners
+546|capozzoli's|3333 s. maryland pkwy.|702/731-5311|las vegas|italian
+547|carnival world|3700 w. flamingo rd.|702/252-7777|las vegas|buffets
+548|center stage plaza hotel|1 main st.|702/386-2512|las vegas|american
+549|circus circus|2880 las vegas blvd. s|702/734-0410|las vegas|buffets
+550|empress court|3570 las vegas blvd. s|702/731-7888|las vegas|asian
+551|feast|2411 w. sahara ave.|702/367-2411|las vegas|buffets
+552|golden nugget hotel|129 e. fremont st.|702/385-7111|las vegas|buffets
+553|golden steer|308 w. sahara ave.|702/384-4470|las vegas|steak houses
+554|lillie langtry's|129 e. fremont st.|702/385-7111|las vegas|asian
+555|mandarin court|1510 e. flamingo rd.|702/737-1234|las vegas|asian
+556|margarita's mexican cantina|3120 las vegas blvd. s|702/794-8200|las vegas|mexican
+557|mary's diner|5111 w. boulder hwy.|702/454-8073|las vegas|coffee shops/diners
+558|mikado|3400 las vegas blvd. s|702/791-7111|las vegas|asian
+559|pamplemousse|400 e. sahara ave.|702/733-2066|las vegas|continental
+560|ralph's diner|3000 las vegas blvd. s|702/732-6330|las vegas|coffee shops/diners
+561|the bacchanal|3570 las vegas blvd. s|702/731-7525|las vegas|only in las vegas
+562|venetian|3713 w. sahara ave.|702/876-4190|las vegas|italian
+563|viva mercado's|6182 w. flamingo rd.|702/871-8826|las vegas|mexican
+564|yolie's|3900 paradise rd.|702/794-0700|las vegas|steak houses
+565|2223|2223 market st.|415/431-0692|san francisco|american
+566|acquarello|1722 sacramento st.|415/567-5432|san francisco|italian
+567|bardelli's|243 o'farrell st.|415/982-0243|san francisco|old san francisco
+568|betelnut|2030 union st.|415/929-8855|san francisco|asian
+569|bistro roti|155 steuart st.|415/495-6500|san francisco|french
+570|bix|56 gold st.|415/433-6300|san francisco|american
+571|bizou|598 fourth st.|415/543-2222|san francisco|french
+572|buca giovanni|800 greenwich st.|415/776-7766|san francisco|italian
+573|cafe adriano|3347 fillmore st.|415/474-4180|san francisco|italian
+574|cafe marimba|2317 chestnut st.|415/776-1506|san francisco|mexican/latin american/spanish
+575|california culinary academy|625 polk st.|415/771-3500|san francisco|french
+576|capp's corner|1600 powell st.|415/989-2589|san francisco|italian
+577|carta|1772 market st.|415/863-3516|san francisco|american
+578|chevys|4th and howard sts.|415/543-8060|san francisco|mexican/latin american/spanish
+579|cypress club|500 jackson st.|415/296-8555|san francisco|american
+580|des alpes|732 broadway|415/788-9900|san francisco|french
+581|faz|161 sutter st.|415/362-0404|san francisco|greek and middle eastern
+582|fog city diner|1300 battery st.|415/982-2000|san francisco|american
+583|garden court|market and new montgomery sts.|415/546-5011|san francisco|old san francisco
+584|gaylord's|ghirardelli sq.|415/771-8822|san francisco|asian
+585|grand cafe hotel monaco|501 geary st.|415/292-0101|san francisco|american
+586|greens|bldg. a fort mason|415/771-6222|san francisco|vegetarian
+587|harbor village|4 embarcadero center|415/781-8833|san francisco|asian
+588|harris'|2100 van ness ave.|415/673-1888|san francisco|steak houses
+589|harry denton's|161 steuart st.|415/882-1333|san francisco|american
+590|hayes street grill|320 hayes st.|415/863-5545|san francisco|seafood
+591|helmand|430 broadway|415/362-0641|san francisco|greek and middle eastern
+592|hong kong flower lounge|5322 geary blvd.|415/668-8998|san francisco|asian
+593|hong kong villa|2332 clement st.|415/752-8833|san francisco|asian
+594|hyde street bistro|1521 hyde st.|415/441-7778|san francisco|italian
+595|il fornaio levi's plaza|1265 battery st.|415/986-0100|san francisco|italian
+596|izzy's steak & chop house|3345 steiner st.|415/563-0487|san francisco|steak houses
+597|jack's|615 sacramento st.|415/986-9854|san francisco|old san francisco
+598|kabuto sushi|5116 geary blvd.|415/752-5652|san francisco|asian
+599|katia's|600 5th ave.|415/668-9292|san francisco|
+600|kuleto's|221 powell st.|415/397-7720|san francisco|italian
+601|kyo-ya. sheraton palace hotel|2 new montgomery st.  at market st.|415/546-5000|san francisco|asian
+602|l'osteria del forno|519 columbus ave.|415/982-1124|san francisco|italian
+603|le central|453 bush st.|415/391-2233|san francisco|french
+604|le soleil|133 clement st.|415/668-4848|san francisco|asian
+605|macarthur park|607 front st.|415/398-5700|san francisco|american
+606|manora|3226 mission st.|415/861-6224|san francisco|asian
+607|maykadeh|470 green st.|415/362-8286|san francisco|greek and middle eastern
+608|mccormick & kuleto's|ghirardelli sq.|415/929-1730|san francisco|seafood
+609|millennium|246 mcallister st.|415/487-9800|san francisco|vegetarian
+610|moose's|1652 stockton st.|415/989-7800|san francisco|mediterranean
+611|north india|3131 webster st.|415/931-1556|san francisco|asian
+612|one market|1 market st.|415/777-5577|san francisco|american
+613|oritalia|1915 fillmore st.|415/346-1333|san francisco|italian
+614|pacific pan pacific hotel|500 post st.|415/929-2087|san francisco|french
+615|palio d'asti|640 sacramento st.|415/395-9800|san francisco|italian
+616|pane e vino|3011 steiner st.|415/346-2111|san francisco|italian
+617|pastis|1015 battery st.|415/391-2555|san francisco|french
+618|perry's|1944 union st.|415/922-9022|san francisco|american
+619|r&g lounge|631 b kearny st.|415/982-7877|san francisco|or 415/982-3811 asian
+620|rubicon|558 sacramento st.|415/434-4100|san francisco|american
+621|rumpus|1 tillman pl.|415/421-2300|san francisco|american
+622|sanppo|1702 post st.|415/346-3486|san francisco|asian
+623|scala's bistro|432 powell st.|415/395-8555|san francisco|italian
+624|south park cafe|108 south park|415/495-7275|san francisco|french
+625|splendido embarcadero|4|415/986-3222|san francisco|mediterranean
+626|stars|150 redwood alley|415/861-7827|san francisco|american
+627|stars cafe|500 van ness ave.|415/861-4344|san francisco|american
+628|stoyanof's cafe|1240 9th ave.|415/664-3664|san francisco|greek and middle eastern
+629|straits cafe|3300 geary blvd.|415/668-1783|san francisco|asian
+630|suppenkuche|601 hayes st.|415/252-9289|san francisco|russian/german
+631|tadich grill|240 california st.|415/391-2373|san francisco|seafood
+632|the heights|3235 sacramento st.|415/474-8890|san francisco|french
+633|thepin|298 gough st.|415/863-9335|san francisco|asian
+634|ton kiang|3148 geary blvd.|415/752-4440|san francisco|asian
+635|vertigo|600 montgomery st.|415/433-7250|san francisco|mediterranean
+636|vivande porta via|2125 fillmore st.|415/346-4430|san francisco|italian
+637|vivande ristorante|670 golden gate ave.|415/673-9245|san francisco|italian
+638|world wrapps|2257 chestnut st.|415/563-9727|san francisco|american
+639|wu kong|101 spear st.|415/957-9300|san francisco|asian
+640|yank sing|427 battery st.|415/541-4949|san francisco|asian
+641|yaya cuisine|1220 9th ave.|415/566-6966|san francisco|greek and middle eastern
+642|yoyo tsumami bistro|1611 post st.|415/922-7788|san francisco|french
+643|zarzuela|2000 hyde st.|415/346-0800|san francisco|mexican/latin american/spanish
+644|zuni cafe & grill|1658 market st.|415/552-2522|san francisco|mediterranean
+645|apple pan  the|10801 w. pico blvd.|310-475-3585|west la|american
+646|asahi ramen|2027 sawtelle blvd.|310-479-2231|west la|noodle shops
+647|baja fresh|3345 kimber dr.|805-498-4049|westlake village|mexican
+648|belvedere  the|9882 little santa monica blvd.|310-788-2306|beverly hills|pacific new wave
+649|benita's frites|1433 third st. promenade|310-458-2889|santa monica|fast food
+650|bernard's|515 s. olive st.|213-612-1580|los angeles|continental
+651|bistro 45|45 s. mentor ave.|818-795-2478|pasadena|californian
+652|brent's deli|19565 parthenia ave.|818-886-5679|northridge|delis
+653|brighton coffee shop|9600 brighton way|310-276-7732|beverly hills|coffee shops
+654|bristol farms market cafe|1570 rosecrans ave. s.|310-643-5229|pasadena|californian
+655|bruno's|3838 centinela ave.|310-397-5703|mar vista|italian
+656|cafe '50s|838 lincoln blvd.|310-399-1955|venice|american
+657|cafe blanc|9777 little santa monica blvd.|310-888-0108|beverly hills|pacific new wave
+658|cassell's|3266 w. sixth st.|213-480-8668|la|hamburgers
+659|chez melange|1716 pch|310-540-1222|redondo beach|eclectic
+660|diaghilev|1020 n. san vicente blvd.|310-854-1111|w. hollywood|russian
+661|don antonio's|1136 westwood blvd.|310-209-1422|westwood|italian
+662|duke's|8909 sunset blvd.|310-652-3100|w. hollywood|coffee shops
+663|falafel king|1059 broxton ave.|310-208-4444|westwood|middle eastern
+664|feast from the east|1949 westwood blvd.|310-475-0400|west la|chinese
+665|gumbo pot  the|6333 w. third st.|213-933-0358|la|cajun/creole
+666|hollywood hills coffee shop|6145 franklin ave.|213-467-7678|hollywood|coffee shops
+667|indo cafe|10428 1/2 national blvd.|310-815-1290|la|indonesian
+668|jan's family restaurant|8424 beverly blvd.|213-651-2866|la|coffee shops
+669|jiraffe|502 santa monica blvd|310-917-6671|santa monica|californian
+670|jody maroni's sausage kingdom|2011 ocean front walk|310-306-1995|venice|hot dogs
+671|joe's|1023 abbot kinney blvd.|310-399-5811|venice|american (new)
+672|john o'groats|10516 w. pico blvd.|310-204-0692|west la|coffee shops
+673|johnnie's pastrami|4017 s. sepulveda blvd.|310-397-6654|culver city|delis
+674|johnny reb's southern smokehouse|4663 long beach blvd.|310-423-7327|long beach|southern/soul
+675|johnny rockets (la)|7507 melrose ave.|213-651-3361|la|american
+676|killer shrimp|4000 colfax ave.|818-508-1570|studio city|seafood
+677|kokomo cafe|6333 w. third st.|213-933-0773|la|american
+678|koo koo roo|8393 w. beverly blvd.|213-655-9045|la|chicken
+679|la cachette|10506 little santa monica blvd.|310-470-4992|century city|french (new)
+680|la salsa (la)|22800 pch|310-456-6299|malibu|mexican
+681|la serenata de garibaldi|1842 e. first|213-265-2887|st. boyle hts.|mexican/tex-mex
+682|langer's|704 s. alvarado st.|213-483-8050|la|delis
+683|local nochol|30869 thousand oaks blvd.|818-706-7706|westlake village|health food
+684|main course  the|10509 w. pico blvd.|310-475-7564|rancho park|american
+685|mani's bakery & espresso bar|519 s. fairfax ave.|213-938-8800|la|desserts
+686|martha's|22nd street grill 25 22nd|310-376-7786|st. hermosa beach|american
+687|maxwell's cafe|13329 washington blvd.|310-306-7829|marina del rey|american
+688|michael's (los angeles)|1147 third st.|310-451-0843|santa monica|californian
+689|mishima|8474 w. third st.|213-782-0181|la|noodle shops
+690|mo better meatty meat|7261 melrose ave.|213-935-5280|la|hamburgers
+691|mulberry st.|17040 ventura blvd.|818-906-8881|encino|pizza
+692|ocean park cafe|3117 ocean park blvd.|310-452-5728|santa monica|american
+693|ocean star|145 n. atlantic blvd.|818-308-2128|monterey park|seafood
+694|original pantry bakery|875 s. figueroa st. downtown|213-627-6879|la|diners
+695|parkway grill|510 s. arroyo pkwy.|818-795-1001|pasadena|californian
+696|pho hoa|642 broadway|213-626-5530|chinatown|vietnamese
+697|pink's famous chili dogs|709 n. la brea ave.|213-931-4223|la|hot dogs
+698|poquito mas|2635 w. olive ave.|818-563-2252|burbank|mexican
+699|r-23|923 e. third st.|213-687-7178|los angeles|japanese
+700|rae's|2901 pico blvd.|310-828-7937|santa monica|diners
+701|rubin's red hots|15322 ventura blvd.|818-905-6515|encino|hot dogs
+702|ruby's (la)|45 s. fair oaks ave.|818-796-7829|pasadena|diners
+703|russell's burgers|1198 pch|310-596-9556|seal beach|hamburgers
+704|ruth's chris steak house (los angeles)|224 s. beverly dr.|310-859-8744|beverly hills|steakhouses
+705|shiro|1505 mission st. s.|818-799-4774|pasadena|pacific new wave
+706|sushi nozawa|11288 ventura blvd.|818-508-7017|studio city|japanese
+707|sweet lady jane|8360 melrose ave.|213-653-7145|la|desserts
+708|taiko|11677 san vicente blvd.|310-207-7782|brentwood|noodle shops
+709|tommy's|2575 beverly blvd.|213-389-9060|la|hamburgers
+710|uncle bill's pancake house|1305 highland ave.|310-545-5177|manhattan beach|diners
+711|water grill|544 s. grand ave.|213-891-0900|los angeles|seafood
+712|zankou chicken|1415 e. colorado st.|818-244-1937|glendale|middle eastern
+713|afghan kebab house|764 ninth ave.|212-307-1612|new york city|afghan
+714|arcadia|21 e. 62nd st.|212-223-2900|new york city|american (new)
+715|benny's burritos|93 ave. a|212-254-2054|new york city|mexican
+716|cafe con leche|424 amsterdam ave.|212-595-7000|new york city|cuban
+717|corner bistro|331 w. fourth st.|212-242-9502|new york city|hamburgers
+718|cucina della fontana|368 bleecker st.|212-242-0636|new york city|italian
+719|cucina di pesce|87 e. fourth st.|212-260-6800|new york city|seafood
+720|darbar|44 w. 56th st.|212-432-7227|new york city|indian
+721|ej's luncheonette|432 sixth ave.|212-473-5555|new york city|diners
+722|edison cafe|228 w. 47th st.|212-840-5000|new york city|diners
+723|elias corner|24-02 31st st.|718-932-1510|queens|greek
+724|good enough to eat|483 amsterdam ave.|212-496-0163|new york city|american
+725|gray's papaya|2090 broadway|212-799-0243|new york city|hot dogs
+726|il mulino|86 w. third st.|212-673-3783|new york city|italian
+727|jackson diner|37-03 74th st.|718-672-1232|queens|indian
+728|joe's shanghai|9 pell st.|718-539-3838|queens|chinese
+729|john's pizzeria|48 w. 65th st.|212-721-7001|new york city|pizza
+730|kelley & ping|127 greene st.|212-228-1212|new york city|pan-asian
+731|kiev|117 second ave.|212-674-4040|new york city|ukrainian
+732|kuruma zushi|2nd fl.|212-317-2802|new york city|japanese
+733|la caridad|2199 broadway|212-874-2780|new york city|cuban
+734|la grenouille|3 e. 52nd st.|212-752-1495|new york city|french (classic)
+735|lemongrass grill|61a seventh ave.|718-399-7100|brooklyn|thai
+736|lombardi's|32 spring st.|212-941-7994|new york city|pizza
+737|marnie's noodle shop|466 hudson st.|212-741-3214|new york city|asian
+738|menchanko-tei|39 w. 55th st.|212-247-1585|new york city|japanese
+739|mitali east-west|296 bleecker st.|212-989-1367|new york city|indian
+740|monsoon (ny)|435 amsterdam ave.|212-580-8686|new york city|thai
+741|moustache|405 atlantic ave.|718-852-5555|brooklyn|middle eastern
+742|nobu|105 hudson st.|212-219-0500|new york city|japanese
+743|one if by land  tibs|17 barrow st.|212-228-0822|new york city|continental
+744|oyster bar|lower level|212-490-6650|new york city|seafood
+745|palm|837 second ave.|212-687-2953|new york city|steakhouses
+746|palm too|840 second ave.|212-697-5198|new york city|steakhouses
+747|patsy's pizza|19 old fulton st.|718-858-4300|brooklyn|pizza
+748|peter luger steak house|178 broadway|718-387-7400|brooklyn|steakhouses
+749|rose of india|308 e. sixth st.|212-533-5011|new york city|indian
+750|sam's noodle shop|411 third ave.|212-213-2288|new york city|chinese
+751|sarabeth's|1295 madison ave.|212-410-7335|new york city|american
+752|sparks steak house|210 e. 46th st.|212-687-4855|new york city|steakhouses
+753|stick to your ribs|5-16 51st ave.|718-937-3030|queens|bbq
+754|sushisay|38 e. 51st st.|212-755-1780|new york city|japanese
+755|sylvia's|328 lenox ave.|212-996-0660|new york city|southern/soul
+756|szechuan hunan cottage|1588 york ave.|212-535-5223|new york city|chinese
+757|szechuan kitchen|1460 first ave.|212-249-4615|new york city|chinese
+758|teresa's|80 montague st.|718-520-2910|queens|polish
+759|thai house cafe|151 hudson st.|212-334-1085|new york city|thai
+760|thailand restaurant|106 bayard st.|212-349-3132|new york city|thai
+761|veselka|144 second ave.|212-228-9682|new york city|ukrainian
+762|westside cottage|689 ninth ave.|212-245-0800|new york city|chinese
+763|windows on the world|107th fl.|212-524-7000|new york city|eclectic
+764|wollensky's grill|205 e. 49th st.|212-753-0444|new york city|steakhouses
+765|yama|122 e. 17th st.|212-475-0969|new york city|japanese
+766|zarela|953 second ave.|212-644-6740|new york city|mexican
+767|andre's french restaurant|401 s. 6th st.|702-385-5016|las vegas|french (classic)
+768|buccaneer bay club|3300 las vegas blvd. s.|702-894-7350|las vegas|continental
+769|buzio's in the rio|3700 w. flamingo rd.|702-252-7697|las vegas|seafood
+770|emeril's new orleans fish house|3799 las vegas blvd. s.|702-891-7374|las vegas|seafood
+771|fiore rotisserie & grille|3700 w. flamingo rd.|702-252-7702|las vegas|italian
+772|hugo's cellar|202 e. fremont st.|702-385-4011|las vegas|continental
+773|madame ching's|3300 las vegas blvd. s.|702-894-7111|las vegas|asian
+774|mayflower cuisinier|4750 w. sahara ave.|702-870-8432|las vegas|chinese
+775|michael's (las vegas)|3595 las vegas blvd. s.|702-737-7111|las vegas|continental
+776|monte carlo|3145 las vegas blvd. s.|702-733-4524|las vegas|french (new)
+777|moongate|3400 las vegas blvd. s.|702-791-7352|las vegas|chinese
+778|morton's of chicago (las vegas)|3200 las vegas blvd. s.|702-893-0703|las vegas|steakhouses
+779|nicky blair's|3925 paradise rd.|702-792-9900|las vegas|italian
+780|piero's restaurant|355 convention center dr.|702-369-2305|las vegas|italian
+781|spago (las vegas)|3500 las vegas blvd. s.|702-369-6300|las vegas|californian
+782|steakhouse  the|128 e. fremont st.|702-382-1600|las vegas|steakhouses
+783|stefano's|129 fremont st.|702-385-7111|las vegas|italian
+784|sterling brunch|3645 las vegas blvd. s.|702-739-4651|las vegas|eclectic
+785|tre visi|3799 las vegas blvd. s.|702-891-7331|las vegas|italian
+786|103 west|103 w. paces ferry rd.|404-233-5993|atlanta|continental
+787|alon's at the terrace|659 peachtree st.|404-724-0444|atlanta|sandwiches
+788|baker's cajun cafe|1134 euclid ave.|404-223-5039|atlanta|cajun/creole
+789|barbecue kitchen|1437 virginia ave.|404-766-9906|atlanta|bbq
+790|bistro  the|56 e. andrews dr. nw|404-231-5733|atlanta|french bistro
+791|bobby & june's kountry kitchen|375 14th st.|404-876-3872|atlanta|southern/soul
+792|bradshaw's restaurant|2911 s. pharr court|404-261-7015|atlanta|southern/soul
+793|brookhaven cafe|4274 peachtree rd.|404-231-5907|atlanta|vegetarian
+794|cafe sunflower|5975 roswell rd.|404-256-1675|atlanta|health food
+795|canoe|4199 paces ferry rd.|770-432-2663|atlanta|american (new)
+796|carey's|1021 cobb pkwy. se|770-422-8042|marietta|hamburgers
+797|carey's corner|1215 powers ferry rd.|770-933-0909|marietta|hamburgers
+798|chops|70 w. paces ferry rd.|404-262-2675|atlanta|steakhouses
+799|chopstix|4279 roswell rd.|404-255-4868|atlanta|chinese
+800|deacon burton's soulfood restaurant|1029 edgewood ave. se|404-523-1929|atlanta|southern/soul
+801|eats|600 ponce de leon ave.|404-888-9149|atlanta|italian
+802|flying biscuit  the|1655 mclendon ave.|404-687-8888|atlanta|eclectic
+803|frijoleros|1031 peachtree st. ne|404-892-8226|atlanta|tex-mex
+804|greenwood's|1087 green st.|770-992-5383|roswell|southern/soul
+805|harold's barbecue|171 mcdonough blvd.|404-627-9268|atlanta|bbq
+806|havana sandwich shop|2905 buford hwy.|404-636-4094|atlanta|cuban
+807|house of chan|2469 cobb pkwy.|770-955-9444|smyrna|chinese
+808|indian delights|3675 satellite blvd.|100-813-8212|duluth|indian
+809|java jive|790 ponce de leon ave.|404-876-6161|atlanta|coffee shops
+810|johnny rockets (at)|2970 cobb pkwy.|770-955-6068|atlanta|american
+811|kalo's coffee house|1248 clairmont rd.|404-325-3733|decatur|coffeehouses
+812|la fonda latina|4427 roswell rd.|404-303-8201|atlanta|spanish
+813|lettuce souprise you (at)|3525 mall blvd.|770-418-9969|duluth|cafeterias
+814|majestic|1031 ponce de leon ave.|404-875-0276|atlanta|diners
+815|morton's of chicago (atlanta)|303 peachtree st. ne|404-577-4366|atlanta|steakhouses
+816|my thai|1248 clairmont rd.|404-636-4280|atlanta|thai
+817|nava|3060 peachtree rd.|404-240-1984|atlanta|southwestern
+818|nuevo laredo cantina|1495 chattahoochee ave. nw|404-352-9009|atlanta|mexican
+819|original pancake house (at)|4330 peachtree rd.|404-237-4116|atlanta|american
+820|palm  the (atlanta)|3391 peachtree rd. ne|404-814-1955|atlanta|steakhouses
+821|rainbow restaurant|2118 n. decatur rd.|404-633-3538|decatur|vegetarian
+822|ritz-carlton cafe (atlanta)|181 peachtree st.|404-659-0400|atlanta|american (new)
+823|riviera|519 e. paces ferry rd.|404-262-7112|atlanta|mediterranean
+824|silver skillet  the|200 14th st. nw|404-874-1388|atlanta|coffee shops
+825|soto|3330 piedmont rd.|404-233-2005|atlanta|japanese
+826|thelma's kitchen|764 marietta st. nw|404-688-5855|atlanta|cafeterias
+827|tortillas|774 ponce de leon ave. ne|404-892-0193|atlanta|tex-mex
+828|van gogh's restaurant & bar|70 w. crossville rd.|770-993-1156|roswell|american (new)
+829|veggieland|220 sandy springs circle|404-231-3111|atlanta|vegetarian
+830|white house restaurant|3172 peachtree rd. ne|404-237-7601|atlanta|diners
+831|zab-e-lee|4837 old national hwy.|404-768-2705|college park|thai
+832|bill's place|2315 clement st.|415-221-5262|san francisco|hamburgers
+833|cafe flore|2298 market st.|415-621-8579|san francisco|californian
+834|caffe greco|423 columbus ave.|415-397-6261|san francisco|continental
+835|campo santo|240 columbus ave.|415-433-9623|san francisco|mexican
+836|cha cha cha's|1805 haight st.|415-386-5758|san francisco|caribbean
+837|doidge's|2217 union st.|415-921-2149|san francisco|american
+838|dottie's true blue cafe|522 jones st.|415-885-2767|san francisco|diners
+839|dusit thai|3221 mission st.|415-826-4639|san francisco|thai
+840|ebisu|1283 ninth ave.|415-566-1770|san francisco|japanese
+841|emerald garden restaurant|1550 california st.|415-673-1155|san francisco|vietnamese
+842|eric's chinese restaurant|1500 church st.|415-282-0919|san francisco|chinese
+843|hamburger mary's|1582 folsom st.|415-626-1985|san francisco|hamburgers
+844|kelly's on trinity|333 bush st.|415-362-4454|san francisco|californian
+845|la cumbre|515 valencia st.|415-863-8205|san francisco|mexican
+846|la mediterranee|288 noe st.|415-431-7210|san francisco|mediterranean
+847|la taqueria|2889 mission st.|415-285-7117|san francisco|mexican
+848|mario's bohemian cigar store cafe|2209 polk st.|415-776-8226|san francisco|italian
+849|marnee thai|2225 irving st.|415-665-9500|san francisco|thai
+850|mel's drive-in|3355 geary st.|415-387-2244|san francisco|hamburgers
+851|mo's burgers|1322 grant st.|415-788-3779|san francisco|hamburgers
+852|phnom penh cambodian restaurant|631 larkin st.|415-775-5979|san francisco|cambodian
+853|roosevelt tamale parlor|2817 24th st.|415-550-9213|san francisco|mexican
+854|sally's cafe & bakery|300 de haro st.|415-626-6006|san francisco|american
+855|san francisco bbq|1328 18th st.|415-431-8956|san francisco|thai
+856|slanted door|584 valencia st.|415-861-8032|san francisco|vietnamese
+857|swan oyster depot|1517 polk st.|415-673-1101|san francisco|seafood
+858|thep phanom|400 waller st.|415-431-2526|san francisco|thai
+859|ti couz|3108 16th st.|415-252-7373|san francisco|french
+860|trio cafe|1870 fillmore st.|415-563-2248|san francisco|american
+861|tu lan|8 sixth st.|415-626-0927|san francisco|vietnamese
+862|vicolo pizzeria|201 ivy st.|415-863-2382|san francisco|pizza
+863|wa-ha-ka oaxaca mexican grill|2141 polk st.|415-775-1055|san francisco|mexican
