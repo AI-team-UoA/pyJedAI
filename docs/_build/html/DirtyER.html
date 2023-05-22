@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Dirty Entity Resolution &#8212; pyJedAI</title>
+    <title>Dirty ER &#8212; pyJedAI</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -71,8 +71,8 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="_static/icons8-droid-67.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Benchmarks" href="benchmarks.html" />
-    <link rel="prev" title="Clean-Clean Entity Resolution" href="CleanCleanER.html" />
+    <link rel="next" title="Clean-Clean ER without GT" href="CleanCleanERwithoutGT.html" />
+    <link rel="prev" title="Clean-Clean ER" href="CleanCleanER.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -140,7 +140,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="Demo.html">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,12 +155,22 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="CleanCleanER.html">
-   Clean-Clean Entity Resolution
+   Clean-Clean ER
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Dirty Entity Resolution
+   Dirty ER
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CleanCleanERwithoutGT.html">
+   Clean-Clean ER without GT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Optuna.html">
+   Hyper-Parameter Tuning with Optuna
   </a>
  </li>
 </ul>
@@ -477,7 +487,7 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Dirty Entity Resolution
+   Dirty ER
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
@@ -567,7 +577,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Dirty Entity Resolution</h1>
+                <h1>Dirty ER</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -579,7 +589,7 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Dirty Entity Resolution
+   Dirty ER
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
@@ -670,8 +680,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="dirty-entity-resolution">
-<h1>Dirty Entity Resolution<a class="headerlink" href="#dirty-entity-resolution" title="Permalink to this headline">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="dirty-er">
+<h1>Dirty ER<a class="headerlink" href="#dirty-er" title="Permalink to this headline">#</a></h1>
 <hr class="docutils" />
 <p>In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Dirty ER, is the process of dedeplication of one set.</p>
 </section>
@@ -679,6 +689,13 @@ title="Print to PDF"
 <h1>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">#</a></h1>
 <p>pyJedAI is an open-source library that can be installed from PyPI.</p>
 <p>For more: <a class="reference external" href="https://pypi.org/project/pyjedai/">pypi.org/project/pyjedai/</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>python --version
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip install pyjedai -U
@@ -694,14 +711,14 @@ title="Print to PDF"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Name: pyjedai
-Version: 0.0.3
+Version: 0.0.5
 Summary: An open-source library that builds powerful end-to-end Entity Resolution workflows.
 Home-page: 
 Author: 
 Author-email: Konstantinos Nikoletos &lt;nikoletos.kon@gmail.com&gt;, George Papadakis &lt;gpapadis84@gmail.com&gt;
 License: Apache Software License 2.0
-Location: c:\users\nikol\appdata\local\programs\python\python310\lib\site-packages
-Requires: faiss-cpu, gensim, matplotlib, matplotlib-inline, networkx, nltk, numpy, optuna, pandas, pandas-profiling, pandocfilters, PyYAML, rdflib, rdfpandas, regex, scipy, seaborn, sentence-transformers, strsim, strsimpy, tomli, tqdm, transformers
+Location: c:\users\nikol\anaconda3\lib\site-packages
+Requires: strsim, seaborn, matplotlib, optuna, networkx, faiss-cpu, scipy, rdflib, strsimpy, rdfpandas, regex, sentence-transformers, tqdm, nltk, pandas, pandocfilters, matplotlib-inline, numpy, pandas-profiling, PyYAML, transformers, tomli, gensim
 Required-by: 
 </pre></div>
 </div>
@@ -741,8 +758,8 @@ Required-by:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
 
-<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/der/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/der/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -757,8 +774,6 @@ Required-by:
     <span class="n">ground_truth</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span>
     <span class="n">attributes_1</span><span class="o">=</span><span class="n">attr</span>
 <span class="p">)</span>
-
-<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -797,37 +812,37 @@ Required-by:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">blocks</span> <span class="o">=</span> <span class="n">SuffixArraysBlocking</span><span class="p">(</span>
-    <span class="n">suffix_length</span><span class="o">=</span><span class="mi">2</span>
-<span class="p">)</span><span class="o">.</span><span class="n">build_blocks</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bb</span> <span class="o">=</span> <span class="n">SuffixArraysBlocking</span><span class="p">(</span><span class="n">suffix_length</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">blocks</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">build_blocks</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "67a95b9c4a6644f0aac5b8fcf7a8bed6", "version_major": 2, "version_minor": 0}
+{"model_id": "1b3d9aac0ca94663b04832c034e8c18a", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Suffix Arrays Blocking
+***************************************************************************************************************************
+Method name: Suffix Arrays Blocking
+Parameters: 
+	Suffix length: 2
+	Maximum Block Size: 53
+Runtime: 0.1680 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
 	Precision:      4.28% 
 	Recall:        75.77%
 	F1-score:       8.10%
-Classification report:
-	True positives: 13021
-	False positives: 291336
-	True negatives: 542366
-	False negatives: 4163
-	Total comparisons: 304357
----
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -846,37 +861,36 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_blocks</span> <span class="o">=</span> <span class="n">BlockFiltering</span><span class="p">(</span>
-    <span class="n">ratio</span><span class="o">=</span><span class="mf">0.9</span>
-<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bc</span> <span class="o">=</span> <span class="n">BlockFiltering</span><span class="p">(</span><span class="n">ratio</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">blocks</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "167852c564c4470e84368db08adf8b60", "version_major": 2, "version_minor": 0}
+{"model_id": "68ce99a10fdf438bb6703aa33d26e037", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
-	Precision:      5.10% 
-	Recall:        73.46%
-	F1-score:       9.53%
-Classification report:
-	True positives: 12623
-	False positives: 235069
-	True negatives: 598235
-	False negatives: 4561
-	Total comparisons: 247692
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Block Filtering
+***************************************************************************************************************************
+Method name: Block Filtering
+Parameters: 
+	Ratio: 0.9
+Runtime: 0.0930 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:      4.90% 
+	Recall:        75.56%
+	F1-score:       9.21%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -914,37 +928,37 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cleaned_blocks</span> <span class="o">=</span> <span class="n">BlockPurging</span><span class="p">(</span>
-    <span class="n">smoothing_factor</span><span class="o">=</span><span class="mf">0.008</span>
-<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bp</span> <span class="o">=</span> <span class="n">BlockPurging</span><span class="p">(</span><span class="n">smoothing_factor</span><span class="o">=</span><span class="mf">0.008</span><span class="p">)</span>
+<span class="n">blocks</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "85e9ed47b5354285a3dcda827ed2d5aa", "version_major": 2, "version_minor": 0}
+{"model_id": "36d831c625014c5ca38987f72b7aa360", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">cleaned_blocks</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
-	Precision:      7.67% 
-	Recall:         0.59%
-	F1-score:       1.09%
-Classification report:
-	True positives: 101
-	False positives: 1215
-	True negatives: 819567
-	False negatives: 17083
-	Total comparisons: 1316
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Block Purging
+***************************************************************************************************************************
+Method name: Block Purging
+Parameters: 
+	Smoothing factor: 0.008
+	Max Comparisons per Block: 6.0
+Runtime: 0.0480 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:      9.87% 
+	Recall:         0.72%
+	F1-score:       1.33%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -960,7 +974,6 @@ Classification report:
     <span class="n">CardinalityNodePruning</span><span class="p">,</span>
     <span class="n">BLAST</span><span class="p">,</span>
     <span class="n">ReciprocalCardinalityNodePruning</span><span class="p">,</span>
-    <span class="c1"># ReciprocalCardinalityWeightPruning,</span>
     <span class="n">ComparisonPropagation</span>
 <span class="p">)</span>
 </pre></div>
@@ -969,37 +982,37 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">candidate_pairs_blocks</span> <span class="o">=</span> <span class="n">WeightedEdgePruning</span><span class="p">(</span>
-    <span class="n">weighting_scheme</span><span class="o">=</span><span class="s1">&#39;CBS&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mb</span> <span class="o">=</span> <span class="n">WeightedEdgePruning</span><span class="p">(</span><span class="n">weighting_scheme</span><span class="o">=</span><span class="s1">&#39;CBS&#39;</span><span class="p">)</span>
+<span class="n">blocks</span> <span class="o">=</span> <span class="n">mb</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "5f5bb79f41184e8fbc92d8340f95bd2e", "version_major": 2, "version_minor": 0}
+{"model_id": "f24c697770c8409e95721ba534b0edcf", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">candidate_pairs_blocks</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">mb</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
-	Precision:     74.46% 
-	Recall:        48.51%
-	F1-score:      58.75%
-Classification report:
-	True positives: 8336
-	False positives: 2860
-	True negatives: 826157
-	False negatives: 8848
-	Total comparisons: 11196
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Weighted Edge Pruning
+***************************************************************************************************************************
+Method name: Weighted Edge Pruning
+Parameters: 
+	Node centric: False
+	Weighting scheme: CBS
+Runtime: 0.0457 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:     75.49% 
+	Recall:         0.45%
+	F1-score:       0.89%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -1018,29 +1031,6 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
-<span class="c1"># or with weights</span>
-<span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;author&#39;</span> <span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
-    <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="mf">0.4</span>
-<span class="p">}</span>
-
-<span class="n">EM</span> <span class="o">=</span> <span class="n">EntityMatching</span><span class="p">(</span>
-    <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">,</span> 
-    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span>
-<span class="p">)</span>
-
-<span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">filtered_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "fbdcfffb44de41cb8733b4d75d189543", "version_major": 2, "version_minor": 0}
-</script></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;author&#39;</span> <span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> 
     <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="mf">0.4</span>
@@ -1051,13 +1041,13 @@ Classification report:
     <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">)</span>
 
-<span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">candidate_pairs_blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">pairs_graph</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "44930d8c639944bbaad1cc9a50b66999", "version_major": 2, "version_minor": 0}
+{"model_id": "020d068b0b2848fa80d4ff4e0fd41236", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
@@ -1072,25 +1062,26 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">EM</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
-	Precision:      5.44% 
-	Recall:         6.30%
-	F1-score:       5.84%
-Classification report:
-	True positives: 1083
-	False positives: 18819
-	True negatives: 802945
-	False negatives: 16101
-	Total comparisons: 19902
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Entity Matching
+***************************************************************************************************************************
+Method name: Entity Matching
+Parameters: 
+	Tokenizer: white_space_tokenizer
+	Metric: jaccard
+	Similarity Threshold: 0.5
+Runtime: 0.0726 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:     97.67% 
+	Recall:         0.24%
+	F1-score:       0.49%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -1108,44 +1099,33 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusters</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ec</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">ec</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">pairs_graph</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">ec</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
-	Precision:      5.44% 
-	Recall:         6.30%
-	F1-score:       5.84%
-Classification report:
-	True positives: 1083
-	False positives: 18819
-	True negatives: 802945
-	False negatives: 16101
-	Total comparisons: 19902
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Connected Components Clustering
+***************************************************************************************************************************
+Method name: Connected Components Clustering
+Parameters: 
+Runtime: 0.0000 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:     97.92% 
+	Recall:         0.27%
+	F1-score:       0.55%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/DirtyER_37_0.png" src="_images/DirtyER_37_0.png" />
 </div>
 </div>
 </section>
@@ -1160,8 +1140,8 @@ Classification report:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
-<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/der/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/der/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Entity Id&#39;</span><span class="p">,</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
     <span class="n">dataset_1</span><span class="o">=</span><span class="n">d1</span><span class="p">,</span>
@@ -1169,8 +1149,6 @@ Classification report:
     <span class="n">ground_truth</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span>
     <span class="n">attributes_1</span><span class="o">=</span><span class="n">attr</span>
 <span class="p">)</span>
-
-<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1180,66 +1158,77 @@ Classification report:
 <h2>Similarity Joins<a class="headerlink" href="#similarity-joins" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.joins</span> <span class="kn">import</span> <span class="n">SchemaAgnosticΕJoin</span><span class="p">,</span> <span class="n">TopKSchemaAgnosticJoin</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.joins</span> <span class="kn">import</span> <span class="n">ΕJoin</span><span class="p">,</span> <span class="n">TopKJoin</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">SchemaAgnosticΕJoin</span><span class="p">(</span>
-    <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
-    <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams_multiset&#39;</span><span class="p">,</span>
-    <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">join</span> <span class="o">=</span> <span class="n">ΕJoin</span><span class="p">(</span><span class="n">similarity_threshold</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+             <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
+             <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams_multiset&#39;</span><span class="p">,</span>
+             <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">join</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "723b8f837cf94a42bb1430e2e57eb598", "version_major": 2, "version_minor": 0}
+{"model_id": "d86c40bfd439456a8cce134c648a89f2", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">join</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  EJoin
+***************************************************************************************************************************
+Method name: EJoin
+Parameters: 
+	similarity_threshold: 0.5
+	metric: jaccard
+	tokenization: qgrams_multiset
+	qgrams: 2
+Runtime: 61.2715 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
 	Precision:     65.80% 
 	Recall:        93.03%
 	F1-score:      77.08%
-Classification report:
-	True positives: 15987
-	False positives: 8311
-	True negatives: 828357
-	False negatives: 1197
-	Total comparisons: 24298
----
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Precision %&#39;: 65.79553872746729,
+ &#39;Recall %&#39;: 93.03421787709497,
+ &#39;F1 %&#39;: 77.07921508124006,
+ &#39;True Positives&#39;: 15987,
+ &#39;False Positives&#39;: 8311,
+ &#39;True Negatives&#39;: 828357.0,
+ &#39;False Negatives&#39;: 1197}
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">TopKSchemaAgnosticJoin</span><span class="p">(</span>
-    <span class="n">K</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
-    <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams&#39;</span><span class="p">,</span>
-    <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">topk_join</span> <span class="o">=</span> <span class="n">TopKJoin</span><span class="p">(</span><span class="n">K</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+             <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;jaccard&#39;</span><span class="p">,</span>
+             <span class="n">tokenization</span> <span class="o">=</span> <span class="s1">&#39;qgrams&#39;</span><span class="p">,</span>
+             <span class="n">qgrams</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">topk_join</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "50d8be87d8324be8b152bf47f53be99a", "version_major": 2, "version_minor": 0}
+{"model_id": "62b551bae8764a019b65d4ff58bda29c", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
@@ -1249,30 +1238,42 @@ Classification report:
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/DirtyER_47_0.png" src="_images/DirtyER_47_0.png" />
+<img alt="_images/DirtyER_46_0.png" src="_images/DirtyER_46_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">topk_join</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Top-K Join
+***************************************************************************************************************************
+Method name: Top-K Join
+Parameters: 
+	similarity_threshold: 0.25547445255474455
+	K: 20
+	metric: jaccard
+	tokenization: qgrams
+	qgrams: 3
+Runtime: 41.0031 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
 	Precision:     58.34% 
 	Recall:        63.75%
 	F1-score:      60.92%
-Classification report:
-	True positives: 10954
-	False positives: 7822
-	True negatives: 823813
-	False negatives: 6230
-	Total comparisons: 18776
----
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Precision %&#39;: 58.340434597358325,
+ &#39;Recall %&#39;: 63.74534450651769,
+ &#39;F1 %&#39;: 60.923248053392655,
+ &#39;True Positives&#39;: 10954,
+ &#39;False Positives&#39;: 7822,
+ &#39;True Negatives&#39;: 823813.0,
+ &#39;False Negatives&#39;: 6230}
 </pre></div>
 </div>
 </div>
@@ -1289,44 +1290,34 @@ Classification report:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusters</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ccc</span> <span class="o">=</span> <span class="n">ConnectedComponentsClustering</span><span class="p">()</span>
+
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">ccc</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">e</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">ccc</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#  Evaluation 
----
-Scores:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Connected Components Clustering
+***************************************************************************************************************************
+Method name: Connected Components Clustering
+Parameters: 
+Runtime: 0.0630 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
 	Precision:      2.05% 
 	Recall:       100.00%
 	F1-score:       4.02%
-Classification report:
-	True positives: 17184
-	False positives: 820681
-	True negatives: 17184
-	False negatives: 0
-	Total comparisons: 837865
----
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/DirtyER_53_0.png" src="_images/DirtyER_53_0.png" />
 </div>
 </div>
 <hr>
@@ -1369,13 +1360,13 @@ K. Nikoletos, G. Papadakis & M. Koubarakis
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Clean-Clean Entity Resolution</p>
+            <p class="prev-next-title">Clean-Clean ER</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="benchmarks.html" title="next page">
+    <a class='right-next' id="next-link" href="CleanCleanERwithoutGT.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Benchmarks</p>
+        <p class="prev-next-title">Clean-Clean ER without GT</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

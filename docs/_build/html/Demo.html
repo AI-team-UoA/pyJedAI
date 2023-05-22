@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Build workflow from scratch &#8212; pyJedAI</title>
+    <title>Demo &#8212; pyJedAI</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -140,7 +140,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,12 +155,22 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="CleanCleanER.html">
-   Clean-Clean Entity Resolution
+   Clean-Clean ER
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="DirtyER.html">
-   Dirty Entity Resolution
+   Dirty ER
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CleanCleanERwithoutGT.html">
+   Clean-Clean ER without GT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Optuna.html">
+   Hyper-Parameter Tuning with Optuna
   </a>
  </li>
 </ul>
@@ -477,7 +487,7 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
@@ -533,7 +543,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Build workflow from scratch</h1>
+                <h1>Demo</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -545,7 +555,7 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
@@ -602,9 +612,9 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="build-workflow-from-scratch">
-<h1>Build workflow from scratch<a class="headerlink" href="#build-workflow-from-scratch" title="Permalink to this headline">#</a></h1>
-<hr>
+  <section class="tex2jax_ignore mathjax_ignore" id="demo">
+<h1>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">#</a></h1>
+<hr class="docutils" />
 <p>In this notebook we present the pyJedAI approach. pyJedAI is a an end-to-end and an upcoming python framework for Entity Resolution that will be a manual of the Entity Resolution. Its usages will outperform other state-of-the-art ER frameworks as it’s easy-to-use and highly optimized as it is consisted from other established python libraries (i.e pandas, networkX, …).</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="instalation">
@@ -617,6 +627,95 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pyjedai in c:\users\nikol\anaconda3\lib\site-packages (0.0.5)
+Requirement already satisfied: strsim&gt;=0.0.3 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (0.0.3)
+Requirement already satisfied: numpy&gt;=1.21 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.21.2)
+Requirement already satisfied: pandas&gt;=0.25.3 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.3.4)
+Requirement already satisfied: PyYAML&gt;=6.0 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (6.0)
+Requirement already satisfied: transformers&gt;=4.21 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (4.21.3)
+Requirement already satisfied: scipy&gt;=1.7 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.7.1)
+Requirement already satisfied: pandas-profiling&gt;=3.2 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (3.2.0)
+Requirement already satisfied: sentence-transformers&gt;=2.2 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (2.2.2)
+Requirement already satisfied: rdfpandas&gt;=1.1.5 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.1.5)
+Requirement already satisfied: matplotlib-inline&gt;=0.1.3 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (0.1.6)
+Requirement already satisfied: strsimpy&gt;=0.2.1 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (0.2.1)
+Requirement already satisfied: tomli in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (2.0.1)
+Requirement already satisfied: seaborn&gt;=0.11 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (0.11.2)
+Requirement already satisfied: gensim&gt;=4.2.0 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (4.2.0)
+Requirement already satisfied: optuna&gt;=3.0 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (3.0.1)
+Requirement already satisfied: networkx&gt;=2.3 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (2.6.3)
+Requirement already satisfied: faiss-cpu&gt;=1.7 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.7.2)
+Requirement already satisfied: pandocfilters&gt;=1.5 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (1.5.0)
+Requirement already satisfied: tqdm&gt;=4.64 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (4.64.0)
+Requirement already satisfied: rdflib&gt;=6.1.1 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (6.1.1)
+Requirement already satisfied: nltk&gt;=3.7 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (3.7)
+Requirement already satisfied: regex&gt;=2022.6.2 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (2022.6.2)
+Requirement already satisfied: matplotlib&gt;=3.1.3 in c:\users\nikol\anaconda3\lib\site-packages (from pyjedai) (3.5.3)
+Requirement already satisfied: Cython==0.29.28 in c:\users\nikol\anaconda3\lib\site-packages (from gensim&gt;=4.2.0-&gt;pyjedai) (0.29.28)
+Requirement already satisfied: smart-open&gt;=1.8.1 in c:\users\nikol\anaconda3\lib\site-packages (from gensim&gt;=4.2.0-&gt;pyjedai) (5.1.0)
+Requirement already satisfied: cycler&gt;=0.10 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (0.10.0)
+Requirement already satisfied: pillow&gt;=6.2.0 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (8.4.0)
+Requirement already satisfied: pyparsing&gt;=2.2.1 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (3.0.4)
+Requirement already satisfied: fonttools&gt;=4.22.0 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (4.25.0)
+Requirement already satisfied: packaging&gt;=20.0 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (21.3)
+Requirement already satisfied: kiwisolver&gt;=1.0.1 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (1.3.1)
+Requirement already satisfied: python-dateutil&gt;=2.7 in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib&gt;=3.1.3-&gt;pyjedai) (2.8.2)
+Requirement already satisfied: six in c:\users\nikol\anaconda3\lib\site-packages (from cycler&gt;=0.10-&gt;matplotlib&gt;=3.1.3-&gt;pyjedai) (1.16.0)
+Requirement already satisfied: traitlets in c:\users\nikol\anaconda3\lib\site-packages (from matplotlib-inline&gt;=0.1.3-&gt;pyjedai) (5.1.1)
+Requirement already satisfied: joblib in c:\users\nikol\anaconda3\lib\site-packages (from nltk&gt;=3.7-&gt;pyjedai) (1.1.0)
+Requirement already satisfied: click in c:\users\nikol\anaconda3\lib\site-packages (from nltk&gt;=3.7-&gt;pyjedai) (8.0.3)
+Requirement already satisfied: sqlalchemy&gt;=1.1.0 in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (1.4.22)
+Requirement already satisfied: colorlog in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (6.6.0)
+Requirement already satisfied: cmaes&gt;=0.8.2 in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (0.8.2)
+Requirement already satisfied: cliff in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (3.10.0)
+Requirement already satisfied: alembic in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (1.7.5)
+Requirement already satisfied: typing-extensions&gt;=3.10.0.0 in c:\users\nikol\anaconda3\lib\site-packages (from optuna&gt;=3.0-&gt;pyjedai) (4.3.0)
+Requirement already satisfied: pytz&gt;=2017.3 in c:\users\nikol\anaconda3\lib\site-packages (from pandas&gt;=0.25.3-&gt;pyjedai) (2021.3)
+Requirement already satisfied: jinja2&gt;=2.11.1 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (3.0.2)
+Requirement already satisfied: missingno&gt;=0.4.2 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.5.1)
+Requirement already satisfied: multimethod&gt;=1.4 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (1.9)
+Requirement already satisfied: phik&gt;=0.11.1 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.12.2)
+Requirement already satisfied: requests&gt;=2.24.0 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (2.26.0)
+Requirement already satisfied: markupsafe~=2.1.1 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (2.1.1)
+Requirement already satisfied: pydantic&gt;=1.8.1 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (1.10.2)
+Requirement already satisfied: tangled-up-in-unicode==0.2.0 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.2.0)
+Requirement already satisfied: visions[type_image_path]==0.7.4 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.7.4)
+Requirement already satisfied: htmlmin&gt;=0.1.12 in c:\users\nikol\anaconda3\lib\site-packages (from pandas-profiling&gt;=3.2-&gt;pyjedai) (0.1.12)
+Requirement already satisfied: attrs&gt;=19.3.0 in c:\users\nikol\anaconda3\lib\site-packages (from visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (21.2.0)
+Requirement already satisfied: imagehash in c:\users\nikol\anaconda3\lib\site-packages (from visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (4.3.1)
+Requirement already satisfied: importlib-metadata in c:\users\nikol\anaconda3\lib\site-packages (from rdflib&gt;=6.1.1-&gt;pyjedai) (4.8.1)
+Requirement already satisfied: isodate in c:\users\nikol\anaconda3\lib\site-packages (from rdflib&gt;=6.1.1-&gt;pyjedai) (0.6.1)
+Requirement already satisfied: setuptools in c:\users\nikol\anaconda3\lib\site-packages (from rdflib&gt;=6.1.1-&gt;pyjedai) (58.0.4)
+Requirement already satisfied: charset-normalizer~=2.0.0 in c:\users\nikol\anaconda3\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (2.0.4)
+Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in c:\users\nikol\anaconda3\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (1.26.7)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in c:\users\nikol\anaconda3\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (3.3)
+Requirement already satisfied: certifi&gt;=2017.4.17 in c:\users\nikol\anaconda3\lib\site-packages (from requests&gt;=2.24.0-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (2022.9.14)
+Requirement already satisfied: sentencepiece in c:\users\nikol\anaconda3\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.1.97)
+Requirement already satisfied: huggingface-hub&gt;=0.4.0 in c:\users\nikol\anaconda3\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.10.0)
+Requirement already satisfied: torchvision in c:\users\nikol\anaconda3\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (0.13.1)
+Requirement already satisfied: torch&gt;=1.6.0 in c:\users\nikol\anaconda3\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (1.12.1)
+Requirement already satisfied: scikit-learn in c:\users\nikol\anaconda3\lib\site-packages (from sentence-transformers&gt;=2.2-&gt;pyjedai) (1.0.1)
+Requirement already satisfied: filelock in c:\users\nikol\anaconda3\lib\site-packages (from huggingface-hub&gt;=0.4.0-&gt;sentence-transformers&gt;=2.2-&gt;pyjedai) (3.3.1)
+Requirement already satisfied: greenlet!=0.4.17 in c:\users\nikol\anaconda3\lib\site-packages (from sqlalchemy&gt;=1.1.0-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.1.1)
+Requirement already satisfied: colorama in c:\users\nikol\anaconda3\lib\site-packages (from tqdm&gt;=4.64-&gt;pyjedai) (0.4.4)
+Requirement already satisfied: tokenizers!=0.11.3,&lt;0.13,&gt;=0.11.1 in c:\users\nikol\anaconda3\lib\site-packages (from transformers&gt;=4.21-&gt;pyjedai) (0.12.1)
+Requirement already satisfied: importlib-resources in c:\users\nikol\anaconda3\lib\site-packages (from alembic-&gt;optuna&gt;=3.0-&gt;pyjedai) (5.4.0)
+Requirement already satisfied: Mako in c:\users\nikol\anaconda3\lib\site-packages (from alembic-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.1.4)
+Requirement already satisfied: pbr!=2.1.0,&gt;=2.0.0 in c:\users\nikol\anaconda3\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (5.6.0)
+Requirement already satisfied: stevedore&gt;=2.0.1 in c:\users\nikol\anaconda3\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (3.5.0)
+Requirement already satisfied: PrettyTable&gt;=0.7.2 in c:\users\nikol\anaconda3\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (2.4.0)
+Requirement already satisfied: cmd2&gt;=1.0.0 in c:\users\nikol\anaconda3\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (2.3.2)
+Requirement already satisfied: autopage&gt;=0.4.0 in c:\users\nikol\anaconda3\lib\site-packages (from cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (0.4.0)
+Requirement already satisfied: pyreadline in c:\users\nikol\anaconda3\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (2.1)
+Requirement already satisfied: pyperclip&gt;=1.6 in c:\users\nikol\anaconda3\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (1.8.2)
+Requirement already satisfied: wcwidth&gt;=0.1.7 in c:\users\nikol\anaconda3\lib\site-packages (from cmd2&gt;=1.0.0-&gt;cliff-&gt;optuna&gt;=3.0-&gt;pyjedai) (0.2.5)
+Requirement already satisfied: zipp&gt;=0.5 in c:\users\nikol\anaconda3\lib\site-packages (from importlib-metadata-&gt;rdflib&gt;=6.1.1-&gt;pyjedai) (3.6.0)
+Requirement already satisfied: PyWavelets in c:\users\nikol\anaconda3\lib\site-packages (from imagehash-&gt;visions[type_image_path]==0.7.4-&gt;pandas-profiling&gt;=3.2-&gt;pyjedai) (1.1.1)
+Requirement already satisfied: threadpoolctl&gt;=2.0.0 in c:\users\nikol\anaconda3\lib\site-packages (from scikit-learn-&gt;sentence-transformers&gt;=2.2-&gt;pyjedai) (2.2.0)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -626,14 +725,14 @@ title="Print to PDF"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Name: pyjedai
-Version: 0.0.3
+Version: 0.0.5
 Summary: An open-source library that builds powerful end-to-end Entity Resolution workflows.
 Home-page: 
 Author: 
 Author-email: Konstantinos Nikoletos &lt;nikoletos.kon@gmail.com&gt;, George Papadakis &lt;gpapadis84@gmail.com&gt;
 License: Apache Software License 2.0
-Location: c:\users\nikol\appdata\local\programs\python\python310\lib\site-packages
-Requires: faiss-cpu, gensim, matplotlib, matplotlib-inline, networkx, nltk, numpy, optuna, pandas, pandas-profiling, pandocfilters, PyYAML, rdflib, rdfpandas, regex, scipy, seaborn, sentence-transformers, strsim, strsimpy, tomli, tqdm, transformers
+Location: c:\users\nikol\anaconda3\lib\site-packages
+Requires: numpy, rdfpandas, pandocfilters, pandas, seaborn, networkx, PyYAML, strsim, gensim, optuna, transformers, nltk, matplotlib-inline, tqdm, tomli, pandas-profiling, regex, matplotlib, sentence-transformers, scipy, strsimpy, faiss-cpu, rdflib
 Required-by: 
 </pre></div>
 </div>
@@ -660,9 +759,9 @@ Required-by:
 
 <span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
 
-<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/abt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/buy.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/abt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/buy.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
     <span class="n">dataset_1</span><span class="o">=</span><span class="n">d1</span><span class="p">,</span>
@@ -673,8 +772,6 @@ Required-by:
     <span class="n">id_column_name_2</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
     <span class="n">ground_truth</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -686,15 +783,22 @@ Required-by:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Type of Entity Resolution:  Clean-Clean
-Number of entities in D1:  1076
-Attributes provided  for D1:  [&#39;id&#39;, &#39;name&#39;, &#39;description&#39;]
-
-Number of entities in D2:  1076
-Attributes provided  for D2:  [&#39;id&#39;, &#39;name&#39;, &#39;description&#39;]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>------------------------- Data -------------------------
+Type of Entity Resolution:  Clean-Clean
+Dataset-1:
+	Number of entities:  1076
+	Number of NaN values:  0
+	Attributes: 
+		 [&#39;id&#39;, &#39;name&#39;, &#39;description&#39;]
+Dataset-2:
+	Number of entities:  1076
+	Number of NaN values:  0
+	Attributes: 
+		 [&#39;name&#39;, &#39;description&#39;, &#39;price&#39;]
 
 Total number of entities:  2152
 Number of matching pairs in ground-truth:  1076
+-------------------------------------------------------- 
 </pre></div>
 </div>
 </div>
@@ -924,7 +1028,7 @@ Number of matching pairs in ground-truth:  1076
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "ad4d1b575b4f4bada4d39d315f05c603", "version_major": 2, "version_minor": 0}
+{"model_id": "7a4a66b1fd9c45af9a1277baffb6073d", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
@@ -964,55 +1068,55 @@ Number of matching pairs in ground-truth:  1076
     <tr>
       <th>0</th>
       <td>Q-Grams Blocking</td>
-      <td>0.041641</td>
+      <td>0.041558</td>
       <td>100.000000</td>
-      <td>0.020825</td>
-      <td>0.393975</td>
+      <td>0.020784</td>
+      <td>0.467047</td>
       <td>{'Q-Gramms': 3}</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Block Filtering</td>
-      <td>0.029729</td>
+      <td>0.063367</td>
       <td>100.000000</td>
-      <td>0.014867</td>
-      <td>0.231038</td>
+      <td>0.031694</td>
+      <td>0.299006</td>
       <td>{'Ratio': 0.8}</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Block Purging</td>
-      <td>0.023116</td>
+      <td>0.072956</td>
       <td>100.000000</td>
-      <td>0.011559</td>
-      <td>0.022002</td>
+      <td>0.036491</td>
+      <td>0.026966</td>
       <td>{'Smoothing factor': 1.025, 'Max Comparisons p...</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Cardinality Edge Pruning</td>
-      <td>3.383632</td>
-      <td>98.884758</td>
-      <td>1.721265</td>
-      <td>3.764078</td>
+      <td>3.554522</td>
+      <td>98.048327</td>
+      <td>1.810071</td>
+      <td>8.116037</td>
       <td>{'Node centric': False, 'Weighting scheme': 'JS'}</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Entity Matching</td>
-      <td>3.383632</td>
-      <td>98.884758</td>
-      <td>1.721265</td>
-      <td>34.352360</td>
-      <td>{'Metric': 'sorensen_dice', 'Embeddings': None...</td>
+      <td>3.807797</td>
+      <td>1.951673</td>
+      <td>77.777778</td>
+      <td>26.423726</td>
+      <td>{'Tokenizer': 'white_space_tokenizer', 'Metric...</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Connected Components Clustering</td>
-      <td>0.176289</td>
-      <td>99.907063</td>
-      <td>0.088222</td>
-      <td>0.003999</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.476190</td>
+      <td>0.000000</td>
       <td>{}</td>
     </tr>
   </tbody>
@@ -1081,15 +1185,15 @@ Number of matching pairs in ground-truth:  1076
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "e0831cd2678f46afb4deea2a0866ad56", "version_major": 2, "version_minor": 0}
+{"model_id": "f3481dd1f9d947609affe999e418cfc1", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "87aa77fd9b684feaa398836f4f2b4084", "version_major": 2, "version_minor": 0}
+{"model_id": "8fa1c70595384cd2981b308e9c3929e6", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "6e88d8f96aaa4b2cac45596192e0828a", "version_major": 2, "version_minor": 0}
+{"model_id": "9b08c8a5130a472daa2c4e96567e9211", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "9798e122957d44c28e7f1aea766929a5", "version_major": 2, "version_minor": 0}
+{"model_id": "1780ec706f7e4e70a2019e388a1f3b97", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "1ca85dfc9bc643a8b1ead1762febd40a", "version_major": 2, "version_minor": 0}
+{"model_id": "ad9ff1f2eba441ebb5f7f736fa395694", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
@@ -1129,42 +1233,42 @@ Number of matching pairs in ground-truth:  1076
     <tr>
       <th>0</th>
       <td>Workflow-StandardBlocking</td>
-      <td>0.197932</td>
-      <td>97.862454</td>
-      <td>0.099066</td>
-      <td>10.967764</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.47619</td>
+      <td>8.139925</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Workflow-QGramsBlocking</td>
-      <td>0.182086</td>
-      <td>98.884758</td>
-      <td>0.091127</td>
-      <td>17.006940</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.47619</td>
+      <td>14.409635</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Workflow-ExtendedQGramsBlocking</td>
-      <td>0.181989</td>
-      <td>98.791822</td>
-      <td>0.091078</td>
-      <td>19.250524</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.47619</td>
+      <td>15.853234</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Workflow-SuffixArraysBlocking</td>
-      <td>0.183603</td>
-      <td>99.814126</td>
-      <td>0.091886</td>
-      <td>8.559587</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.47619</td>
+      <td>7.863116</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Workflow-ExtendedSuffixArraysBlocking</td>
-      <td>0.183203</td>
-      <td>99.907063</td>
-      <td>0.091685</td>
-      <td>10.580076</td>
+      <td>3.467153</td>
+      <td>1.765799</td>
+      <td>95.00000</td>
+      <td>12.269665</td>
     </tr>
   </tbody>
 </table>

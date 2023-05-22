@@ -2,6 +2,11 @@
 # coding: utf-8
 
 # # Data Reading examples
+# 
+# 
+# --------
+# 
+# 
 # pyJedAI needs as input a pandas.DataFrame. In this notebook we provide some examples of data reading and transformation to DataFrame.
 # 
 # ![reading-process.jpg](https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true)
@@ -19,8 +24,8 @@ import pandas as pd
 # In[94]:
 
 
-d1 = pd.read_csv("./data/cora/cora.csv", sep='|')
-gt = pd.read_csv("./data/cora/cora_gt.csv", sep='|', header=None)
+d1 = pd.read_csv("./data/der/cora/cora.csv", sep='|')
+gt = pd.read_csv("./data/der/cora/cora_gt.csv", sep='|', header=None)
 
 
 # In[ ]:
@@ -34,8 +39,8 @@ d1.head(1)
 # In[14]:
 
 
-d1 = pd.read_json("./data/cora/cora.json")
-gt = pd.read_json("./data/cora/cora_gt.json")
+d1 = pd.read_json("./data/der/cora/cora.json")
+gt = pd.read_json("./data/der/cora/cora_gt.json")
 
 
 # In[15]:
@@ -49,8 +54,8 @@ d1.head(1)
 # In[7]:
 
 
-d1 = pd.read_excel("./data/cora/cora.xlsx")
-gt = pd.read_excel("./data/cora/cora_gt.xlsx")
+d1 = pd.read_excel("./data/der/cora/cora.xlsx")
+gt = pd.read_excel("./data/der/cora/cora_gt.xlsx")
 
 
 # In[8]:

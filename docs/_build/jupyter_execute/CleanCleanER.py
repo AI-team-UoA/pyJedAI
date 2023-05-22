@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Clean-Clean Entity Resolution
-# <hr>
+# # Clean-Clean ER
 # 
+# ---
 # 
 # In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Clean-Clean ER in the link discovery/deduplication between two sets of entities.
 
@@ -23,7 +23,7 @@
 get_ipython().system('pip install pyjedai -U')
 
 
-# In[1]:
+# In[2]:
 
 
 get_ipython().system('pip show pyjedai')
@@ -31,7 +31,7 @@ get_ipython().system('pip show pyjedai')
 
 # Imports
 
-# In[2]:
+# In[3]:
 
 
 import os
@@ -41,9 +41,10 @@ import networkx
 from networkx import draw, Graph
 
 
-# In[3]:
+# In[4]:
 
 
+import pyjedai
 from pyjedai.utils import (
     text_cleaning_method,
     print_clusters,
@@ -62,53 +63,48 @@ from pyjedai.evaluation import Evaluation, write
 # pyJedAI in order to perfrom needs only the tranformation of the initial data into a pandas DataFrame. Hence, pyJedAI can function in every structured or semi-structured data. In this case Abt-Buy dataset is provided as .csv files. 
 # 
 
-# In[4]:
-
-
-from pyjedai.datamodel import Data
-
-
 # In[5]:
 
 
-d1 = pd.read_csv("./../data/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str)
-d2 = pd.read_csv("./../data/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str)
-gt = pd.read_csv("./../data/D2/gt.csv", sep='|', engine='python')
-
-data = Data(
-    dataset_1=d1,
-    attributes_1=['id','name','description'],
-    id_column_name_1='id',
-    dataset_2=d2,
-    attributes_2=['id','name','description'],
-    id_column_name_2='id',
-    ground_truth=gt,
-)
-
-data.process()
-
-
-# pyJedAI offers also dataset analysis methods (more will be developed)
-
-# In[6]:
-
-
-data.print_specs()
-
-
-# In[7]:
-
-
-data.dataset_1.head(5)
+from pyjedai.datamodel import Data
+from pyjedai.evaluation import Evaluation
 
 
 # In[8]:
 
 
+d1 = pd.read_csv("./../data/ccer/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str)
+d2 = pd.read_csv("./../data/ccer/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str)
+gt = pd.read_csv("./../data/ccer/D2/gt.csv", sep='|', engine='python').astype(str)
+
+data = Data(dataset_1=d1,
+            id_column_name_1='id',
+            dataset_2=d2,
+            id_column_name_2='id',
+            ground_truth=gt)
+
+
+# pyJedAI offers also dataset analysis methods (more will be developed)
+
+# In[9]:
+
+
+data.print_specs()
+
+
+# In[10]:
+
+
+data.dataset_1.head(5)
+
+
+# In[11]:
+
+
 data.dataset_2.head(5)
 
 
-# In[9]:
+# In[12]:
 
 
 data.ground_truth.head(3)
@@ -128,7 +124,7 @@ data.ground_truth.head(3)
 # - Suffix Arrays Blocking
 # - Extended Suffix Arrays Blocking
 
-# In[10]:
+# In[13]:
 
 
 from pyjedai.block_building import (
@@ -139,27 +135,24 @@ from pyjedai.block_building import (
     ExtendedSuffixArraysBlocking,
 )
 
-from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
+
+# In[14]:
 
 
-# In[11]:
+qgb = SuffixArraysBlocking()
+blocks = qgb.build_blocks(data, attributes_1=['name'], attributes_2=['name'])
 
 
-qgb = QGramsBlocking()
-blocks = qgb.build_blocks(data, attributes_1=['name'])
-
-
-# In[12]:
+# In[15]:
 
 
 qgb.report()
 
 
-# In[13]:
+# In[16]:
 
 
-e = Evaluation(data)
-e.report(blocks, qgb.method_configuration())
+_ = qgb.evaluate(blocks, with_classification_report=True)
 
 
 # # Block Cleaning
@@ -168,23 +161,23 @@ e.report(blocks, qgb.method_configuration())
 # 
 # Its goal is to clean a set of overlapping blocks from unnecessary comparisons, which can be either redundant (i.e., repeated comparisons that have already been executed in a previously examined block) or superfluous (i.e., comparisons that involve non-matching entities). Its methods operate on the coarse level of individual blocks or entities.
 
-# In[14]:
+# In[17]:
 
 
 from pyjedai.block_cleaning import BlockFiltering
 
 
-# In[15]:
+# In[18]:
 
 
 bf = BlockFiltering(ratio=0.8)
 filtered_blocks = bf.process(blocks, data, tqdm_disable=False)
 
 
-# In[16]:
+# In[19]:
 
 
-Evaluation(data).report(filtered_blocks, bf.method_configuration())
+_ = bf.evaluate(filtered_blocks)
 
 
 # # Comparison Cleaning
@@ -212,35 +205,34 @@ Evaluation(data).report(filtered_blocks, bf.method_configuration())
 # - Jaccard Scheme (JS)
 # - Enhanced Jaccard Scheme (EJS)
 
-# In[17]:
+# In[20]:
 
 
 from pyjedai.block_cleaning import BlockPurging
 
 
-# In[18]:
+# In[21]:
 
 
 cbbp = BlockPurging()
 cleaned_blocks = cbbp.process(filtered_blocks, data, tqdm_disable=False)
 
 
-# In[19]:
+# In[22]:
 
 
 cbbp.report()
 
 
-# In[20]:
+# In[24]:
 
 
-e = Evaluation(data)
-e.report(cleaned_blocks, cbbp.method_configuration())
+_ = cbbp.evaluate(cleaned_blocks)
 
 
 # ## Meta Blocking
 
-# In[21]:
+# In[28]:
 
 
 from pyjedai.comparison_cleaning import (
@@ -255,34 +247,34 @@ from pyjedai.comparison_cleaning import (
 )
 
 
-# In[22]:
+# In[29]:
 
 
-wep = CardinalityEdgePruning(weighting_scheme='X2')
-candidate_pairs_blocks = wep.process(filtered_blocks, data, tqdm_disable=True)
+mb = CardinalityEdgePruning(weighting_scheme='X2')
+candidate_pairs_blocks = mb.process(filtered_blocks, data, tqdm_disable=True)
 
 
-# In[23]:
+# In[31]:
 
 
-Evaluation(data).report(candidate_pairs_blocks, wep.method_configuration())
+_ = mb.evaluate(candidate_pairs_blocks)
 
 
 # # Entity Matching
 # 
 # It compares pairs of entity profiles, associating every pair with a similarity in [0,1]. Its output comprises the similarity graph, i.e., an undirected, weighted graph where the nodes correspond to entities and the edges connect pairs of compared entities.
 
-# In[24]:
+# In[32]:
 
 
 from pyjedai.matching import EntityMatching
 
 
-# In[25]:
+# In[34]:
 
 
 EM = EntityMatching(
-    metric='sorensen_dice',
+    metric='dice',
     similarity_threshold=0.5,
     attributes = ['description', 'name']
 )
@@ -290,51 +282,45 @@ EM = EntityMatching(
 pairs_graph = EM.predict(candidate_pairs_blocks, data, tqdm_disable=True)
 
 
-# In[26]:
+# In[35]:
 
 
 draw(pairs_graph)
 
 
-# In[27]:
+# In[38]:
 
 
-Evaluation(data).report(pairs_graph, EM.method_configuration())
+_ = EM.evaluate(pairs_graph)
 
 
 # # Entity Clustering
 # 
 # It takes as input the similarity graph produced by Entity Matching and partitions it into a set of equivalence clusters, with every cluster corresponding to a distinct real-world object.
 
-# In[28]:
+# In[39]:
 
 
 from pyjedai.clustering import ConnectedComponentsClustering
 
 
-# In[29]:
+# In[41]:
 
 
 ccc = ConnectedComponentsClustering()
-clusters = ccc.process(pairs_graph)
+clusters = ccc.process(pairs_graph, data)
 
 
-# In[30]:
+# In[42]:
 
 
 ccc.report()
 
 
-# In[31]:
+# In[45]:
 
 
-Evaluation(data).report(clusters)
-
-
-# In[32]:
-
-
-e.confusion_matrix()
+_ = ccc.evaluate(clusters)
 
 
 # <hr>

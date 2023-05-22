@@ -16,10 +16,18 @@ parts:
       title: Clean-Clean Entity Resolution for Devs
     - file: DirtyER.ipynb
       title: Dirty Entity Resolution for Devs
+    - file: CleanCleanERwithoutGT.ipynb
+      title: Clean-Clean Entity Resolution without Ground Truth
+    - file: Optuna.ipynb
+      title: Fine-tunning with Optuna
   - caption: Benchmarks
     chapters:
     - file: benchmarks.md
       title: Results and Performance Demo
+  - caption: Contribution guide
+    chapters:
+    - file: contribution.md
+      title: New to pyJedAI?
   - caption: Releases and News
     chapters:
     - file: newsfeed.md
@@ -34,6 +42,8 @@ parts:
     chapters:
     - file: publications.md
       title: Publications
+    - url: https://stelar-project.eu
+      title: STELAR - HORIZON-EU
   # - caption: Code
   #   chapters:
   #   - file: datamodel.rst

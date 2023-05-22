@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Dirty Entity Resolution
+# # Dirty ER
 # 
-# ----
+# ---
 # 
 # In this notebook we present the pyJedAI approach in the well-known ABT-BUY dataset. Dirty ER, is the process of dedeplication of one set.
 
@@ -16,10 +16,16 @@
 # In[ ]:
 
 
+get_ipython().system('python --version')
+
+
+# In[ ]:
+
+
 get_ipython().system('pip install pyjedai -U')
 
 
-# In[3]:
+# In[2]:
 
 
 get_ipython().system('pip show pyjedai')
@@ -27,7 +33,7 @@ get_ipython().system('pip show pyjedai')
 
 # Imports
 
-# In[4]:
+# In[5]:
 
 
 import os
@@ -56,19 +62,19 @@ from pyjedai.evaluation import Evaluation
 # - Prints a detailed text analysis
 # - Stores a hidden mapping of the ids, and creates it if not exists.
 
-# In[5]:
+# In[7]:
 
 
 from pyjedai.datamodel import Data
 
-d1 = pd.read_csv("./../data/cora/cora.csv", sep='|')
-gt = pd.read_csv("./../data/cora/cora_gt.csv", sep='|', header=None)
+d1 = pd.read_csv("./../data/der/cora/cora.csv", sep='|')
+gt = pd.read_csv("./../data/der/cora/cora_gt.csv", sep='|', header=None)
 attr = ['Entity Id','author', 'title']
 
 
 # Data is the connecting module of all steps of the workflow
 
-# In[6]:
+# In[9]:
 
 
 data = Data(
@@ -77,8 +83,6 @@ data = Data(
     ground_truth=gt,
     attributes_1=attr
 )
-
-data.process()
 
 
 # # Workflow with Block Cleaning Methods
@@ -103,7 +107,7 @@ data.process()
 # - Suffix Arrays Blocking
 # - Extended Suffix Arrays Blocking
 
-# In[7]:
+# In[10]:
 
 
 from pyjedai.block_building import (
@@ -115,18 +119,17 @@ from pyjedai.block_building import (
 )
 
 
-# In[8]:
+# In[11]:
 
 
-blocks = SuffixArraysBlocking(
-    suffix_length=2
-).build_blocks(data)
+bb = SuffixArraysBlocking(suffix_length=2)
+blocks = bb.build_blocks(data)
 
 
-# In[9]:
+# In[13]:
 
 
-Evaluation(data).report(blocks)
+_ = bb.evaluate(blocks)
 
 
 # ## Block Cleaning
@@ -135,24 +138,23 @@ Evaluation(data).report(blocks)
 # 
 # Its goal is to clean a set of overlapping blocks from unnecessary comparisons, which can be either redundant (i.e., repeated comparisons that have already been executed in a previously examined block) or superfluous (i.e., comparisons that involve non-matching entities). Its methods operate on the coarse level of individual blocks or entities.
 
-# In[10]:
+# In[14]:
 
 
 from pyjedai.block_cleaning import BlockFiltering
 
 
-# In[11]:
+# In[16]:
 
 
-filtered_blocks = BlockFiltering(
-    ratio=0.9
-).process(blocks, data)
+bc = BlockFiltering(ratio=0.9)
+blocks = bc.process(blocks, data)
 
 
-# In[12]:
+# In[18]:
 
 
-Evaluation(data).report(filtered_blocks)
+_ = bc.evaluate(blocks)
 
 
 # ## Comparison Cleaning
@@ -180,29 +182,28 @@ Evaluation(data).report(filtered_blocks)
 # - Jaccard Scheme (JS)
 # - Enhanced Jaccard Scheme (EJS)
 
-# In[13]:
+# In[20]:
 
 
 from pyjedai.block_cleaning import BlockPurging
 
 
-# In[14]:
+# In[21]:
 
 
-cleaned_blocks = BlockPurging(
-    smoothing_factor=0.008
-).process(blocks, data)
+bp = BlockPurging(smoothing_factor=0.008)
+blocks = bp.process(blocks, data)
 
 
-# In[15]:
+# In[23]:
 
 
-Evaluation(data).report(cleaned_blocks)
+_ = bp.evaluate(blocks)
 
 
 # ### Meta Blocking
 
-# In[16]:
+# In[24]:
 
 
 from pyjedai.comparison_cleaning import (
@@ -212,54 +213,34 @@ from pyjedai.comparison_cleaning import (
     CardinalityNodePruning,
     BLAST,
     ReciprocalCardinalityNodePruning,
-    # ReciprocalCardinalityWeightPruning,
     ComparisonPropagation
 )
 
 
-# In[17]:
+# In[25]:
 
 
-candidate_pairs_blocks = WeightedEdgePruning(
-    weighting_scheme='CBS'
-).process(filtered_blocks, data)
+mb = WeightedEdgePruning(weighting_scheme='CBS')
+blocks = mb.process(blocks, data)
 
 
-# In[18]:
+# In[28]:
 
 
-Evaluation(data).report(candidate_pairs_blocks)
+_ = mb.evaluate(blocks)
 
 
 # ## Entity Matching
 # 
 # It compares pairs of entity profiles, associating every pair with a similarity in [0,1]. Its output comprises the similarity graph, i.e., an undirected, weighted graph where the nodes correspond to entities and the edges connect pairs of compared entities.
 
-# In[19]:
+# In[29]:
 
 
 from pyjedai.matching import EntityMatching
 
 
-# In[20]:
-
-
-attr = ['author', 'title']
-# or with weights
-attr = {
-    'author' : 0.6,
-    'title' : 0.4
-}
-
-EM = EntityMatching(
-    metric='jaccard', 
-    similarity_threshold=0.5
-)
-
-pairs_graph = EM.predict(filtered_blocks, data)
-
-
-# In[34]:
+# In[31]:
 
 
 attr = {
@@ -272,49 +253,42 @@ EM = EntityMatching(
     similarity_threshold=0.5
 )
 
-pairs_graph = EM.predict(candidate_pairs_blocks, data)
+pairs_graph = EM.predict(blocks, data)
 
 
-# In[25]:
+# In[32]:
 
 
 draw(pairs_graph)
 
 
-# In[26]:
+# In[34]:
 
 
-e = Evaluation(data)
-e.report(pairs_graph)
+_ = EM.evaluate(pairs_graph)
 
 
 # ## Entity Clustering
 # 
 # It takes as input the similarity graph produced by Entity Matching and partitions it into a set of equivalence clusters, with every cluster corresponding to a distinct real-world object.
 
-# In[21]:
+# In[39]:
 
 
 from pyjedai.clustering import ConnectedComponentsClustering
 
 
-# In[22]:
+# In[40]:
 
 
-clusters = ConnectedComponentsClustering().process(pairs_graph)
+ec = ConnectedComponentsClustering()
+clusters = ec.process(pairs_graph, data)
 
 
-# In[23]:
+# In[43]:
 
 
-e = Evaluation(data)
-e.report(pairs_graph)
-
-
-# In[24]:
-
-
-e.confusion_matrix()
+_ = ec.evaluate(clusters)
 
 
 # # Workflow with Similarity Joins
@@ -329,12 +303,12 @@ e.confusion_matrix()
 
 # Data is the connecting module of all steps of the workflow
 
-# In[25]:
+# In[44]:
 
 
 from pyjedai.datamodel import Data
-d1 = pd.read_csv("./../data/cora/cora.csv", sep='|')
-gt = pd.read_csv("./../data/cora/cora_gt.csv", sep='|', header=None)
+d1 = pd.read_csv("./../data/der/cora/cora.csv", sep='|')
+gt = pd.read_csv("./../data/der/cora/cora_gt.csv", sep='|', header=None)
 attr = ['Entity Id','author', 'title']
 data = Data(
     dataset_1=d1,
@@ -343,84 +317,75 @@ data = Data(
     attributes_1=attr
 )
 
-data.process()
-
 
 # ## Similarity Joins
 
-# In[26]:
+# In[45]:
 
 
-from pyjedai.joins import SchemaAgnosticΕJoin, TopKSchemaAgnosticJoin
+from pyjedai.joins import ΕJoin, TopKJoin
 
 
-# In[27]:
+# In[47]:
 
 
-g = SchemaAgnosticΕJoin(
-    threshold = 0.5,
-    metric = 'jaccard',
-    tokenization = 'qgrams_multiset',
-    qgrams = 2
-).fit(data)
+join = ΕJoin(similarity_threshold = 0.5,
+             metric = 'jaccard',
+             tokenization = 'qgrams_multiset',
+             qgrams = 2)
+
+g = join.fit(data)
 
 
-# In[28]:
+# In[48]:
 
 
-e = Evaluation(data)
-e.report(g)
+_ = join.evaluate(g)
 
 
-# In[29]:
+# In[49]:
 
 
-g = TopKSchemaAgnosticJoin(
-    K=20,
-    metric = 'jaccard',
-    tokenization = 'qgrams',
-    qgrams = 3
-).fit(data)
+topk_join = TopKJoin(K=20,
+             metric = 'jaccard',
+             tokenization = 'qgrams',
+             qgrams = 3)
+
+g = topk_join.fit(data)
 
 
-# In[30]:
+# In[50]:
 
 
 draw(g)
 
 
-# In[31]:
+# In[51]:
 
 
-e = Evaluation(data)
-e.report(g)
+topk_join.evaluate(g)
 
 
 # ## Entity Clustering
 
-# In[32]:
+# In[52]:
 
 
 from pyjedai.clustering import ConnectedComponentsClustering
 
 
-# In[33]:
+# In[54]:
 
 
-clusters = ConnectedComponentsClustering().process(g)
+ccc = ConnectedComponentsClustering()
+
+clusters = ccc.process(g, data)
 
 
-# In[34]:
+# In[56]:
 
 
-e = Evaluation(data)
-e.report(clusters)
-
-
-# In[35]:
-
-
-e.confusion_matrix()
+_ = ccc.evaluate(clusters)
 
 
 # <hr>

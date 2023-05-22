@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Build workflow from scratch
-# <hr>
+# # Demo
+# 
+# 
+# ----
+# 
+# 
 # 
 # In this notebook we present the pyJedAI approach. pyJedAI is a an end-to-end and an upcoming python framework for Entity Resolution that will be a manual of the Entity Resolution. Its usages will outperform other state-of-the-art ER frameworks as it's easy-to-use and highly optimized as it is consisted from other established python libraries (i.e pandas, networkX, ..).
 
@@ -12,7 +16,7 @@
 # 
 # For more: [pypi.org/project/pyjedai/](https://pypi.org/project/pyjedai/)
 
-# In[ ]:
+# In[5]:
 
 
 get_ipython().system('pip install pyjedai -U')
@@ -41,16 +45,16 @@ get_ipython().system('pip show pyjedai')
 # - Stores a hidden mapping of the ids, and creates if it is not exist.
 # 
 
-# In[10]:
+# In[7]:
 
 
 import pandas as pd
 
 from pyjedai.datamodel import Data
 
-d1 = pd.read_csv("./../data/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str)
-d2 = pd.read_csv("./../data/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str)
-gt = pd.read_csv("./../data/D2/gt.csv", sep='|', engine='python')
+d1 = pd.read_csv("./../data/ccer/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str)
+d2 = pd.read_csv("./../data/ccer/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str)
+gt = pd.read_csv("./../data/ccer/D2/gt.csv", sep='|', engine='python')
 
 data = Data(
     dataset_1=d1,
@@ -62,28 +66,26 @@ data = Data(
     ground_truth=gt,
 )
 
-data.process()
 
-
-# In[11]:
+# In[8]:
 
 
 data.print_specs()
 
 
-# In[12]:
+# In[9]:
 
 
 data.dataset_1.head(2)
 
 
-# In[13]:
+# In[10]:
 
 
 data.dataset_2.head(2)
 
 
-# In[14]:
+# In[11]:
 
 
 data.ground_truth.head(2)
@@ -95,7 +97,7 @@ data.ground_truth.head(2)
 # 
 # For example we demostrate a variety of algorithms in each step, as it is shown in the bellow cell.
 
-# In[15]:
+# In[12]:
 
 
 from pyjedai.workflow import WorkFlow, compare_workflows
@@ -129,7 +131,7 @@ from pyjedai.clustering import ConnectedComponentsClustering
 # 
 # ![workflow-example.png](https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/workflow-example.png?raw=true)
 
-# In[16]:
+# In[13]:
 
 
 w = WorkFlow(
@@ -161,13 +163,13 @@ w = WorkFlow(
 
 # # Evaluation and detailed reporting
 
-# In[17]:
+# In[14]:
 
 
 w.run(data, workflow_tqdm_enable=True, verbose=False)
 
 
-# In[18]:
+# In[15]:
 
 
 w.to_df()
@@ -175,13 +177,13 @@ w.to_df()
 
 # # Visualization
 
-# In[24]:
+# In[16]:
 
 
 w.visualize()
 
 
-# In[20]:
+# In[17]:
 
 
 w.visualize(separate=True)
@@ -192,7 +194,7 @@ w.visualize(separate=True)
 # pyJedAI provides methods for comparing multiple workflows. For example, we can test the above example with all the Block Building methods provided.
 # 
 
-# In[21]:
+# In[18]:
 
 
 block_building_methods = [StandardBlocking, QGramsBlocking, ExtendedQGramsBlocking, SuffixArraysBlocking, ExtendedSuffixArraysBlocking]
@@ -225,7 +227,7 @@ for bbm in block_building_methods:
     workflows[-1].run(data, workflow_tqdm_enable=True)
 
 
-# In[22]:
+# In[19]:
 
 
 compare_workflows(workflows, with_visualization=True)

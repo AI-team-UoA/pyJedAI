@@ -72,7 +72,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="User-Friendly Workflow" href="WorkFlow.html" />
-    <link rel="prev" title="Build workflow from scratch" href="Demo.html" />
+    <link rel="prev" title="Demo" href="Demo.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -140,7 +140,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="Demo.html">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -155,12 +155,22 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="CleanCleanER.html">
-   Clean-Clean Entity Resolution
+   Clean-Clean ER
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="DirtyER.html">
-   Dirty Entity Resolution
+   Dirty ER
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CleanCleanERwithoutGT.html">
+   Clean-Clean ER without GT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Optuna.html">
+   Hyper-Parameter Tuning with Optuna
   </a>
  </li>
 </ul>
@@ -590,6 +600,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="data-reading-examples">
 <h1>Data Reading examples<a class="headerlink" href="#data-reading-examples" title="Permalink to this headline">#</a></h1>
+<hr class="docutils" />
 <p>pyJedAI needs as input a pandas.DataFrame. In this notebook we provide some examples of data reading and transformation to DataFrame.</p>
 <p><img alt="reading-process.jpg" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/documentation/reading-process.png?raw=true" /></p>
 <div class="cell docutils container">
@@ -605,8 +616,8 @@ title="Print to PDF"
 <p>Example Dataset: CORA</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora_gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -713,8 +724,8 @@ title="Print to PDF"
 <h1>JSON Reader<a class="headerlink" href="#json-reader" title="Permalink to this headline">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora.json&quot;</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora_gt.json&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora.json&quot;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora_gt.json&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -821,8 +832,8 @@ title="Print to PDF"
 <h1>Excel Reader<a class="headerlink" href="#excel-reader" title="Permalink to this headline">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora.xlsx&quot;</span><span class="p">)</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;./data/cora/cora_gt.xlsx&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora.xlsx&quot;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;./data/der/cora/cora_gt.xlsx&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1441,7 +1452,7 @@ title="Print to PDF"
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Build workflow from scratch</p>
+            <p class="prev-next-title">Demo</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="WorkFlow.html" title="next page">

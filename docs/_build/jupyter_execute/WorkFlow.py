@@ -3,7 +3,10 @@
 
 # 
 # # User-Friendly Workflow
-# <hr>
+# 
+# 
+# ----
+# 
 # 
 # In this notebook we present the a __user-friendly approach__ in the well-known ABT-BUY dataset. This is a simple approach, specially developed for novice users in ER.
 
@@ -27,7 +30,7 @@ get_ipython().system('pip show pyjedai')
 
 # Imports
 
-# In[3]:
+# In[1]:
 
 
 import os
@@ -37,27 +40,25 @@ import pandas as pd
 
 # ## Data Reading
 
-# In[4]:
+# In[2]:
 
 
 from pyjedai.datamodel import Data
 
 data = Data(
-    dataset_1=pd.read_csv("./../data/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str),
+    dataset_1=pd.read_csv("./../data/ccer/D2/abt.csv", sep='|', engine='python', na_filter=False).astype(str),
     attributes_1=['id','name','description'],
     id_column_name_1='id',
-    dataset_2=pd.read_csv("./../data/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str),
+    dataset_2=pd.read_csv("./../data/ccer/D2/buy.csv", sep='|', engine='python', na_filter=False).astype(str),
     attributes_2=['id','name','description'],
     id_column_name_2='id',
-    ground_truth=pd.read_csv("./../data/D2/gt.csv", sep='|', engine='python'),
+    ground_truth=pd.read_csv("./../data/ccer/D2/gt.csv", sep='|', engine='python'),
 )
-
-data.process()
 
 
 # ## WorkFlow
 
-# In[5]:
+# In[3]:
 
 
 from pyjedai.workflow import WorkFlow, compare_workflows
@@ -68,7 +69,7 @@ from pyjedai.matching import EntityMatching
 from pyjedai.clustering import ConnectedComponentsClustering
 
 
-# In[6]:
+# In[4]:
 
 
 w = WorkFlow(
@@ -100,25 +101,25 @@ w = WorkFlow(
 )
 
 
-# In[7]:
+# In[5]:
 
 
 w.run(data, verbose=True)
 
 
-# In[8]:
+# In[6]:
 
 
 w.to_df()
 
 
-# In[9]:
+# In[7]:
 
 
 w.visualize()
 
 
-# In[10]:
+# In[8]:
 
 
 w.visualize(separate=True)
@@ -126,7 +127,7 @@ w.visualize(separate=True)
 
 # ## Multiple workflows - Comparison
 
-# In[11]:
+# In[9]:
 
 
 w1 = WorkFlow(
@@ -185,7 +186,7 @@ w2 = WorkFlow(
 w2.run(data, verbose=False, workflow_tqdm_enable=True)
 
 
-# In[12]:
+# In[10]:
 
 
 compare_workflows([w, w1, w2], with_visualization=True)

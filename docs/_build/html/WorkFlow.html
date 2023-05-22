@@ -71,7 +71,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="_static/icons8-droid-67.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Clean-Clean Entity Resolution" href="CleanCleanER.html" />
+    <link rel="next" title="Clean-Clean ER" href="CleanCleanER.html" />
     <link rel="prev" title="Data Reading examples" href="Readers.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -140,7 +140,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="Demo.html">
-   Build workflow from scratch
+   Demo
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,12 +155,22 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="CleanCleanER.html">
-   Clean-Clean Entity Resolution
+   Clean-Clean ER
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="DirtyER.html">
-   Dirty Entity Resolution
+   Dirty ER
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CleanCleanERwithoutGT.html">
+   Clean-Clean ER without GT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Optuna.html">
+   Hyper-Parameter Tuning with Optuna
   </a>
  </li>
 </ul>
@@ -560,7 +570,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="user-friendly-workflow">
 <h1>User-Friendly Workflow<a class="headerlink" href="#user-friendly-workflow" title="Permalink to this headline">#</a></h1>
-<hr>
+<hr class="docutils" />
 <p>In this notebook we present the a <strong>user-friendly approach</strong> in the well-known ABT-BUY dataset. This is a simple approach, specially developed for novice users in ER.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="instalation">
@@ -612,16 +622,14 @@ Required-by:
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyjedai.datamodel</span> <span class="kn">import</span> <span class="n">Data</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
-    <span class="n">dataset_1</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/abt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
+    <span class="n">dataset_1</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/abt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
     <span class="n">attributes_1</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
     <span class="n">id_column_name_1</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
-    <span class="n">dataset_2</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/buy.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
+    <span class="n">dataset_2</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/buy.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
     <span class="n">attributes_2</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
     <span class="n">id_column_name_2</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
-    <span class="n">ground_truth</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/D2/gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">),</span>
+    <span class="n">ground_truth</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./../data/ccer/D2/gt.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">),</span>
 <span class="p">)</span>
-
-<span class="n">data</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -681,112 +689,87 @@ Required-by:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># Q-Grams Blocking Evaluation 
----
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***************************************************************************************************************************
+                                         Μethod:  Q-Grams Blocking
+***************************************************************************************************************************
 Method name: Q-Grams Blocking
 Parameters: 
 	Q-Gramms: 3
-Runtime: 0.4150 seconds
-Scores:
+Runtime: 0.2410 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
 	Precision:      0.08% 
 	Recall:       100.00%
 	F1-score:       0.17%
-Classification report:
-	True positives: 1076
-	False positives: 1282428
-	True negatives: -124652
-	False negatives: 0
-	Total comparisons: 1283504
----
-# Block Filtering Evaluation 
----
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+***************************************************************************************************************************
+                                         Μethod:  Block Filtering
+***************************************************************************************************************************
 Method name: Block Filtering
 Parameters: 
 	Ratio: 0.8
-Runtime: 0.1270 seconds
-Scores:
-	Precision:      0.06% 
-	Recall:        99.91%
-	F1-score:       0.12%
-Classification report:
-	True positives: 1075
-	False positives: 1757290
-	True negatives: -599515
-	False negatives: 1
-	Total comparisons: 1758365
----
-# Block Purging Evaluation 
----
+Runtime: 0.0990 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:      0.12% 
+	Recall:       100.00%
+	F1-score:       0.24%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+***************************************************************************************************************************
+                                         Μethod:  Block Purging
+***************************************************************************************************************************
 Method name: Block Purging
 Parameters: 
 	Smoothing factor: 1.025
-	Max Comparisons per Block: 9191.0
-Runtime: 0.0330 seconds
-Scores:
-	Precision:      0.05% 
+	Max Comparisons per Block: 22500.0
+Runtime: 0.0250 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:      0.14% 
 	Recall:        99.91%
-	F1-score:       0.10%
-Classification report:
-	True positives: 1075
-	False positives: 2232151
-	True negatives: -1074376
-	False negatives: 1
-	Total comparisons: 2233226
----
-# Cardinality Edge Pruning Evaluation 
----
+	F1-score:       0.28%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+***************************************************************************************************************************
+                                         Μethod:  Cardinality Edge Pruning
+***************************************************************************************************************************
 Method name: Cardinality Edge Pruning
 Parameters: 
 	Node centric: False
 	Weighting scheme: JS
-Runtime: 2.7430 seconds
-Scores:
-	Precision:      4.58% 
-	Recall:        98.61%
-	F1-score:       8.75%
-Classification report:
-	True positives: 1061
-	False positives: 22121
-	True negatives: 1135640
-	False negatives: 15
-	Total comparisons: 23182
----
-# Entity Matching Evaluation 
----
+Runtime: 3.0797 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:      4.74% 
+	Recall:        97.30%
+	F1-score:       9.04%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+***************************************************************************************************************************
+                                         Μethod:  Entity Matching
+***************************************************************************************************************************
 Method name: Entity Matching
 Parameters: 
-	Metric: sorensen_dice
-	Embeddings: None
-	Attributes: None
-	Similarity threshold: None
-Runtime: 30.4935 seconds
-Scores:
-	Precision:      4.58% 
-	Recall:        98.61%
-	F1-score:       8.75%
-Classification report:
-	True positives: 1061
-	False positives: 22121
-	True negatives: 1135640
-	False negatives: 15
-	Total comparisons: 23182
----
-# Connected Components Clustering Evaluation 
----
+	Tokenizer: white_space_tokenizer
+	Metric: dice
+	Similarity Threshold: 0.5
+Runtime: 10.4458 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:     77.78% 
+	Recall:         1.95%
+	F1-score:       3.81%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+***************************************************************************************************************************
+                                         Μethod:  Connected Components Clustering
+***************************************************************************************************************************
 Method name: Connected Components Clustering
 Parameters: 
-Runtime: 0.0060 seconds
-Scores:
-	Precision:      0.09% 
-	Recall:        99.81%
-	F1-score:       0.19%
-Classification report:
-	True positives: 1074
-	False positives: 1152097
-	True negatives: 5677
-	False negatives: 2
-	Total comparisons: 1153171
----
+Runtime: 0.0000 seconds
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Performance:
+	Precision:     90.48% 
+	Recall:         1.77%
+	F1-score:       3.46%
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
 </div>
@@ -831,52 +814,52 @@ Classification report:
       <td>0.167526</td>
       <td>100.000000</td>
       <td>0.083833</td>
-      <td>0.414992</td>
+      <td>0.240996</td>
       <td>{'Q-Gramms': 3}</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Block Filtering</td>
-      <td>0.122198</td>
-      <td>99.907063</td>
-      <td>0.061136</td>
-      <td>0.126996</td>
+      <td>0.238795</td>
+      <td>100.000000</td>
+      <td>0.119540</td>
+      <td>0.098999</td>
       <td>{'Ratio': 0.8}</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Block Purging</td>
-      <td>0.096227</td>
+      <td>0.277537</td>
       <td>99.907063</td>
-      <td>0.048137</td>
-      <td>0.033007</td>
+      <td>0.138962</td>
+      <td>0.025035</td>
       <td>{'Smoothing factor': 1.025, 'Max Comparisons p...</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Cardinality Edge Pruning</td>
-      <td>8.747630</td>
-      <td>98.605948</td>
-      <td>4.576827</td>
-      <td>2.743003</td>
+      <td>9.037939</td>
+      <td>97.304833</td>
+      <td>4.739058</td>
+      <td>3.079692</td>
       <td>{'Node centric': False, 'Weighting scheme': 'JS'}</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Entity Matching</td>
-      <td>8.747630</td>
-      <td>98.605948</td>
-      <td>4.576827</td>
-      <td>30.493534</td>
-      <td>{'Metric': 'sorensen_dice', 'Embeddings': None...</td>
+      <td>3.807797</td>
+      <td>1.951673</td>
+      <td>77.777778</td>
+      <td>10.445795</td>
+      <td>{'Tokenizer': 'white_space_tokenizer', 'Metric...</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Connected Components Clustering</td>
-      <td>0.186095</td>
-      <td>99.814126</td>
-      <td>0.093134</td>
-      <td>0.005996</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.476190</td>
+      <td>0.000000</td>
       <td>{}</td>
     </tr>
   </tbody>
@@ -967,9 +950,9 @@ Classification report:
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "5123b1696e404d30ba33fd4a9c479990", "version_major": 2, "version_minor": 0}
+{"model_id": "36e22f9672434cffa05bd19b2600402d", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "e4d6a77fb88d4914bb167c96cf1904e0", "version_major": 2, "version_minor": 0}
+{"model_id": "a5591857c6294678942c6dc96663bcac", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 <div class="cell docutils container">
@@ -1009,26 +992,26 @@ Classification report:
     <tr>
       <th>0</th>
       <td>Worflow-Test</td>
-      <td>0.186095</td>
-      <td>99.814126</td>
-      <td>0.093134</td>
-      <td>34.825521</td>
+      <td>3.463993</td>
+      <td>1.765799</td>
+      <td>90.47619</td>
+      <td>14.490555</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Workflow-1</td>
-      <td>0.193095</td>
-      <td>100.000000</td>
-      <td>0.096641</td>
-      <td>19.622044</td>
+      <td>3.467153</td>
+      <td>1.765799</td>
+      <td>95.00000</td>
+      <td>7.563514</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Workflow-2</td>
-      <td>0.193095</td>
-      <td>100.000000</td>
-      <td>0.096641</td>
-      <td>21.104601</td>
+      <td>3.467153</td>
+      <td>1.765799</td>
+      <td>95.00000</td>
+      <td>7.482991</td>
     </tr>
   </tbody>
 </table>
@@ -1074,7 +1057,7 @@ Classification report:
     <a class='right-next' id="next-link" href="CleanCleanER.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Clean-Clean Entity Resolution</p>
+        <p class="prev-next-title">Clean-Clean ER</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
