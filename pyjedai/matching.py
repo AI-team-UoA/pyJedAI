@@ -526,3 +526,19 @@ class EntityMatching(PYJEDAIFeature):
         
     def stats(self) -> None:
         pass
+    
+    def export_pairs(self, filename: str, with_similarity: bool = True) -> None:
+        if self.pairs is None:
+            raise AttributeError("Pairs have not been initialized yet. " +
+                                 "Please run the method `run` first.")
+
+        with open(filename, 'w') as f:
+            for e1, e2, similarity in self.pairs.edges(data='weight'):
+                e1 = self.data._ids_mapping_1[e1] if e1 < self.data.dataset_limit else self.data._ids_mapping_2[e1]
+                e2 = self.data._ids_mapping_1[e2] if e2 < self.data.dataset_limit else self.data._ids_mapping_2[e2]
+                if with_similarity:
+                    f.write(f"{e1}, {e2}, {similarity}\n")
+                else:
+                    f.write(f"{e1}, {e2}\n")
+            f.close()
+        

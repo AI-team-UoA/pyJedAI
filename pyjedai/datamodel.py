@@ -125,15 +125,18 @@ class Data:
                     "Dataset 1 must contain column names if attributes_1 is empty.")
         else:
             self.attributes_1: list = attributes_1
+
         if dataset_2 is not None:
-            if dataset_2.columns.values.tolist():
-                self.attributes_2 = dataset_2.columns.values.tolist()
-                if self.id_column_name_2 in self.attributes_2:
-                    self.attributes_2.remove(self.id_column_name_1)
+
+            if attributes_2 is None:
+                if dataset_2.columns.values.tolist():
+                    self.attributes_2 = dataset_2.columns.values.tolist()
+                    if self.id_column_name_2 in self.attributes_2:
+                        self.attributes_2.remove(self.id_column_name_1)
+                else:
+                    raise AttributeError("Dataset 2 must contain column names if attributes_2 is empty.")
             else:
-                raise AttributeError("Dataset 2 must contain column names if attributes_2 is empty.")
-        else:
-            self.attributes_2: list = attributes_2
+                self.attributes_2: list = attributes_2
 
         # Ground truth data
         if ground_truth is not None:

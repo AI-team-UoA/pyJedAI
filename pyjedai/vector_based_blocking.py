@@ -145,6 +145,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         self._si = SubsetIndexer(None, self.data)
         
+        # print(data.attributes_1, data.attributes_2)
         self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
                             .apply(" ".join, axis=1) \
                             .apply(self._tokenize_entity) \
@@ -292,7 +293,11 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                                         return_attention_mask = True,
                                         max_length=self.max_word_embeddings_size,
                                         padding='max_length')
+
+            encoded_input = {key: value.to(self.device) for key, value in encoded_input.items()}  # Move input tensors to GPU
+
             with torch.no_grad():
+                encoded_input = {key: value.to(self.device) for key, value in encoded_input.items()}  # Move input tensors to GPU
                 output = model(**encoded_input)
                 vector = output.last_hidden_state[:, 0, :]
                 
