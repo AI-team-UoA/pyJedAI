@@ -25,4 +25,4 @@ jobs:
     - name: Build and publish
       run: |
         python -m build --sdist --wheel
-        twine upload -u __token__ -p ${{ secrets.PYJEDAI_PYPI_TOKEN }} dist/*
+        twine upload -u __token__ -p ${{ secrets.PYJEDAI_PYPI_TOKEN }} -r pypi dist/*
