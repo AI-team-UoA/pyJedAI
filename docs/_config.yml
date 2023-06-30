@@ -4,7 +4,7 @@
 
 title: pyJedAI
 author: AI-Team, University of Athens
-logo: ../documentation/pyjedai.logo.drawio.png
+logo: ../docs/img/pyjedai.logo.drawio.png
 copyright: Apache 2.0 License
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
