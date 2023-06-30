@@ -1,6 +1,6 @@
 <div align="center">
 <br>
-<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/documentation/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="400"/>
+<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/docs/img/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="400"/>
 </div>
 <br><br>
 <div align="center">
