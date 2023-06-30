@@ -13,7 +13,7 @@ from tqdm.autonotebook import tqdm
 
 from .block_building import AbstractBlockProcessing
 from .datamodel import Block, Data
-from .utils import create_entity_index, drop_single_entity_blocks
+from .utils import create_entity_index, drop_single_entity_blocks, java_math_round
 
 class AbstractBlockCleaning(AbstractBlockProcessing):
 
@@ -81,14 +81,13 @@ class BlockFiltering(AbstractBlockCleaning):
         )
         sorted_blocks = _sort_blocks_cardinality(blocks, self.data.is_dirty_er)
         self._progress_bar.update(1)
-        entity_index = create_entity_index(sorted_blocks, self.data.is_dirty_er)
+        self.entity_index = create_entity_index(sorted_blocks, self.data.is_dirty_er)
         self._progress_bar.update(1)
         filtered_blocks = {}
-        for entity_id, block_keys in entity_index.items():
+        for entity_id, block_keys in self.entity_index.items():
             # Create new blocks from the entity index
-            # print(list(block_keys[:int(round(self.ratio*len(block_keys)))]))
             block_keys = list(block_keys)
-            for key in list(block_keys[:int(round(self.ratio*len(block_keys)))]):
+            for key in list(block_keys[:java_math_round(self.ratio*float(len(block_keys)))]):
                 filtered_blocks.setdefault(key, Block())
                 # Entities ids start to 0 ... n-1 for 1st dataset
                 # and n ... m for 2nd dataset
@@ -97,16 +96,16 @@ class BlockFiltering(AbstractBlockCleaning):
         self._progress_bar.update(1)
         new_blocks = drop_single_entity_blocks(filtered_blocks, self.data.is_dirty_er)
         self._progress_bar.close()
+        self.num_of_blocks_dropped = len(blocks) - len(new_blocks)
         self.execution_time = time() - start_time
         self.blocks = new_blocks
-        
-        return new_blocks
+
+        return self.blocks
 
     def _configuration(self) -> dict:
         return {
             "Ratio" : self.ratio
         }
-
 
 class BlockPurging(AbstractBlockCleaning):
     """Discards the blocks exceeding a certain number of comparisons.

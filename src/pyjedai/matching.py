@@ -43,12 +43,15 @@ from py_stringmatching.tokenizer.whitespace_tokenizer import \
     WhitespaceTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 # from scipy.spatial.distance import cosine
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity, pairwise_distances
 from tqdm.autonotebook import tqdm
+from sklearn.metrics import jaccard_score
+from scipy.spatial.distance import dice, jaccard
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
 from .utils import WordQgrammsTokenizer
+from whoosh.scoring import TF_IDF, Frequency, PL2, BM25F
 
 # Package import from https://anhaidgroup.github.io/py_stringmatching/v0.4.2/index.html
 
@@ -82,7 +85,11 @@ metrics_mapping = {
     'dice': Dice(),
     'overlap_coefficient' : OverlapCoefficient(),
     'token_sort': TokenSort(),
-    'cosine_vector_similarity': cosine
+    'cosine_vector_similarity': cosine,
+    'TF-IDF' : TF_IDF(),
+    'Frequency' : Frequency(),
+    'PL2' : PL2(),
+    'BM25F' : BM25F()
 }
 
 string_metrics = [
@@ -102,7 +109,11 @@ vector_metrics = [
     'cosine_vector_similarity'
 ]
 
-available_metrics = string_metrics + set_metrics + bag_metrics + vector_metrics
+index_metrics = [
+    'TF-IDF', 'Frequency', 'PL2', 'BM25F'
+] 
+
+available_metrics = string_metrics + set_metrics + bag_metrics + vector_metrics + index_metrics
 
 
 class EntityMatching(PYJEDAIFeature):
@@ -120,6 +131,7 @@ class EntityMatching(PYJEDAIFeature):
             qgram: int = 2, # for jaccard
             tokenizer_return_set = False, # unique values or not,
             attributes: any = None,
+            tfidf_similarity_metric: str = 'cosine',
             delim_set: list = None, # DelimiterTokenizer
             padding: bool = True, # QgramTokenizer
             prefix_pad: str = '#', # QgramTokenizer (if padding=True)
@@ -134,6 +146,7 @@ class EntityMatching(PYJEDAIFeature):
         self.vectors_d2 = None
         self.tokenizer = tokenizer
         self.execution_time = 0
+        self.tfidf_similarity_metric = tfidf_similarity_metric
         #
         # Selecting tokenizer
         #
@@ -198,10 +211,9 @@ class EntityMatching(PYJEDAIFeature):
         self.vectors_d2 = vectors_d2
         
         if self.metric in vector_metrics:
-            if(vectors_d2 is not None and vectors_d1 is None):
+            if(vectors_d1 is None):
                 raise ValueError("Embeddings of the first dataset not given")
-
-            if(vectors_d1 is not None):
+            else:
                 self.vectors = vectors_d1
                 if(not data.is_dirty_er):
                     if(vectors_d2 is None):
@@ -214,9 +226,9 @@ class EntityMatching(PYJEDAIFeature):
         self.pairs = Graph()
         all_blocks = list(blocks.values())
         self._progress_bar = tqdm(total=len(blocks),
-                                  desc=self._method_name+" ("+self.metric+")",
+                                  desc=self._method_name+" ("+self.metric+ ", " + str(self.tokenizer) + ")",
                                   disable=self.tqdm_disable)
-        
+                
         if self.metric == 'tf-idf':
             self._calculate_tfidf()
         
@@ -279,6 +291,49 @@ class EntityMatching(PYJEDAIFeature):
                                                  self.vectors[entity_id2])
         else:
             raise AttributeError("Please select one vector similarity metric from the given: " + ','.join(vector_metrics))
+        
+    def _calculate_tfidf(self) -> None:
+        
+        analyzer = 'char' if self.tokenizer == 'char_qgram_tokenizer' else 'word'
+        vectorizer = TfidfVectorizer(analyzer='') if self.qgram is None else TfidfVectorizer(analyzer=analyzer, ngram_range=(self.qgram, self.qgram))
+        
+        d1 = self.data.dataset_1[self.attributes] if self.attributes else self.data.dataset_1
+        self._entities_d1 = d1 \
+                    .apply(" ".join, axis=1) \
+                    .apply(lambda x: x.lower()) \
+                    .values.tolist()
+        
+        d2 = self.data.dataset_2[self.attributes] if self.attributes and not self.data.is_dirty_er else self.data.dataset_2
+        self._entities_d2 = d2 \
+                    .apply(" ".join, axis=1) \
+                    .apply(lambda x: x.lower()) \
+                    .values.tolist() if not self.data.is_dirty_er else None
+                    
+        if self.data.is_dirty_er:
+            pass
+        else:
+            self.corpus = self._entities_d1 + self._entities_d2
+            self.tfidf_vectorizer = vectorizer.fit(self.corpus)
+            
+            if self.tfidf_similarity_metric == 'cosine':
+                self.tfidf_matrix = vectorizer.transform(self.corpus)
+                self.tfidf_similarity_matrix = cosine_similarity(self.tfidf_matrix)
+            elif self.tfidf_similarity_metric == 'jaccard':
+                self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.corpus)
+                self.tfidf_similarity_matrix = 1 - pairwise_distances( self.tfidf_matrix.toarray(), metric="jaccard")
+            elif self.tfidf_similarity_metric == 'dice':
+                self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.corpus).toarray()
+
+    def _calculate_tfidf_similarity(self, entity_id1: int, entity_id2: int) -> float:
+
+        if self.tfidf_similarity_metric == 'cosine':
+            return self.tfidf_similarity_matrix[entity_id1][entity_id2]
+        elif self.tfidf_similarity_metric == 'jaccard':
+            return self.tfidf_similarity_matrix[entity_id1][entity_id2]
+        elif self.tfidf_similarity_metric == 'dice':
+            return 1-dice(self.tfidf_matrix[entity_id1], self.tfidf_matrix[entity_id2])
+        else:
+            raise AttributeError("Please select one tf-idf similarity metric from the given: cosine, jaccard, dice")
 
     def _calculate_tfidf(self) -> None:
         
@@ -302,14 +357,26 @@ class EntityMatching(PYJEDAIFeature):
         else:
             self.corpus = self._entities_d1 + self._entities_d2
             self.tfidf_vectorizer = vectorizer.fit(self.corpus)
-            self.tfidf_matrix = vectorizer.transform(self.corpus)
-            self.tfidf_similarity_matrix = cosine_similarity(self.tfidf_matrix)
-            # feature_names = self.tfidf_vectorizer.get_feature_names()
-            # tfidf_df = pd.DataFrame(self.tfidf_matrix.toarray(), columns=feature_names)
-            # self.tfidf_df = tfidf_df
+            
+            if self.tfidf_similarity_metric == 'cosine':
+                self.tfidf_matrix = vectorizer.transform(self.corpus)
+                self.tfidf_similarity_matrix = cosine_similarity(self.tfidf_matrix)
+            elif self.tfidf_similarity_metric == 'jaccard':
+                self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.corpus)
+                self.tfidf_similarity_matrix = 1 - pairwise_distances( self.tfidf_matrix.toarray(), metric="jaccard")
+            elif self.tfidf_similarity_metric == 'dice':
+                self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.corpus).toarray()
 
     def _calculate_tfidf_similarity(self, entity_id1: int, entity_id2: int) -> float:
-        return self.tfidf_similarity_matrix[entity_id1][entity_id2]
+
+        if self.tfidf_similarity_metric == 'cosine':
+            return self.tfidf_similarity_matrix[entity_id1][entity_id2]
+        elif self.tfidf_similarity_metric == 'jaccard':
+            return self.tfidf_similarity_matrix[entity_id1][entity_id2]
+        elif self.tfidf_similarity_metric == 'dice':
+            return 1-dice(self.tfidf_matrix[entity_id1], self.tfidf_matrix[entity_id2])
+        else:
+            raise AttributeError("Please select one tf-idf similarity metric from the given: cosine, jaccard, dice")
 
     def _similarity(self, entity_id1: int, entity_id2: int) -> float:
 
@@ -360,12 +427,20 @@ class EntityMatching(PYJEDAIFeature):
         )
 
     def _configuration(self) -> dict:
-        return {
+        conf =  {
             "Metric" : self.metric,
             "Attributes" : self.attributes,
-            "Similarity threshold" : self.similarity_threshold
+            "Similarity threshold" : self.similarity_threshold,
+            "Tokenizer" : self.tokenizer
         }
 
+        if self.metric == 'tf-idf':
+            conf["Similarity metric"] = self.tfidf_similarity_metric
+            if self.tokenizer == 'word_qgram_tokenizer' or self.tokenizer == 'char_qgram_tokenizer':
+                conf["QGram size"] = self.qgram
+
+        return conf
+        
     def get_weights_avg(self) -> float:
         return sum([w for _, _, w in self.pairs.edges(data='weight')])/len(self.pairs.edges(data='weight'))
 
@@ -516,13 +591,6 @@ class EntityMatching(PYJEDAIFeature):
                                 export_to_dict,
                                 with_classification_report,
                                 verbose)
-
-    def _configuration(self) -> dict:
-        return {
-            "Tokenizer" : self.tokenizer,
-            "Metric" : self.metric,
-            "Similarity Threshold" : self.similarity_threshold
-        }
         
     def stats(self) -> None:
         pass
