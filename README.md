@@ -63,7 +63,7 @@ Discovery, in general.
 
 # Install
 
-Install the latest version of pyjedai __[requires python >= 3.7]__:
+Install the latest version of pyjedai __[requires python >= 3.8]__:
 ```
 pip install pyjedai
 ```
