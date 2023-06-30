@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.0.6"
+dynamic = ['version']
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -62,6 +62,9 @@ dependencies = [
     'tomli; python_version < "3.11"', 
     "py-stringmatching >= 0.4"
 ]
+
+[tool.hatch.version]
+path = 'src/pyjedai/_version.py'
 
 [project.optional-dependencies]
 dev = ["pip-tools", "pytest"]
