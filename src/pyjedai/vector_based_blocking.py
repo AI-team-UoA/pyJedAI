@@ -163,9 +163,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self._si = SubsetIndexer(self.input_cleaned_blocks, self.data, self._applied_to_subset)
         self._d1_valid_indices: list[int] = self._si.d1_retained_ids
         self._d2_valid_indices: list[int] = [x - self.data.dataset_limit for x in self._si.d2_retained_ids]   
-        
-        # print(data.attributes_1, data.attributes_2)
-        print(attributes_1 if attributes_1 else data.attributes_1)
+
         self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
                             .apply(" ".join, axis=1) \
                             .apply(self._tokenize_entity) \
