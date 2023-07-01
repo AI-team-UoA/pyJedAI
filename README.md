@@ -43,12 +43,25 @@ __Google Colab Hands-on demo:__
 
 # Install
 
+### PyPI
 Install the latest version of pyjedai __[requires python >= 3.8]__:
 ```
 pip install pyjedai
 ```
-
 More on [PyPI](https://pypi.org/project/pyjedai).
+
+### Git
+
+Set up locally:
+```
+git clone https://github.com/AI-team-UoA/pyJedAI.git
+```
+go to the root directory with `cd pyJedAI` and type:
+```
+pip install .
+```
+
+
 
 # Dependencies
 
