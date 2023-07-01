@@ -12,13 +12,13 @@ readme = "README.md"
 authors = [
     { name = "Konstantinos Nikoletos", email = "nikoletos.kon@gmail.com" },
     { name = "George Papadakis", email = "gpapadis84@gmail.com" },
+    { name = "Jakub Maciejewski", email = "jacobb.maciejewski@gmail.com"}
 ]
 license = {text = "Apache Software License 2.0"}
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -35,7 +35,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 keywords = ["deduplication", "entity-resolution", "link-discovery"]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
     "gensim >= 4.2.0",
     "matplotlib >= 3.1.3",
