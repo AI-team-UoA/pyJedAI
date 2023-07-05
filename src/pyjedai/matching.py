@@ -6,53 +6,27 @@ from time import time
 import matplotlib.pyplot as plt
 import numpy as np
 from networkx import Graph
-
-from py_stringmatching.similarity_measure.affine import Affine
-from py_stringmatching.similarity_measure.bag_distance import BagDistance
 from py_stringmatching.similarity_measure.cosine import Cosine
 from py_stringmatching.similarity_measure.dice import Dice
-from py_stringmatching.similarity_measure.editex import Editex
 from py_stringmatching.similarity_measure.generalized_jaccard import \
     GeneralizedJaccard
-from py_stringmatching.similarity_measure.hamming_distance import \
-    HammingDistance
 from py_stringmatching.similarity_measure.jaccard import Jaccard
 from py_stringmatching.similarity_measure.jaro import Jaro
-from py_stringmatching.similarity_measure.jaro_winkler import JaroWinkler
 from py_stringmatching.similarity_measure.levenshtein import Levenshtein
-from py_stringmatching.similarity_measure.monge_elkan import MongeElkan
-from py_stringmatching.similarity_measure.needleman_wunsch import \
-    NeedlemanWunsch
 from py_stringmatching.similarity_measure.overlap_coefficient import \
     OverlapCoefficient
-from py_stringmatching.similarity_measure.partial_ratio import PartialRatio
-from py_stringmatching.similarity_measure.partial_token_sort import \
-    PartialTokenSort
-from py_stringmatching.similarity_measure.ratio import Ratio
-from py_stringmatching.similarity_measure.smith_waterman import SmithWaterman
-from py_stringmatching.similarity_measure.soundex import Soundex
-from py_stringmatching.similarity_measure.tfidf import TfIdf
-from py_stringmatching.similarity_measure.token_sort import TokenSort
-from py_stringmatching.similarity_measure.tversky_index import TverskyIndex
-from py_stringmatching.tokenizer.alphabetic_tokenizer import \
-    AlphabeticTokenizer
-from py_stringmatching.tokenizer.alphanumeric_tokenizer import \
-    AlphanumericTokenizer
-from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from py_stringmatching.tokenizer.whitespace_tokenizer import \
     WhitespaceTokenizer
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-# from scipy.spatial.distance import cosine
-from sklearn.metrics.pairwise import cosine_similarity, pairwise_distances
-from tqdm.autonotebook import tqdm
-from sklearn.metrics import jaccard_score
 from scipy.spatial.distance import dice, jaccard
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.metrics.pairwise import pairwise_distances
+from tqdm.autonotebook import tqdm
+from whoosh.scoring import BM25F, PL2, TF_IDF, Frequency
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
-from .utils import cosine, get_qgram_from_tokenizer_name, WordQgramTokenizer
-from whoosh.scoring import TF_IDF, Frequency, PL2, BM25F
+from .utils import WordQgramTokenizer, cosine, get_qgram_from_tokenizer_name
 
 # Package import from https://anhaidgroup.github.io/py_stringmatching/v0.4.2/index.html
 
