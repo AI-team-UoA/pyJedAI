@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 
 import numpy as np
+import re
 from nltk import ngrams
 from nltk.tokenize import word_tokenize
 from pyjedai.datamodel import Block, Data
@@ -141,6 +142,26 @@ def print_clusters(clusters: list) -> None:
             str(len(entity_ids)) + " entities\033[0m]")
         print(entity_ids)
 
+def cosine(x, y):
+    """Cosine similarity between two vectors
+    """
+    return cosine_similarity(x.reshape(1, -1), y.reshape(1, -1))[0][0]
+
+def get_ngrams(text, n ):
+    n_grams = ngrams(word_tokenize(text), n)
+    return [ ' '.join(grams) for grams in n_grams]
+
+def get_qgram_from_tokenizer_name(tokenizer: str) -> int:
+    """Returns the q-gram value from the tokenizer name.
+
+    Args:
+        tokenizer (str): Tokenizer name.
+
+    Returns:
+        int: q-gram value.
+    """
+    return [int(s) for s in re.findall('\d+', tokenizer)][0]
+
 def text_cleaning_method(col):
     """Lower clean.
     """
@@ -201,7 +222,7 @@ class Tokenizer(ABC):
     def tokenize(self, text: str) -> list:
         pass
 
-class WordQgrammsTokenizer(Tokenizer):
+class WordQgramTokenizer(Tokenizer):
     
     def __init__(self, q: int = 3) -> None:
         super().__init__()
@@ -219,15 +240,6 @@ class Tokenizer(ABC):
     @abstractmethod
     def tokenize(self, text: str) -> list:
         pass
-
-class WordQgrammsTokenizer(Tokenizer):
-    
-    def __init__(self, q: int = 3) -> None:
-        super().__init__()
-        self.q = q
-    
-    def tokenize(self, text: str) -> list:
-        return [' '.join(gram) for gram in list(ngrams(word_tokenize(text), self.q))]
 
 class SubsetIndexer(ABC):
     """Stores the indices of retained entities of the initial datasets,
