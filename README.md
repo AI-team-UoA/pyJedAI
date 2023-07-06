@@ -25,10 +25,10 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 __Open demos are available in:__
 
 <div align="center">
-    <a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
+    <a href="https://nbviewer.org/github/AI-team-UoA/pyJedAI/blob/main/tutorials/Demo.ipynb">
         <img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
     </a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
+    <a href="https://github.com/AI-team-UoA/pyJedAI/blob/main/tutorials/Demo.ipynb">
         <img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
     </a>
 </div>
@@ -81,17 +81,24 @@ pip install .
 </div>
 <br>
 
-See the full list of dependencies and all versions used, in this [file](https://github.com/Nikoletos-K/pyJedAI/blob/main/requirements.txt).
+See the full list of dependencies and all versions used, in this [file](https://github.com/AI-team-UoA/pyJedAI/blob/main/pyproject.toml).
 
-__Status__ 
+__Status__
 
-[![Tests](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml)
+[![Tests](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml)
 [![made-with-python](https://readthedocs.org/projects/pyjedai/badge/?version=latest)](https://pyjedai.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/AI-team-UoA/pyjedai/branch/master/graph/badge.svg?token=4QR0X315CL)](https://codecov.io/gh/AI-team-UoA/pyjedai)
+
+
+__Statistics & Info__
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pyjedai)
+[![PyPI version](https://img.shields.io/pypi/v/pyjedai.svg?logo=pypi&logoColor=FFE873)](https://pypi.org/project/pyjedai/)
 
 
 # Bugs, Discussions & News
 
-[GitHub Discussions](https://github.com/Nikoletos-K/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/Nikoletos-K/pyJedAI/issues).
+[GitHub Discussions](https://github.com/AI-team-UoA/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/AI-team-UoA/pyJedAI/issues).
 
 # Java - Wed Application 
 
@@ -114,7 +121,7 @@ Research and development is made under the supervision of Pr. Manolis Koubarakis
 
 # License
 
-Released under the Apache-2.0 license [(see LICENSE.txt)](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE).
+Released under the Apache-2.0 license (see [LICENSE.txt](https://github.com/AI-team-UoA/pyJedAI/blob/main/LICENSE)).
 
 Copyright © 2023 AI-Team, University of Athens
 
