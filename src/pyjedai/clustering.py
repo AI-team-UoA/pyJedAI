@@ -1,6 +1,7 @@
 from queue import PriorityQueue
 from time import time
 
+import pandas as pd
 from networkx import Graph, connected_components
 from tqdm.autonotebook import tqdm
 
@@ -57,6 +58,38 @@ class AbstractClustering(PYJEDAIFeature):
     
     def stats(self) -> None:
         pass
+
+    def export_to_df(self, prediction: list) -> pd.DataFrame:
+        """creates a dataframe for the evaluation report
+
+        Args:
+            prediction (any): Predicted clusters
+
+        Returns:
+            pd.DataFrame: Dataframe containg evaluation scores and stats
+        """
+        if self.data.ground_truth is None:
+            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
+                Data object mush have initialized with the ground-truth file")
+        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+        for cluster in prediction:
+            lcluster = list(cluster)
+            for i1 in range(0, len(lcluster)):
+                for i2 in range(i1+1, len(lcluster)):
+                    if lcluster[i1] < self.data.dataset_limit:
+                        id1 = self.data._gt_to_ids_reversed_1[lcluster[i1]]
+                        id2 = self.data._gt_to_ids_reversed_1[lcluster[i2]] if self.data.is_dirty_er else self.data._gt_to_ids_reversed_2[lcluster[i2]]
+                    else:
+                        id2 = self.data._gt_to_ids_reversed_2[lcluster[i1]]
+                        id1 = self.data._gt_to_ids_reversed_1[lcluster[i2]]
+                    pairs_df = pd.concat(
+                        [pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], 
+                        ignore_index=True
+                    )
+        return pairs_df
+    
+    
+    
 
 class ConnectedComponentsClustering(AbstractClustering):
     """Creates the connected components of the graph. \

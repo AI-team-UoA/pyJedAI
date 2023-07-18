@@ -1,5 +1,6 @@
 import sys
 import warnings
+import pandas as pd
 from itertools import chain
 from collections import defaultdict
 from logging import warning
@@ -96,7 +97,6 @@ class AbstractComparisonCleaning(PYJEDAIFeature):
     
     def stats(self) -> None:
         pass
-
     
     def get_precalculated_weight(self, entity_id: int, neighbor_id: int) -> float:
         """Returns the precalculated weight for given pair
@@ -147,6 +147,30 @@ class AbstractComparisonCleaning(PYJEDAIFeature):
                                 export_to_dict,
                                 with_classification_report,
                                 verbose)
+
+    def export_to_df(self, prediction) -> pd.DataFrame:
+        """creates a dataframe with the predicted pairs
+
+        Args:
+            prediction (any): Predicted candidate pairs
+
+        Returns:
+            pd.DataFrame: Dataframe with the predicted pairs
+        """
+        if self.data.ground_truth is None:
+            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
+                Data object mush have initialized with the ground-truth file")
+        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+        
+        for entity_id, candidates in prediction.items():
+            id1 = self.data._gt_to_ids_reversed_1[entity_id]                                            
+            for candiadate_id in candidates:
+                id2 = self.data._gt_to_ids_reversed_1[candiadate_id] if self.data.is_dirty_er \
+                        else self.data._gt_to_ids_reversed_2[candiadate_id]
+                pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+
+        return pairs_df
+
 
 class AbstractMetablocking(AbstractComparisonCleaning, ABC):
     """Restructure a redundancy-positive block collection into a new

@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from itertools import count
 from time import time
 from typing import Callable, List, Tuple
@@ -7,20 +7,21 @@ import matplotlib.pyplot as plt
 import optuna
 import pandas as pd
 from networkx import Graph
-# import plotly.express as px
 from tqdm.autonotebook import tqdm
 
 from .datamodel import Data
-from .evaluation import Evaluation, write
+from .evaluation import Evaluation
 from .block_building import StandardBlocking
 from .block_cleaning import BlockFiltering, BlockPurging
-from .comparison_cleaning import CardinalityNodePruning
+from .comparison_cleaning import *
 from .matching import EntityMatching
 from .clustering import ConnectedComponentsClustering, UniqueMappingClustering
+from .vector_based_blocking import EmbeddingsNNBlockBuilding
+from .joins import EJoin, TopKJoin
 
 plt.style.use('seaborn-whitegrid')
 
-class WorkFlow(ABC):
+class PYJEDAIWorkFlow(ABC):
     """Main module of the pyjedAI and the simplest way to create an end-to-end ER workflow.
     """
 
@@ -28,17 +29,8 @@ class WorkFlow(ABC):
 
     def __init__(
             self,
-            block_building: dict = None,
-            entity_matching: dict = None,
-            block_cleaning: dict = None,
-            comparison_cleaning: dict = None,
-            clustering: dict = None,
-            joins: dict = None,
             name: str = None
     ) -> None:
-        self.block_cleaning, self.block_building, self.comparison_cleaning, \
-            self.clustering, self.joins, self.entity_matching = \
-            block_cleaning, block_building, comparison_cleaning, clustering, joins, entity_matching
         self.f1: list = []
         self.recall: list = []
         self.precision: list = []
@@ -50,128 +42,14 @@ class WorkFlow(ABC):
         self._workflow_bar: tqdm
         self.final_pairs = None
 
+    @abstractmethod
     def run(self,
             data: Data,
             verbose: bool = False,
             with_classification_report: bool = False,
             workflow_step_tqdm_disable: bool = True,
-            workflow_tqdm_enable: bool = False
-        ) -> None:
-        """Main function for creating an Entity resolution workflow.
-
-        Args:
-            data (Data): Dataset module.
-            verbose (bool, optional): Print detailed report for each step. Defaults to False.
-            with_classification_report (bool, optional): Print pairs counts. Defaults to False.
-            workflow_step_tqdm_disable (bool, optional):  Tqdm progress bar in each step. Defaults to True.
-            workflow_tqdm_enable (bool, optional): Overall progress bar. Defaults to False.
-        """
-        steps = [self.block_building, self.entity_matching, self.clustering, self.joins, self.block_cleaning, self.comparison_cleaning]
-        num_of_steps = sum(x is not None for x in steps)
-        self._workflow_bar = tqdm(total=num_of_steps,
-                                  desc=self.name,
-                                  disable=not workflow_tqdm_enable)
-        self.data = data
-        self._init_experiment()
-        start_time = time()
-        #
-        # Block building step: Only one algorithm can be performed
-        #
-        block_building_method = self.block_building['method'](**self.block_building["params"]) \
-                                                    if "params" in self.block_building \
-                                                    else self.block_building['method']()
-
-        block_building_blocks = \
-            block_building_method.build_blocks(data,
-                                               attributes_1=self.block_building["attributes_1"] \
-                                                                if "attributes_1" in self.block_building else None,
-                                                attributes_2=self.block_building["attributes_2"] \
-                                                                if "attributes_2" in self.block_building else None,
-                                                tqdm_disable=workflow_step_tqdm_disable)
-        self.final_pairs = block_building_blocks
-        res = block_building_method.evaluate(block_building_blocks,
-                                            export_to_dict=True,
-                                            with_classification_report=with_classification_report,
-                                            verbose=verbose)
-        self._save_step(res, block_building_method.method_configuration())
-        self._workflow_bar.update(1)
-        #
-        # Block cleaning step [optional]: Multiple algorithms
-        #
-        block_cleaning_blocks = None
-        if self.block_cleaning:
-            if isinstance(self.block_cleaning, dict):
-                self.block_cleaning = list(self.block_cleaning)
-            bblocks = block_building_blocks
-            for block_cleaning in self.block_cleaning:
-                block_cleaning_method = block_cleaning['method'](**block_cleaning["params"]) \
-                                                    if "params" in block_cleaning \
-                                                    else block_cleaning['method']()
-                block_cleaning_blocks = block_cleaning_method.process(bblocks,
-                                                                      data,
-                                                                      tqdm_disable=workflow_step_tqdm_disable)
-                
-                self.final_pairs = bblocks = block_cleaning_blocks
-                res = block_cleaning_method.evaluate(bblocks,
-                                                    export_to_dict=True,
-                                                    with_classification_report=with_classification_report,
-                                                    verbose=verbose)
-                self._save_step(res, block_cleaning_method.method_configuration())
-                self._workflow_bar.update(1)
-        #
-        # Comparison cleaning step [optional]
-        #
-        comparison_cleaning_blocks = None
-        if self.comparison_cleaning:
-            comparison_cleaning_method = self.comparison_cleaning['method'](**self.comparison_cleaning["params"]) \
-                                            if "params" in self.comparison_cleaning \
-                                            else self.comparison_cleaning['method']()
-            self.final_pairs = \
-            comparison_cleaning_blocks = \
-            comparison_cleaning_method.process(block_cleaning_blocks if block_cleaning_blocks is not None \
-                                                    else block_building_blocks,
-                                                data,
-                                                tqdm_disable=workflow_step_tqdm_disable)
-            res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
-                                                      export_to_dict=True,
-                                                      with_classification_report=with_classification_report,
-                                                      verbose=verbose)
-            self._save_step(res, comparison_cleaning_method.method_configuration())
-            self._workflow_bar.update(1)
-        #
-        # Entity Matching step
-        #
-        entity_matching_method = self.entity_matching['method'](**self.entity_matching["params"]) \
-                                        if "params" in self.entity_matching \
-                                        else self.entity_matching['method']()
-        self.final_pairs = em_graph = entity_matching_method.predict(
-            comparison_cleaning_blocks if comparison_cleaning_blocks is not None \
-                else block_building_blocks,
-            data,
-            tqdm_disable=workflow_step_tqdm_disable
-        )
-        res = entity_matching_method.evaluate(em_graph,
-                                                export_to_dict=True,
-                                                with_classification_report=with_classification_report,
-                                                verbose=verbose)
-        self._save_step(res, entity_matching_method.method_configuration())
-        self._workflow_bar.update(1)
-        #
-        # Clustering step [optional]
-        #
-        if self.clustering:
-            clustering_method = self.clustering['method'](**self.clustering["params"]) \
-                                            if "params" in self.clustering \
-                                            else self.clustering['method']()
-            self.final_pairs = components = clustering_method.process(em_graph, data)
-            res = clustering_method.evaluate(components,
-                                            export_to_dict=True,
-                                            with_classification_report=False,
-                                            verbose=verbose)
-            self._save_step(res, clustering_method.method_configuration())
-            self.workflow_exec_time = time() - start_time
-            self._workflow_bar.update(1)
-        # self.runtime.append(self.workflow_exec_time)
+            workflow_tqdm_enable: bool = False) -> None:
+        pass
 
     def _init_experiment(self) -> None:
         self.f1: list = []
@@ -327,11 +205,11 @@ class WorkFlow(ABC):
         """
         return self.f1[-1], self.precision[-1], self.recall[-1]
 
-def compare_workflows(workflows: List[WorkFlow], with_visualization=True) -> pd.DataFrame:
+def compare_workflows(workflows: List[PYJEDAIWorkFlow], with_visualization=True) -> pd.DataFrame:
     """Compares workflows by creating multiple plots and tables with results.
 
     Args:
-        workflows (List[WorkFlow]): Different workflows
+        workflows (List[PYJEDAIWorkFlow]): Different workflows
         with_visualization (bool, optional): Diagram generation. Defaults to True.
 
     Returns:
@@ -373,121 +251,6 @@ def compare_workflows(workflows: List[WorkFlow], with_visualization=True) -> pd.
     plt.show()
 
     return workflow_df
-
-
-############################################
-#  Pre-defined workflows same as JedAI     #
-############################################
-
-def get_best_blocking_workflow_ccer() -> WorkFlow:
-    """Best CC-ER workflow.
-
-    Returns:
-        WorkFlow: Best workflow
-    """
-    return WorkFlow(
-        block_building = dict(
-            method=StandardBlocking
-        ),
-        block_cleaning = [
-            dict(
-                method=BlockPurging,
-                params=dict(smoothing_factor=1.0)
-            ),
-            dict(
-                method=BlockFiltering
-            )
-
-        ],
-        comparison_cleaning = dict(method=CardinalityNodePruning),
-        entity_matching = dict(
-            method=EntityMatching,
-            metric='cosine',
-            similarity_threshold=0.55
-        ),
-        clustering = dict(
-            method=ConnectedComponentsClustering
-        ),
-        name="best-ccer-workflow"
-    )
-
-def get_best_blocking_workflow_der():
-    """Best D-ER workflow.
-
-    Returns:
-        WorkFlow: Best workflow
-    """
-    return WorkFlow(
-        block_building = dict(
-            method=StandardBlocking
-        ),
-        block_cleaning = [
-            dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
-            dict(method=BlockFiltering)
-        ],
-        comparison_cleaning = dict(method=CardinalityNodePruning,
-                                   params=dict(weighting_scheme='JS')),
-        entity_matching = dict(method=EntityMatching, 
-                               params=dict(metric='cosine',
-                                           similarity_threshold=0.55)),
-        clustering = dict(method=ConnectedComponentsClustering),
-        name="best-der-workflow"
-    )
-
-def get_default_blocking_workflow_ccer():
-    """Default CC-ER workflow.
-
-    Returns:
-        WorkFlow: Default workflow
-    """
-    return WorkFlow(
-        block_building = dict(
-            method=StandardBlocking
-        ),
-        block_cleaning = [
-            dict(
-                method=BlockPurging,
-                params=dict(smoothing_factor=1.0)
-            ),
-            dict(
-                method=BlockFiltering
-            )
-
-        ],
-        comparison_cleaning = dict(method=CardinalityNodePruning),
-        entity_matching = dict(
-            method=EntityMatching,
-            metric='cosine',
-            similarity_threshold=0.55
-        ),
-        clustering = dict(
-            method=UniqueMappingClustering
-        ),
-        name="default-ccer-workflow"
-    )
-
-def get_default_blocking_workflow_der():
-    """Default D-ER workflow.
-
-    Returns:
-        WorkFlow: Best workflow
-    """
-    return WorkFlow(
-        block_building = dict(
-            method=StandardBlocking
-        ),
-        block_cleaning = [
-            dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
-            dict(method=BlockFiltering)
-        ],
-        comparison_cleaning = dict(method=CardinalityNodePruning, 
-                                   params=dict(weighting_scheme='JS')),
-        entity_matching = dict(method=EntityMatching,
-                               params=dict(metric='cosine',
-                                           similarity_threshold=0.55)),
-        name="default-der-workflow"
-    )
-
 
 class OptimizeWorkflow:
     """Optuna Framework for GridSearch/RandomSearch/Prunning in a given pyjedai workflow.
@@ -588,3 +351,330 @@ class OptimizeWorkflow:
     
     def to_df():
         pass
+
+class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
+    """Blocking-based workflow.
+    """
+
+    def __init__(
+            self,
+            block_building: dict = None,
+            entity_matching: dict = None,
+            block_cleaning: dict = None,
+            comparison_cleaning: dict = None,
+            clustering: dict = None,
+            joins: dict = None,
+            name: str = None
+    ) -> None:
+        super().__init__()
+        self.block_cleaning, self.block_building, self.comparison_cleaning, \
+            self.clustering, self.joins, self.entity_matching = \
+            block_cleaning, block_building, comparison_cleaning, clustering, joins, entity_matching
+        self.name: str = name if name else "BlockingBasedWorkFlow-" + str(self._id)
+
+    def run(self,
+            data: Data,
+            verbose: bool = False,
+            with_classification_report: bool = False,
+            workflow_step_tqdm_disable: bool = True,
+            workflow_tqdm_enable: bool = False
+        ) -> None:
+        """Main function for creating an Entity resolution workflow.
+
+        Args:
+            data (Data): Dataset module.
+            verbose (bool, optional): Print detailed report for each step. Defaults to False.
+            with_classification_report (bool, optional): Print pairs counts. Defaults to False.
+            workflow_step_tqdm_disable (bool, optional):  Tqdm progress bar in each step. Defaults to True.
+            workflow_tqdm_enable (bool, optional): Overall progress bar. Defaults to False.
+        """
+        steps = [self.block_building, self.entity_matching, self.clustering, self.joins, self.block_cleaning, self.comparison_cleaning]
+        num_of_steps = sum(x is not None for x in steps)
+        self._workflow_bar = tqdm(total=num_of_steps,
+                                  desc=self.name,
+                                  disable=not workflow_tqdm_enable)
+        self.data = data
+        self._init_experiment()
+        start_time = time()
+        #
+        # Block building step: Only one algorithm can be performed
+        #
+        block_building_method = self.block_building['method'](**self.block_building["params"]) \
+                                                    if "params" in self.block_building \
+                                                    else self.block_building['method']()
+
+        block_building_blocks = \
+            block_building_method.build_blocks(data,
+                                               attributes_1=self.block_building["attributes_1"] \
+                                                                if "attributes_1" in self.block_building else None,
+                                                attributes_2=self.block_building["attributes_2"] \
+                                                                if "attributes_2" in self.block_building else None,
+                                                tqdm_disable=workflow_step_tqdm_disable)
+        self.final_pairs = block_building_blocks
+        res = block_building_method.evaluate(block_building_blocks,
+                                            export_to_dict=True,
+                                            with_classification_report=with_classification_report,
+                                            verbose=verbose)
+        self._save_step(res, block_building_method.method_configuration())
+        self._workflow_bar.update(1)
+        #
+        # Block cleaning step [optional]: Multiple algorithms
+        #
+        block_cleaning_blocks = None
+        if self.block_cleaning:
+            if isinstance(self.block_cleaning, dict):
+                self.block_cleaning = list(self.block_cleaning)
+            bblocks = block_building_blocks
+            for block_cleaning in self.block_cleaning:
+                block_cleaning_method = block_cleaning['method'](**block_cleaning["params"]) \
+                                                    if "params" in block_cleaning \
+                                                    else block_cleaning['method']()
+                block_cleaning_blocks = block_cleaning_method.process(bblocks,
+                                                                      data,
+                                                                      tqdm_disable=workflow_step_tqdm_disable)
+                
+                self.final_pairs = bblocks = block_cleaning_blocks
+                res = block_cleaning_method.evaluate(bblocks,
+                                                    export_to_dict=True,
+                                                    with_classification_report=with_classification_report,
+                                                    verbose=verbose)
+                self._save_step(res, block_cleaning_method.method_configuration())
+                self._workflow_bar.update(1)
+        #
+        # Comparison cleaning step [optional]
+        #
+        comparison_cleaning_blocks = None
+        if self.comparison_cleaning:
+            comparison_cleaning_method = self.comparison_cleaning['method'](**self.comparison_cleaning["params"]) \
+                                            if "params" in self.comparison_cleaning \
+                                            else self.comparison_cleaning['method']()
+            self.final_pairs = \
+            comparison_cleaning_blocks = \
+            comparison_cleaning_method.process(block_cleaning_blocks if block_cleaning_blocks is not None \
+                                                    else block_building_blocks,
+                                                data,
+                                                tqdm_disable=workflow_step_tqdm_disable)
+            res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
+                                                      export_to_dict=True,
+                                                      with_classification_report=with_classification_report,
+                                                      verbose=verbose)
+            self._save_step(res, comparison_cleaning_method.method_configuration())
+            self._workflow_bar.update(1)
+        #
+        # Entity Matching step
+        #
+        entity_matching_method = self.entity_matching['method'](**self.entity_matching["params"]) \
+                                        if "params" in self.entity_matching \
+                                        else self.entity_matching['method']()
+                                        
+        if "exec_params" not in self.entity_matching:
+            self.final_pairs = em_graph = entity_matching_method.predict(
+                comparison_cleaning_blocks if comparison_cleaning_blocks is not None \
+                    else block_building_blocks,
+                data,
+                tqdm_disable=workflow_step_tqdm_disable)
+        else:
+            self.final_pairs = em_graph = entity_matching_method.predict(
+                comparison_cleaning_blocks if comparison_cleaning_blocks is not None \
+                    else block_building_blocks,
+                data,
+                tqdm_disable=workflow_step_tqdm_disable,
+                **self.entity_matching["exec_params"])
+
+        res = entity_matching_method.evaluate(em_graph,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+        self._save_step(res, entity_matching_method.method_configuration())
+        self._workflow_bar.update(1)
+        #
+        # Clustering step [optional]
+        #
+        if self.clustering:
+            clustering_method = self.clustering['method'](**self.clustering["params"]) \
+                                            if "params" in self.clustering \
+                                            else self.clustering['method']()
+            if "exec_params" not in self.clustering:
+                self.final_pairs = components = clustering_method.process(em_graph, data)
+            else:
+                self.final_pairs = components = clustering_method.process(em_graph, data, **self.clustering["exec_params"])
+            
+            res = clustering_method.evaluate(components,
+                                            export_to_dict=True,
+                                            with_classification_report=False,
+                                            verbose=verbose)
+            self._save_step(res, clustering_method.method_configuration())
+            self.workflow_exec_time = time() - start_time
+            self._workflow_bar.update(1)
+        # self.runtime.append(self.workflow_exec_time)
+
+    ############################################
+    #  Pre-defined workflows same as JedAI     #
+    ############################################
+
+    def best_blocking_workflow_ccer(self) -> None:
+        """Best CC-ER workflow.
+
+        Returns:
+            PYJEDAIWorkFlow: Best workflow
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [dict(
+            method=BlockFiltering,
+            params=dict(ratio=0.9)
+        )]
+        self.comparison_cleaning = dict(method=WeightedEdgePruning, params=dict(weighting_scheme='EJS'))
+        self.entity_matching = dict(method=EntityMatching,
+                                    params=dict(metric='cosine',
+                                                     tokenizer='tfidf_char_3gram', 
+                                                     similarity_threshold=0.0))
+        self.clustering = dict(method=UniqueMappingClustering, 
+                               exec_params=dict(similarity_threshold=0.17))
+        self.name="best-ccer-workflow"
+
+    def best_blocking_workflow_der(self) -> None:
+        """Best D-ER workflow.
+
+        Returns:
+            PYJEDAIWorkFlow: Best workflow
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+            dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+            dict(method=BlockFiltering)
+        ]
+        self.comparison_cleaning = dict(method=CardinalityNodePruning,
+                                    params=dict(weighting_scheme='JS'))
+        self.entity_matching = dict(method=EntityMatching, 
+                                    params=dict(metric='cosine',
+                                                similarity_threshold=0.55))
+        self.clustering = dict(method=ConnectedComponentsClustering),
+        self.name="best-der-workflow"
+
+    def default_blocking_workflow_ccer(self) -> None:
+        """Default CC-ER workflow.
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+                dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+                dict(method=BlockFiltering)
+            ]
+        self.comparison_cleaning = dict(method=CardinalityNodePruning)
+        self.entity_matching = dict(method=EntityMatching,
+                                    metric='cosine',
+                                    similarity_threshold=0.55)
+        self.clustering = dict(method=UniqueMappingClustering)
+        self.name="default-ccer-workflow"
+
+    def default_blocking_workflow_der(self) -> None:
+        """Default D-ER workflow.
+
+        Returns:
+            PYJEDAIWorkFlow: Best workflow
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+                dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+                dict(method=BlockFiltering)
+        ]
+        self.comparison_cleaning = dict(method=CardinalityNodePruning, 
+                                        params=dict(weighting_scheme='JS'))
+        self.entity_matching = dict(method=EntityMatching,
+                                    params=dict(metric='cosine', 
+                                                similarity_threshold=0.55))
+        self.name="default-der-workflow"
+ 
+class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
+    """Blocking-based workflow.
+    """
+
+    def __init__(
+            self,
+            block_building: dict,
+            clustering: dict = None,
+            name: str = None
+    ) -> None:
+        super().__init__()
+        self.block_building, self.clustering = block_building, clustering
+        self.name: str = name if name else "Workflow-" + str(self._id)
+
+    def run(self,
+            data: Data,
+            verbose: bool = False,
+            with_classification_report: bool = False,
+            workflow_step_tqdm_disable: bool = False,
+            workflow_tqdm_enable: bool = False
+        ) -> None:
+        """Main function for creating an Entity resolution workflow.
+
+        Args:
+            data (Data): Dataset module.
+            verbose (bool, optional): Print detailed report for each step. Defaults to False.
+            with_classification_report (bool, optional): Print pairs counts. Defaults to False.
+            workflow_step_tqdm_disable (bool, optional):  Tqdm progress bar in each step. Defaults to True.
+            workflow_tqdm_enable (bool, optional): Overall progress bar. Defaults to False.
+        """
+        steps = [self.block_building, self.clustering]
+        num_of_steps = sum(x is not None for x in steps)
+        self._workflow_bar = tqdm(total=num_of_steps,
+                                  desc=self.name,
+                                  disable=not workflow_tqdm_enable)
+        self.data = data
+        self._init_experiment()
+        start_time = time()
+        #
+        # Block building step: Only one algorithm can be performed
+        #
+        block_building_method = self.block_building['method'](**self.block_building["params"]) \
+                                                    if "params" in self.block_building \
+                                                    else self.block_building['method']()
+
+        
+        if "exec_params" not in self.block_building:
+            block_building_blocks, em_graph = \
+                block_building_method.build_blocks(data,
+                                            attributes_1=self.block_building["attributes_1"] \
+                                                                if "attributes_1" in self.block_building else None,
+                                                attributes_2=self.block_building["attributes_2"] \
+                                                                if "attributes_2" in self.block_building else None,
+                                                tqdm_disable=workflow_step_tqdm_disable)
+        else:
+            block_building_blocks, em_graph = \
+                block_building_method.build_blocks(data, 
+                                                   attributes_1=self.block_building["attributes_1"] \
+                                                                if "attributes_1" in self.block_building else None,
+                                                    attributes_2=self.block_building["attributes_2"] \
+                                                                if "attributes_2" in self.block_building else None,
+                                                tqdm_disable=workflow_step_tqdm_disable,
+                                                with_entity_matching=True,
+                                                **self.block_building["exec_params"])                
+
+        self.final_pairs = block_building_blocks
+        res = block_building_method.evaluate(block_building_blocks,
+                                            export_to_dict=True,
+                                            with_classification_report=with_classification_report,
+                                            verbose=verbose)
+        self._save_step(res, block_building_method.method_configuration())
+        self._workflow_bar.update(1)
+        #
+        # Clustering step [optional]
+        #
+        if self.clustering:
+            clustering_method = self.clustering['method'](**self.clustering["params"]) \
+                                            if "params" in self.clustering \
+                                            else self.clustering['method']()
+            self.final_pairs = components = clustering_method.process(em_graph, data)
+            res = clustering_method.evaluate(components,
+                                            export_to_dict=True,
+                                            with_classification_report=False,
+                                            verbose=verbose)
+            self._save_step(res, clustering_method.method_configuration())
+            self.workflow_exec_time = time() - start_time
+            self._workflow_bar.update(1)
+        # self.runtime.append(self.workflow_exec_time)
+
+# class SimilarityJoinsWorkFlow(PYJEDAIWorkFlow):
+#     raise NotImplementedError("Joins workflow is not implemented yet.")
+
+# class ProgressiveWorkFlow(PYJEDAIWorkFlow):
+#     raise NotImplementedError("Progressive workflow is not implemented yet.")

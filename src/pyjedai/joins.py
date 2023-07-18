@@ -268,9 +268,6 @@ class AbstractJoin(PYJEDAIFeature):
     def stats(self) -> None:
         pass
 
-    def stats(self) -> None:
-        pass
-
     def _configuration(self) -> dict:
         return {
             "similarity_threshold" : self.similarity_threshold,
@@ -279,6 +276,30 @@ class AbstractJoin(PYJEDAIFeature):
             "qgrams": self.qgrams
         }    
 
+    def export_to_df(self, prediction) -> pd.DataFrame:
+        """creates a dataframe with the predicted pairs
+
+        Args:
+            prediction (any): Predicted candidate pairs
+
+        Returns:
+            pd.DataFrame: Dataframe with the predicted pairs
+        """
+        if self.data.ground_truth is None:
+            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
+                Data object mush have initialized with the ground-truth file")
+        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+        for edge in prediction.edges:
+            id1 = self.data._gt_to_ids_reversed_1[edge[0]]
+            id2 = self.data._gt_to_ids_reversed_1[edge[1]] if self.data.is_dirty_er \
+                        else self.data._gt_to_ids_reversed_2[edge[1]]
+            pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+
+        return pairs_df
+
+    
+    
+    
 class EJoin(AbstractJoin):
     """
      E Join algorithm

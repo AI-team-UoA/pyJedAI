@@ -1,6 +1,7 @@
 """Entity Matching Module
 """
 import statistics
+import pandas as pd
 from time import time
 
 import matplotlib.pyplot as plt
@@ -18,17 +19,14 @@ from py_stringmatching.similarity_measure.overlap_coefficient import \
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from py_stringmatching.tokenizer.whitespace_tokenizer import \
     WhitespaceTokenizer
-from scipy.spatial.distance import dice, jaccard
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics.pairwise import pairwise_distances
 from tqdm.autonotebook import tqdm
-from whoosh.scoring import BM25F, PL2, TF_IDF, Frequency
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
 from .utils import WordQgramTokenizer, cosine, get_qgram_from_tokenizer_name
 
-# Package import from https://anhaidgroup.github.io/py_stringmatching/v0.4.2/index.html
 
 metrics_mapping = {
     'edit_distance': Levenshtein(),
@@ -38,10 +36,6 @@ metrics_mapping = {
     'generalized_jaccard' : GeneralizedJaccard(),
     'dice': Dice(),
     'overlap_coefficient' : OverlapCoefficient(),
-    'TF-IDF' : TF_IDF(),
-    'Frequency' : Frequency(),
-    'PL2' : PL2(),
-    'BM25F' : BM25F()
 }
 
 vector_metrics_mapping = {
@@ -56,7 +50,7 @@ set_metrics = [
     'cosine', 'dice', 'generalized_jaccard', 'jaccard', 'overlap_coefficient'
 ]
 
-vector_metrics = [
+vector_metrics = [ 
     'cosine', 'dice', 'jaccard'
 ]
 
@@ -295,7 +289,7 @@ class AbstractEntityMatching(PYJEDAIFeature):
     def stats(self) -> None:
         pass
     
-    def export_pairs(self, filename: str, with_similarity: bool = True) -> None:
+    def export_pairs_to_csv(self, filename: str, with_similarity: bool = True) -> None:
         if self.pairs is None:
             raise AttributeError("Pairs have not been initialized yet. " +
                                  "Please run the method `run` first.")
@@ -309,6 +303,28 @@ class AbstractEntityMatching(PYJEDAIFeature):
                 else:
                     f.write(f"{e1}, {e2}\n")
             f.close()
+
+    def export_to_df(self, prediction: Graph) -> pd.DataFrame:
+        """creates a dataframe with the predicted pairs
+
+        Args:
+            prediction (any): Predicted graph
+
+        Returns:
+            pd.DataFrame: Dataframe with the predicted pairs
+        """
+        if self.data.ground_truth is None:
+            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
+                Data object mush have initialized with the ground-truth file")
+        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+        for edge in prediction.edges:
+            id1 = self.data._gt_to_ids_reversed_1[edge[0]]
+            id2 = self.data._gt_to_ids_reversed_1[edge[1]] if self.data.is_dirty_er \
+                        else self.data._gt_to_ids_reversed_2[edge[1]]
+            pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+
+        return pairs_df
+
 
 class EntityMatching(AbstractEntityMatching):
     """Calculates similarity from 0.0 to 1.0 for all blocks

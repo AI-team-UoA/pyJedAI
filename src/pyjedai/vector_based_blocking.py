@@ -7,6 +7,7 @@ import pickle
 import re
 import sys
 import warnings
+import pandas as pd
 from time import time
 from typing import List, Tuple
 
@@ -392,7 +393,10 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         
         self.distances, self.neighbors = index.search(self.vectors_1 if self.data.is_dirty_er else self.vectors_2,
                                     self.top_k)
-        
+
+        if self.simiarity_distance == 'euclidean':
+            self.distances = 1/(1 + self.distances)
+
         self.blocks = dict()
         
         for _entity in range(0, self.neighbors.shape[0]):
@@ -419,34 +423,10 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
 
     def _similarity_search_with_FALCONN(self):
-        pass
+        raise NotImplementedError("FALCONN is not implemented yet.")
 
     def _similarity_search_with_SCANN(self):
-        if not LINUX_ENV:
-            raise ImportError("Can't use SCANN in windows environment. Use FAISS instead.")
-
-        searcher = scann.scann_ops_pybind.builder(self.vectors_1,
-                                                    num_neighbors=self.top_k, 
-                                                    distance_measure="dot_product") \
-                                        .tree(num_leaves=2000, num_leaves_to_search=100, training_sample_size=250000) \
-                                        .score_ah(2, anisotropic_quantization_threshold=0.2) \
-                                        .reorder(100) \
-                                        .build()
-
-        self.neighbors, self.distances = searcher.search_batched(
-            self.vectors_1 if self.data.is_dirty_er else self.vectors_2,
-            final_num_neighbors=self.top_k
-        )
-        if self.data.is_dirty_er:
-            self.blocks = {
-                self._si.d1_retained_ids[i] : set(x for x in self.neighbors[i] if x not in [-1, i]) \
-                        for i in range(0, self.neighbors.shape[0])
-            }
-        else:
-            self.blocks = {
-                self._si.d2_retained_ids[i] : set(x for x in self.neighbors[i] if x != -1) \
-                        for i in range(0, self.neighbors.shape[0])
-            }
+        raise NotImplementedError("SCANN is not implemented yet.")
 
     def _create_vector(self, tokens: List[str], vocabulary) -> np.array:
         num_of_tokens = 0
@@ -525,3 +505,26 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             pass
         
         print(u'\u2500' * 123)
+        
+    
+    def export_to_df(self, prediction) -> pd.DataFrame:
+        """creates a dataframe with the predicted pairs
+
+        Args:
+            prediction (any): Predicted candidate pairs
+
+        Returns:
+            pd.DataFrame: Dataframe with the predicted pairs
+        """
+        if self.data.ground_truth is None:
+            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
+                Data object mush have initialized with the ground-truth file")
+        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
+        for entity_id, candidates in prediction:
+            id1 = self.data._gt_to_ids_reversed_1[entity_id]                                            
+            for candiadate_id in candidates:
+                id2 = self.data._gt_to_ids_reversed_1[candiadate_id] if self.data.is_dirty_er \
+                        else self.data._gt_to_ids_reversed_2[candiadate_id]
+                pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+
+        return pairs_df
