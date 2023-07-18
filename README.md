@@ -25,10 +25,10 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 __Open demos are available in:__
 
 <div align="center">
-    <a href="https://nbviewer.org/github/AI-team-UoA/pyJedAI/blob/main/tutorials/Demo.ipynb">
+    <a href="https://nbviewer.org/github/AI-team-UoA/pyJedAI/blob/main/docs/tutorials/Demo.ipynb">
         <img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
     </a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://github.com/AI-team-UoA/pyJedAI/blob/main/tutorials/Demo.ipynb">
+    <a href="https://github.com/AI-team-UoA/pyJedAI/blob/main/tutorials/docs/Demo.ipynb">
         <img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
     </a>
 </div>
