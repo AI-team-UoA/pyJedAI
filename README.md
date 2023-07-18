@@ -86,6 +86,7 @@ See the full list of dependencies and all versions used, in this [file](https://
 __Status__
 
 [![Tests](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml)
+[![PyPi](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/pypi-publish.yml/badge.svg)](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/pypi-publish.yml)
 [![made-with-python](https://readthedocs.org/projects/pyjedai/badge/?version=latest)](https://pyjedai.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/AI-team-UoA/pyjedai/branch/master/graph/badge.svg?token=4QR0X315CL)](https://codecov.io/gh/AI-team-UoA/pyjedai)
 
