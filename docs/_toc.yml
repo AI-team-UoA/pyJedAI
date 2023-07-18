@@ -52,7 +52,7 @@ parts:
       title: Publications
     - url: https://stelar-project.eu
       title: STELAR - HORIZON-EU
-  - caption: links
+  - caption: Links
     chapters:
     - url: https://github.com/AI-team-UoA/pyJedAI
       title: AI-Team @ University of Athens
