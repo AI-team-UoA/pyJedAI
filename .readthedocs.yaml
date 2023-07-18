@@ -8,6 +8,7 @@ build:
   jobs:
     pre_build:
       # Generate on-the-fly Sphinx configuration from Jupyter Book's _config.yml
+      - "pip install . "
       - "jupyter-book config sphinx docs/"
       - echo "Command run at 'pre_create_environment' step"
       - pwd
