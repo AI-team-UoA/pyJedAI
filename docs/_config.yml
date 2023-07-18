@@ -29,7 +29,7 @@ repository:
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
-  favicon: "icons8-droid-67.png"
+  favicon: "img/icons8-droid-67.png"
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: false
@@ -60,47 +60,11 @@ launch_buttons:
   thebe: true
 
 sphinx:
-  config:
-    intersphinx_mapping:
-      ebp:
-        - "https://executablebooks.org/en/latest/"
-        - null
-      myst-parser:
-        - "https://myst-parser.readthedocs.io/en/latest/"
-        - null
-      myst-nb:
-        - "https://myst-nb.readthedocs.io/en/latest/"
-        - null
-      sphinx:
-        - "https://www.sphinx-doc.org/en/master"
-        - null
-      nbformat:
-        - "https://nbformat.readthedocs.io/en/latest"
-        - null
-      sd:
-        - "https://sphinx-design.readthedocs.io/en/latest"
-        - null
-      sphinxproof:
-        - "https://sphinx-proof.readthedocs.io/en/latest/"
-        - null
-    hoverxref_intersphinx:
-     - "sphinxproof"
-    mathjax3_config:
-      tex:
-        macros:
-          "N": "\\mathbb{N}"
-          "floor": ["\\lfloor#1\\rfloor", 1]
-          "bmat": ["\\left[\\begin{array}"]
-          "emat": ["\\end{array}\\right]"]
-        
   extra_extensions:
-    - sphinx.ext.intersphinx
-    - sphinx_inline_tabs
-    - sphinx_proof
-    - sphinx_examples
-    - hoverxref.extension
-    - sphinx.ext.autodoc
-    - sphinx.ext.napoleon
-    - sphinx.ext.viewcode
-  autosummary_generate: True
-  add_module_names: False
+  - 'sphinx.ext.autodoc'
+  - 'sphinx.ext.viewcode'
+  - 'sphinx.ext.napoleon'
+  - 'sphinx.ext.autosummary'
+  config:
+    add_module_names: True
+    autosummary_generate: True

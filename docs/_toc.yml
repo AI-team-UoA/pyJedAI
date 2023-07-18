@@ -6,71 +6,55 @@ root: intro
 parts:
   - caption: Tutorials
     chapters:
-    - file: Demo.ipynb
+    - file: tutorials/Demo.ipynb
       title: Build a simple workflow
-    - file: Readers.ipynb
-      title: Examples in transforming datasets to pandas
-    - file: WorkFlow.ipynb
+    - file: tutorials/WorkFlow.ipynb
       title: User-Friendly approach
-    - file: CleanCleanER.ipynb
+    - file: tutorials/CleanCleanER.ipynb
       title: Clean-Clean Entity Resolution for Devs
-    - file: DirtyER.ipynb
-      title: Dirty Entity Resolution for Devs
-    - file: CleanCleanERwithoutGT.ipynb
+    - file: tutorials/CleanCleanERwithoutGT.ipynb
       title: Clean-Clean Entity Resolution without Ground Truth
-    - file: Optuna.ipynb
+    - file: tutorials/DirtyER.ipynb
+      title: Dirty Entity Resolution for Devs
+    - file: tutorials/Optuna.ipynb
       title: Fine-tunning with Optuna
+    - file: tutorials/SimilarityJoins.ipynb
+      title: Similarity Joins workflow
+    - file: tutorials/pyTorchWorkflow.ipynb
+      title: Workflow with pyTorch embeddings
+    - file: tutorials/TfIdfWorkflow.ipynb
+      title: Matching with TF-IDF embeddings
+    - file: tutorials/Readers.ipynb
+      title: Examples in transforming datasets to pandas
   - caption: Benchmarks
     chapters:
-    - file: benchmarks.md
+    - file: pages/kaggle.md
+      title: Kaggle competitions
+    - file: pages/benchmarks.md
       title: Results and Performance Demo
+  - caption: Code
+    chapters:
+    - file: code/api.rst
+      title: API
   - caption: Contribution guide
     chapters:
-    - file: contribution.md
+    - file: pages/contribution.md
       title: New to pyJedAI?
   - caption: Releases and News
     chapters:
-    - file: newsfeed.md
+    - file: pages/newsfeed.md
       title: Newsfeed
     - url: https://github.com/AI-team-UoA/pyJedAI/releases
       title: Releases
-  - caption: Get a Demo now!
-    chapters:
-    - file: demos.md
-      title: Web Applications with pyJedAI
   - caption: Publications & Fundings
     chapters:
-    - file: publications.md
+    - file: pages/publications.md
       title: Publications
     - url: https://stelar-project.eu
       title: STELAR - HORIZON-EU
-  # - caption: Code
-  #   chapters:
-  #   - file: datamodel.rst
-  #     title: Datamodel
-  #   - file: block_cleaning.rst
-  #     title: Block cleaning
-  #   - file: clustering.rst
-  #     title: Clustering    
-  #   - file: similarity_joins.rst
-  #     title: Similarity Joins
-  #   - file: matching.rst
-  #     title: Entity Matching
-  #   - file: evaluation.rst
-  #     title: Evaluation    
-  #   - file: comparison_cleaning.rst
-  #     title: Comparison Cleaning
-  #   - file: utils.rst
-  #     title: Utilities
-  - caption: Useful links
+  - caption: links
     chapters:
     - url: https://github.com/AI-team-UoA/pyJedAI
       title: AI-Team @ University of Athens
     - url: https://github.com/scify/JedAIToolkit
       title: Java JedAIToolkit
-
-# - caption: Tutorials
-#   chapters:
-#   - file: CleanCleanER
-#     title: Building a simple workflow
-

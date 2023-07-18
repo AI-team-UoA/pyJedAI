@@ -1,23 +1,5 @@
 (intro)=
 
-
-<div align="center">
-<img align="center" src="https://github.com/AI-team-UoA/.github/blob/main/AI_LOGO.png?raw=true" alt="pyJedAI" width="300"/>
-<br>
-<hr>
-<br>
-<img align="center" src="https://github.com/Nikoletos-K/pyJedAI/blob/main/docs/img/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="400"/>
-</div>
-<br><br>
-<div align="center">
-An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
-</div>
-<br>
-
----
-
-<br>
-
 # Overview
 
 pyJedAI is a python framework, aiming to offer experts and novice users, robust and fast solutions for multiple types of Entity Resolution problems. It is builded using state-of-the-art python frameworks. pyJedAI constitutes the sole open-source Link Discovery tool that is capable of exploiting the latest breakthroughs in Deep Learning and NLP techniques, which are publicly available through the Python data science ecosystem. This applies to both blocking and matching, thus ensuring high time efficiency, high scalability as well as high effectiveness, without requiring any labelled instances from the user.
@@ -30,46 +12,58 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 - Utilizes some of the famous and cutting-edge machine learning packages.
 - Offers supervised and un-supervised ML techniques.
 
-<!-- __Open demos are available in:__
-
-<div align="center">
-<a href="https://nbviewer.org/github/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
-<img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
-</a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Demo.ipynb">
-<img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
-</a>
-</div>
-
-__Google Colab Hands-on demo:__ 
-
-<div align="center">
-<a href="https://colab.research.google.com/drive/18VgEOKAc2ObFFxDNb2sjhBLKKsNvfEPo?usp=sharing">
-<img align="center" src="https://3.bp.blogspot.com/-apoBeWFycKQ/XhKB8fEprwI/AAAAAAAACM4/Sl76yzNSNYwlShIBrheDAum8L9qRtWNdgCLcBGAsYHQ/s1600/colab.png" width=120/> 
-</a>
-</div> -->
-
 # Install
 
-Install the latest version of pyjedai __[requires python >= 3.7]__:
+__PyPI__
+
+Install the latest version of pyjedai:
+
+```{warning}
+**Requires python >= 3.8**
+```
+
 ```
 pip install pyjedai
 ```
+More on [PyPI](https://pypi.org/project/pyjedai).
 
-More on [PyPI](https://pypi.org/project/pyjedai/).
+__Git__
 
-__Find last release source code in [GitHub](https://github.com/AI-team-UoA/pyJedAI).__
-
+Set up locally:
+```
+git clone https://github.com/AI-team-UoA/pyJedAI.git
+```
+go to the root directory with `cd pyJedAI` and type:
+```
+pip install .
+```
 
 # Tutorials
 
-| Tutorial | Notebook |
-|---|:-:|
-| Clean-Clean Entity Resolution.| [CleanCleanER.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/CleanCleanER.ipynb) |
-| Dirty Entity Resolution. | [DirtyER.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/DirtyER.ipynb)|
-| Fine-Tuning using Optuna. | [Optuna.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Optuna.ipynb) |
-| User-Friendly Approach. WorkFlow module. | [WorkFlow.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/WorkFlow.ipynb) |
-| Raw data to pandas DataFrame. | [Readers.ipynb](https://github.com/Nikoletos-K/pyJedAI/blob/main/tutorials/Readers.ipynb) |
+Find all the code of the tutotials in the [pyjedai/docs/tutorials](https://github.com/AI-team-UoA/pyJedAI/tree/main/docs/tutorials) folder.
+
+::::{grid}
+:gutter: 3
+
+:::{grid-item-card} Simple use case
+<a href="https://nbviewer.org/github/AI-team-UoA/pyJedAI/blob/main/docs/tutorials/Demo.ipynb">
+<img align="center" src="https://nbviewer.org/static/img/nav_logo.svg" width=120/> 
+</a>
+:::
+
+:::{grid-item-card} Detailed notebook
+<a href="https://github.com/AI-team-UoA/pyJedAI/blob/main/docs/tutorials/CleanCleanER.ipynb">
+<img align="center" src="https://miro.medium.com/max/1400/1*Edn_LpbSpLeNKfWkEdG2Jg.png" width=120/> 
+</a>
+:::
+
+:::{grid-item-card} Web Application using Colab
+<a href="https://colab.research.google.com/drive/18VgEOKAc2ObFFxDNb2sjhBLKKsNvfEPo?usp=sharing">
+<img align="center" src="https://3.bp.blogspot.com/-apoBeWFycKQ/XhKB8fEprwI/AAAAAAAACM4/Sl76yzNSNYwlShIBrheDAum8L9qRtWNdgCLcBGAsYHQ/s1600/colab.png" width=120/> 
+</a>
+:::
+::::
+
 
 # Dependencies
 
@@ -89,26 +83,55 @@ __Find last release source code in [GitHub](https://github.com/AI-team-UoA/pyJed
 
 <br>
 
-See the full list of dependencies and all versions used, in this [file](https://github.com/Nikoletos-K/pyJedAI/blob/main/requirements.txt).
+See the full list of dependencies and all versions used, in this [file](https://github.com/AI-team-UoA/pyJedAI/blob/main/pyproject.toml).
 
 
-__Status__ 
 
-[![Tests](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Nikoletos-K/pyJedAI/actions/workflows/tests.yml)
+__Status__
+
+[![Tests](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/AI-team-UoA/pyJedAI/actions/workflows/tests.yml)
 [![made-with-python](https://readthedocs.org/projects/pyjedai/badge/?version=latest)](https://pyjedai.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/AI-team-UoA/pyjedai/branch/master/graph/badge.svg?token=4QR0X315CL)](https://codecov.io/gh/AI-team-UoA/pyjedai)
+
+
+__Statistics & Info__
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pyjedai)
+[![PyPI version](https://img.shields.io/pypi/v/pyjedai.svg?logo=pypi&logoColor=FFE873)](https://pypi.org/project/pyjedai/)
 
 # Bugs, Discussions & News
 
 [GitHub Discussions](https://github.com/Nikoletos-K/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/Nikoletos-K/pyJedAI/issues).
 
+
+# Java - Wed Application 
+
+<img align="right" src="https://github.com/scify/JedAIToolkit/blob/master/documentation/JedAI_logo.png?raw=true" alt="pyJedAI" width="150"/>
+
+For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolkit). There you can find Java based code and a Web Application for interactive creation of ER workflows. <br><br> JedAI constitutes an open source, high scalability toolkit that offers out-of-the-box solutions for any data integration task, e.g., Record Linkage, Entity Resolution and Link Discovery. At its core lies a set of domain-independent, state-of-the-art techniques that apply to both RDF and relational data.
+
+
 # Team & Authors
 
-<img align="right" src="https://github.com/AI-team-UoA/.github/blob/main/AI_LOGO.png?raw=true" alt="pyJedAI" width="200"/>
+::::{grid}
+:gutter: 4
 
-- [Konstantinos Nikoletos](https://nikoletos-k.github.io)
-- Jakub Maciejewski
-- [George Papadakis](https://gpapadis.wordpress.com)
-- [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
+:::{grid-item-card} [Konstantinos Nikoletos](https://nikoletos-k.github.io)
+Researcher
+:::
+
+:::{grid-item-card} [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/)
+Researcher
+:::
+
+:::{grid-item-card} [George Papadakis](https://gpapadis.wordpress.com)
+Postdoctoral Researcher
+:::
+
+:::{grid-item-card} [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
+Professor
+:::
+::::
 
 Research and development is made under the supervision of Pr. Manolis Koubarakis. This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
 
@@ -116,7 +139,7 @@ Research and development is made under the supervision of Pr. Manolis Koubarakis
 
 Released under the Apache-2.0 license [(see LICENSE.txt)](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE).
 
-Copyright © 2022 AI-Team, University of Athens
+Copyright © 2023 AI-Team, University of Athens
 
 <div align="center">
  <hr>
