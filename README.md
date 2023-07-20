@@ -1,17 +1,16 @@
-
 <div align="center">
     <br>
     <img align="center" src="https://github.com/AI-team-UoA/pyJedAI/blob/main/docs/img/pyjedai.logo.drawio.png?raw=true" alt="pyJedAI" width="400"/>
 </div>
-
 <br>
 <br>
-
 <div align="center">
 An open-source library that leverages Python’s data science ecosystem to build <br> powerful end-to-end Entity Resolution workflows.
 </div>
 
+
 ---
+
 
 # Overview
 
