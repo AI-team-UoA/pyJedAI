@@ -63,8 +63,9 @@ dependencies = [
     "optuna >= 3.0",
     'tomli; python_version < "3.11"',
     "py-stringmatching >= 0.4",
-    "valentine>=0.1.5",
+    "valentine>=0.1; python_version > '3.7'",
     "ordered-set >= 4.0",
+    "plotly >= 5.16.0"
 ]
 
 [project.optional-dependencies]
