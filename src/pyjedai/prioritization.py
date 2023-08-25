@@ -54,10 +54,6 @@ from .utils import (
     FrequencyEvaluator)
 import pandas as pd
 import os
-from whoosh.fields import TEXT, Schema, ID
-from whoosh.index import create_in
-from whoosh import qparser
-from whoosh.scoring import TF_IDF, Frequency, PL2, BM25F
 from collections import defaultdict
 import sys
 from faiss import METRIC_INNER_PRODUCT, METRIC_L2
