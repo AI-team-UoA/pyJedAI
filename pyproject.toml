@@ -6,13 +6,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.0.9"
+version = "0.1.0"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
     { name = "Konstantinos Nikoletos", email = "nikoletos.kon@gmail.com" },
     { name = "George Papadakis", email = "gpapadis84@gmail.com" },
-    { name = "Jakub Maciejewski", email = "jacobb.maciejewski@gmail.com"}
+    { name = "Jakub Maciejewski", email = "jacobb.maciejewski@gmail.com"},
+    { name = "Manolis Koubarakis", email = "koubarak@di.uoa.gr"}
 ]
 license = {text = "Apache Software License 2.0"}
 classifiers = [

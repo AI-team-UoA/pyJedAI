@@ -44,6 +44,7 @@ class AbstractJoin(PYJEDAIFeature):
         self.attributes_2: list
         self._flags: np.array
         self.pairs: networkx.Graph
+        self.vectorizer = None
 
     def fit(self,
             data: Data,
@@ -145,11 +146,12 @@ class AbstractJoin(PYJEDAIFeature):
                 self._progress_bar.update(1)
         self._progress_bar.close()
         self.execution_time = time() - start_time
-
         return self.pairs
 
     def _tokenize_entity(self, entity: str) -> set:
-        if self.tokenization == 'qgrams':
+        if self.vectorizer is not None:
+            return entity.lower()
+        elif self.tokenization == 'qgrams':
             return set([' '.join(grams) for grams in nltk.ngrams(entity.lower(), n=self.qgrams)])
         elif self.tokenization == 'standard':
             return set(filter(None, re.split('[\\W_]', entity.lower())))
@@ -194,6 +196,18 @@ class AbstractJoin(PYJEDAIFeature):
             return 2 * common_tokens / (source_frequency+tokens_size)
         elif self.metric == 'jaccard':
             return common_tokens / (source_frequency+tokens_size-common_tokens)
+        
+    def _calc_vector_similarity(self, id1 : int, id2 : int) -> float:
+        """Vector based similarity score
+
+        Args:
+            id1 (int): D1 entity ID
+            id2 (int): D2 entity ID
+
+        Returns:
+            float: vector based similarity
+        """
+        return self.vectorizer.predict(id1=id1, id2=id2)
 
     def _create_entity_index(self, entities: list) -> dict:
         entity_index = defaultdict(set)
@@ -351,26 +365,28 @@ class TopKJoin(AbstractJoin):
     def _process_candidates(self, candidates: set, entity_id: int, tokens_size: int) -> None:
         minimum_weight=0
         pq = PriorityQueue()
-        for candidate_id in candidates:
-            sim = self._calc_similarity(
-                self._counters[candidate_id], self._source_frequency[candidate_id], tokens_size
-            )
+        pq.put(minimum_weight)
+        for index, candidate_id in enumerate(candidates):
+            if(self.vectorizer is None):
+                sim = self._calc_similarity(self._counters[candidate_id], self._source_frequency[candidate_id], tokens_size)
+            else:
+                sim = self._calc_vector_similarity(((candidate_id + self.data.dataset_limit) if self.reverse_order else candidate_id), entity_id)
             if minimum_weight < sim:
                 pq.put(sim)
                 if self.K < pq.qsize():
                     minimum_weight = pq.get()
 
         minimum_weight = pq.get()
-        for candidate_id in candidates:
+        for index, candidate_id in enumerate(candidates):
             self.similarity_threshold = minimum_weight
+            if(self.vectorizer is None):
+                sim = self._calc_similarity(self._counters[candidate_id], self._source_frequency[candidate_id], tokens_size)
+            else:
+                sim = self._calc_vector_similarity(((candidate_id + self.data.dataset_limit) if self.reverse_order else candidate_id), entity_id)
             self._insert_to_graph(
                 candidate_id + self.data.dataset_limit if self.reverse_order else candidate_id,
                 entity_id,
-                self._calc_similarity(
-                    self._counters[candidate_id], 
-                    self._source_frequency[candidate_id],
-                    tokens_size
-                )
+                sim
             )
 
     def _configuration(self) -> dict:

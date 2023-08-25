@@ -4,6 +4,7 @@ from time import time
 import pandas as pd
 from networkx import Graph, connected_components
 from tqdm.autonotebook import tqdm
+from ordered_set import OrderedSet
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
@@ -174,7 +175,7 @@ class UniqueMappingClustering(AbstractClustering):
         self.similarity_threshold: float = similarity_threshold
         
         start_time = time()
-        matched_entities = set()
+        matched_entities = OrderedSet()
         self.data = data
         new_graph = Graph()
         priority_queue = PriorityQueue(maxsize = graph.number_of_edges()*2)

@@ -142,7 +142,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self.with_entity_matching = with_entity_matching
         self.save_embeddings, self.load_embeddings_if_exist = save_embeddings, load_embeddings_if_exist
         self.max_word_embeddings_size = max_word_embeddings_size
-        self.simiarity_distance = similarity_distance
+        self.similarity_distance = similarity_distance
         self.data, self.attributes_1, self.attributes_2, self.vector_size, self.num_of_clusters, self.top_k, self.input_cleaned_blocks \
             = data, attributes_1, attributes_2, vector_size, num_of_clusters, top_k, input_cleaned_blocks
         self._progress_bar = tqdm(total=data.num_of_entities,
@@ -163,7 +163,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         self._si = SubsetIndexer(self.input_cleaned_blocks, self.data, self._applied_to_subset)
         self._d1_valid_indices: list[int] = self._si.d1_retained_ids
-        self._d2_valid_indices: list[int] = [x - self.data.dataset_limit for x in self._si.d2_retained_ids]   
+        self._d2_valid_indices: list[int] = [x - self.data.dataset_limit for x in self._si.d2_retained_ids]  if not data.is_dirty_er else None
 
         self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
                             .apply(" ".join, axis=1) \
@@ -368,33 +368,33 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
     def _similarity_search_with_FAISS(self):
         index = faiss.IndexFlatL2(self.vectors_1.shape[1])
         
-        if self.simiarity_distance == 'cosine' or self.simiarity_distance == 'cosine_without_normalization':
+        if self.similarity_distance == 'cosine' or self.similarity_distance == 'cosine_without_normalization':
             index.metric_type = faiss.METRIC_INNER_PRODUCT
-        elif self.simiarity_distance == 'euclidean':
+        elif self.similarity_distance == 'euclidean':
             index.metric_type = faiss.METRIC_L2
         else:
-            raise ValueError("Invalid similarity distance: ", self.simiarity_distance)
+            raise ValueError("Invalid similarity distance: ", self.similarity_distance)
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
             
         index.train(self.vectors_1)  # train on the vectors of dataset 1
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
 
         index.add(self.vectors_1)   # add the vectors and update the index
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
         
         self.distances, self.neighbors = index.search(self.vectors_1 if self.data.is_dirty_er else self.vectors_2,
                                     self.top_k)
 
-        if self.simiarity_distance == 'euclidean':
+        if self.similarity_distance == 'euclidean':
             self.distances = 1/(1 + self.distances)
 
         self.blocks = dict()
