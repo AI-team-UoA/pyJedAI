@@ -114,24 +114,35 @@ For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolki
 # Team & Authors
 
 ::::{grid}
-:gutter: 4
+:gutter: 2
 
 :::{grid-item-card} [Konstantinos Nikoletos](https://nikoletos-k.github.io)
-Researcher
+Research Associate at [University of Athens](https://en.uoa.gr)
 :::
 
 :::{grid-item-card} [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/)
-Researcher
+Research Associate at [University of Athens](https://en.uoa.gr)
 :::
 
+::::
+
+::::{grid}
+:gutter: 3
+
 :::{grid-item-card} [George Papadakis](https://gpapadis.wordpress.com)
-Postdoctoral Researcher
+Postdoctoral Researcher at [University of Athens](https://en.uoa.gr){bdg-primary}`Entity Resolution expert`
+:::
+
+:::{grid-item-card} [Ekaterini Ioannou](https://www.tilburguniversity.edu/staff/ekaterini-ioannou)
+Assistant Professor at [Tilburg University](https://www.tilburguniversity.edu)
+{bdg-primary}`Product Matching expert`
 :::
 
 :::{grid-item-card} [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
-Professor
+Professor at [University of Athens](https://en.uoa.gr)
 :::
 ::::
+
 
 Research and development is made under the supervision of Pr. Manolis Koubarakis. This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
 
