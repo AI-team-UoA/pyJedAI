@@ -13,7 +13,7 @@ title: "pyJedAI: a lightsaber for Link Discovery"
 version: 0.1.1
 url: "https://pyjedai.readthedocs.io/en/latest/intro.html"
 preferred-citation:
-  type: article
+  type: conference-paper
   authors:
     - family-names: "Nikoletos"
       given-names: "Konstantinos"
