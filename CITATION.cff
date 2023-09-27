@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Nikoletos"
+  given-names: "Konstantinos"
+  orcid: "https://orcid.org/0000-0003-3465-1197"
+- family-names: "Papadakis"
+  given-names: "George"
+  orcid: "https://orcid.org/0000-0002-7298-9431"
+- family-names: "Koubarakis"
+  given-names: "Manolis"
+title: "pyJedAI: a lightsaber for Link Discovery"
+version: 0.1.1
+url: "https://pyjedai.readthedocs.io/en/latest/intro.html"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Nikoletos"
+      given-names: "Konstantinos"
+      orcid: "https://orcid.org/0000-0003-3465-1197"
+    - family-names: "Papadakis"
+      given-names: "George"
+      orcid: "https://orcid.org/0000-0002-7298-9431"
+    - family-names: "Koubarakis"
+      given-names: "Manolis"
+  journal: "International Semantic Web Conference"
+  title: "pyJedAI: a lightsaber for Link Discovery"
+  year: 2022
