@@ -524,8 +524,8 @@ class DatasetScheduler(ABC):
         # reverse context case
         # - number of entities (to transfer the IDs from Scheduler -> Workflow ID representation)
         # + / - dataset limit in order to express (D1 in reverse context == D2 in inorder context, and the reverse)
-        entity = entity - self._data.num_of_entities + self._data.dataset_limit
-        candidate = candidate - self._data.num_of_entities - self._data.dataset_limit
+        entity = entity - self._data.num_of_entities + self._data.num_of_entities_2
+        candidate = candidate - self._data.num_of_entities - self._data.num_of_entities_1
         
         return candidate, entity 
             
@@ -1026,9 +1026,10 @@ def add_entry(workflow : dict, dataframe_dictionary : dict) -> None:
                                      to be transformed into columns
     """
     for feature, value in workflow.items():
-        if feature not in dataframe_dictionary:
-            dataframe_dictionary[feature] = []
-        dataframe_dictionary[feature].append(value)
+        if(feature != 'tp_idx'):
+            if feature not in dataframe_dictionary:
+                dataframe_dictionary[feature] = []
+            dataframe_dictionary[feature].append(value)
           
 def workflows_to_dataframe(workflows : dict = None,
                            workflows_path : str = None,
@@ -1094,13 +1095,113 @@ class FrequencyEvaluator(ABC):
                             CountVectorizer(analyzer=self.analyzer, ngram_range=(self.qgram, self.qgram))
         else:
             raise ValueError(f"{self.vectorizer_name}: Invalid Frequency Evaluator Model Name")
-                            
-    def fit(self, metric : str, d1_entities : list = None, d2_entities : list = None) -> None:
+        
+        self.dataset_identifier : str = None 
+        self.indexing : str = None
+        self.distance_matrix : np.ndarray = None
+        self.distance_matrix_loaded : bool = False
+        self.distance_matrix_indexing : str = None
+      
+    def save_distance_matrix(self) -> None:
+        """Store the distance matrix of frequency evaluator in the hidden .dm directory within the execution path.
+           The name of the file contains the vectorizer, tokenizer, dataset and metric, so it can be retrieved and
+           used as precalculated distances matrix.
+        """
+        distance_matrix_file_name = '_'.join([self.indexing, self.dataset_identifier, self.vectorizer_name, self.tokenizer.split('_')[0], self.metric, "q" + str(self.qgram) + ".npy"])
+        
+        hidden_directory_path = os.path.join(os.getcwd(), ".dm")
+        os.makedirs(hidden_directory_path, exist_ok=True)
+        distance_matrix_file_path = os.path.join(hidden_directory_path, distance_matrix_file_name)
+        try:
+            print(f"Saving Distance Matrix -> {distance_matrix_file_path}")
+            np.save(distance_matrix_file_path, self.distance_matrix) 
+            pass
+        except FileNotFoundError:
+            print(f"Unable to save distance matrix -> {distance_matrix_file_path}")   
+            
+            
+    def load_distance_matrix_from_path(self, path : str) -> np.ndarray:
+        """Load the precalculated distance matrix for current execution's arguments combination.
+        Args:
+            path (str): Path to the distance matrix file
+        Returns:
+            np.ndarray: Precalculated distance matrix for current execution parameters combination
+        """
+        try:
+            print(f"Loading Distance Matrix from: {path}")
+            return np.load(path) 
+            pass
+        except FileNotFoundError:
+            print(f"Unable to load distance matrix -> {path}")       
+            
+    def retrieve_distance_matrix_file_path(self) -> Tuple[str, str]:
+        """Attemps to retrieve a precalculated DM from disk for current experiment
+        Returns:
+            str: Precalculated DM file path (None if doesn't exist)
+        """
+        
+        _requested_indexing : str = self.indexing
+        _opposite_indexing : str = "inorder" if (self.indexing == "reverse") else "reverse"
+        _requested_indexing_file_name = '_'.join([_requested_indexing, self.dataset_identifier, self.vectorizer_name, self.tokenizer.split('_')[0], self.metric, "q" + str(self.qgram) + ".npy"])
+        _opposite_indexing_file_name = '_'.join([_opposite_indexing, self.dataset_identifier, self.vectorizer_name, self.tokenizer.split('_')[0], self.metric, "q" + str(self.qgram) + ".npy"])
+        
+        hidden_directory_path = os.path.join(os.getcwd(), ".dm")
+        os.makedirs(hidden_directory_path, exist_ok=True)
+        
+        
+        _available_indexing : str = None
+        _available_file_path : str = None
+        _requested_indexing_file_path = os.path.join(hidden_directory_path, _requested_indexing_file_name)
+        _opposite_indexing_file_path = os.path.join(hidden_directory_path, _opposite_indexing_file_name)
+        
+        
+        if(os.path.exists(_requested_indexing_file_path) and os.path.isfile(_requested_indexing_file_path)):
+            _available_indexing = _requested_indexing
+            _available_file_path = _requested_indexing_file_path
+        elif(os.path.exists(_opposite_indexing_file_path) and os.path.isfile(_opposite_indexing_file_path)):
+            _available_indexing = _opposite_indexing
+            _available_file_path = _opposite_indexing_file_path
+
+        return (_available_indexing, _available_file_path)
+    
+    
+    def distance_to_similarity_matrix(self, distance_matrix : np.ndarray) -> np.ndarray:
+        """Transforms the input distance matrix into similarity matrix
+        Args:
+            distance_matrix (np.ndarray): Input pairwise distance matrix
+        Returns:
+            np.ndarray: Pairwise similarity matrix
+        """
+        
+        if(self.metric == 'sqeuclidean'):
+            return 1.0 / (1.0 + (distance_matrix ** 2))
+        elif('cosine' in self.metric):
+            return 1.0 - distance_matrix
+        else:
+            return distance_matrix
+      
+      
+    def _get_sparse_matrix_method(self, metric : str) -> str:
+        if(metric == 'sqeuclidean'):
+            return 'euclidean'
+        else:
+            return metric
+        
+    def fit(self, 
+            metric : str, 
+            dataset_identifier : str,
+            indexing : str,
+            d1_entities : list = None, 
+            d2_entities : list = None, 
+            save_dm : bool = True) -> None:
         """Initializes the entities' corpus, and constructs the similarity matrix 
         Args:
             metric (str): Distance metric for entity strings
+            dataset_identifier (str): Name of the dataset we are conducting our experiment on
+            indexing (str): Indexing that the candidate entities follow
             d1_entities (list): List of D1 entities' string representations
             d2_entities (list): List of D2 entities' string representations
+            save_dm (bool): Save the distance matrix in hidden directory on disk
         """
         if(d1_entities is None or d2_entities is None):
             raise NotImplementedError(f"{self.vectorizer_name} Frequency Evaluator Model - Dirty ER is not implemented yet")
@@ -1108,26 +1209,53 @@ class FrequencyEvaluator(ABC):
             self.metric : str = metric
             self._entities_d1 : list = d1_entities
             self._entities_d2 : list = d2_entities
-            self.corpus = self._entities_d1 + self._entities_d2
-            self._tf_limit = len(self._entities_d1)
-            self.corpus_as_matrix = self.vectorizer.fit_transform(self.corpus)
-            if self.vectorizer_name == 'boolean':
-                # transform to boolean if value is positive to 1 and negative to 0
-                self.corpus_as_matrix = self.corpus_as_matrix.astype(bool).astype(int)
-            self.corpus_as_matrix = self.corpus_as_matrix.toarray() 
+            self._entities_d1_num : int = len(self._entities_d1)
+            self._entities_d2_num : int = len(self._entities_d2)
+            self.save_dm : bool = save_dm
+            self.dataset_identifier : str = dataset_identifier
+            self.indexing : str = indexing
             
-            self.distance_matrix = 1.0 -  pairwise_distances(self.corpus_as_matrix, metric=self.metric) 
+            _dm_indexing, _dm_path = self.retrieve_distance_matrix_file_path()
+            if(_dm_path is not None):
+                self.distance_matrix : np.ndarray = self.load_distance_matrix_from_path(path=_dm_path)
+                self.distance_matrix_loaded : bool = True
+                self.distance_matrix_indexing : str = _dm_indexing
+            else:
+                self.corpus = self._entities_d1 + self._entities_d2
+                self._tf_limit = len(self._entities_d1)
+                self.corpus_as_matrix = self.vectorizer.fit_transform(self.corpus)
+                if self.vectorizer_name == 'boolean':
+                    self.corpus_as_matrix = self.corpus_as_matrix.astype(bool).astype(int)
+
+                self.distance_matrix : np.ndarray = self.distance_to_similarity_matrix(
+                                                    distance_matrix=pairwise_distances(
+                                                    self.corpus_as_matrix, 
+                                                    metric=self._get_sparse_matrix_method(metric=self.metric)))
+
+                self.distance_matrix_loaded : bool = False
+                self.distance_matrix_indexing : str = self.indexing
+                
+                if(self.save_dm): 
+                    self.save_distance_matrix()
+                    
      
     def predict(self, id1 : int, id2 : int) -> float:
         """Returns the predicted similarity score for the given entities
         Args:
-            id1 (int): D1 entity ID
-            id2 (int): D2 entity ID
+            id1 (int): id of an entity of the 1nd dataset within experiment context (not necessarily preloaded matrix)
+            id2 (int): id of an entity of the 2nd dataset within experiment context (not necessarily preloaded matrix)
         Returns:
             float: Similarity score of entities with specified IDs
         """
         # candidates = np.vstack((self.corpus_as_matrix[id1], self.corpus_as_matrix[id2]))
         # distances = pairwise_distances(candidates, metric=self.metric)        
         # return 1.0 - distances[0][1]
-        return self.distance_matrix[id1][id2]
+        if(self.indexing == self.distance_matrix_indexing):
+            return self.distance_matrix[id1][id2]
+        # _id1 = (id1 + self._entities_d2_num) if (self.indexing == "inorder") else (id1 + self._entities_d1_num)
+        # _id2 = (id2 - self._entities_d1_num) if (self.indexing == "inorder") else (id2 - self._entities_d2_num)
+        _id1 = (id1 + self._entities_d2_num)
+        _id2 = (id2 - self._entities_d1_num)
+
+        return self.distance_matrix[_id1][_id2]
     

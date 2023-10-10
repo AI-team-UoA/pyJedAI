@@ -49,7 +49,7 @@ set_metrics = [
 ]
 
 vector_metrics = [ 
-    'cosine', 'dice', 'jaccard'
+    'cosine', 'dice', 'jaccard', 'sqeuclidean'
 ]
 
 whoosh_index_metrics = [
@@ -470,13 +470,23 @@ class EntityMatching(AbstractEntityMatching):
                     .apply(" ".join, axis=1) \
                     .apply(lambda x: x.lower()) \
                     .values.tolist()
-        d2 = self.data.dataset_2[self.attributes] if self.attributes and not self.data.is_dirty_er else self.data.dataset_2
+        
+        d2 = None
+        if(not self.data.is_dirty_er):
+            d2 = self.data.dataset_2
+            if self.attributes:
+                d2 = d2[self.attributes]
+
         self._entities_d2 = d2 \
                     .apply(" ".join, axis=1) \
                     .apply(lambda x: x.lower()) \
-                    .values.tolist() if not self.data.is_dirty_er else None
+                    .values.tolist() if not self.data.is_dirty_er else self._entities_d1 
         
+        
+        _dataset_identifier : str = ('_'.join([self.data.dataset_name_1, self.data.dataset_name_2])) if(self.data.dataset_name_1 is not None and self.data.dataset_name_2 is not None) else ("dataset") 
         self.frequency_evaluator.fit(metric=self.metric,
+                                    dataset_identifier=_dataset_identifier,
+                                    indexing='inorder',
                                     d1_entities=self._entities_d1,
                                     d2_entities=self._entities_d2)
 

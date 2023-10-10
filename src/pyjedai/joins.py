@@ -14,6 +14,7 @@ from tqdm.autonotebook import tqdm
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
+from .utils import FrequencyEvaluator
 
 class AbstractJoin(PYJEDAIFeature):
     """Abstract class of Joins module
@@ -46,22 +47,92 @@ class AbstractJoin(PYJEDAIFeature):
         self.pairs: networkx.Graph
         self.vectorizer = None
 
+    def vectorizer_based(self) -> bool:
+        """
+            Checks whether current instance of Joins algorithm is using a frequency vectorizer
+
+            Returns:
+                bool: Candidate scores are being calculated through frequency vectorizer
+        """
+        return (self.vectorizer is not None)
+   
+    def dirty_indexing(self):
+        """Applies Dirty Indexing - Evaluates the similarity of all the entities of the target dataset
+        """
+        eid = 0
+        for entity in self.indexed_entities:
+            candidates = set()
+            for token in entity:
+                if token in self.entity_index:
+                    current_candidates = self.entity_index[token]
+                    for candidate_id in current_candidates:
+                        if(not self.vectorizer_based()):
+                            if self._flags[candidate_id] != eid:
+                                self._counters[candidate_id] = 0
+                                self._flags[candidate_id] = eid
+                            self._counters[candidate_id] += 1
+                        candidates.add(candidate_id)
+            self._process_candidates(candidates, eid, len(entity))
+            self._progress_bar.update(1)
+            eid += 1
+    
+    def get_id_from_index(self, index : int):
+        return (i if self.reverse_order else (index+self.data.dataset_limit))
+    
+       
+    def clean_indexing(self):
+        """Applies Dirty Indexing - One of the datasets (depends on the order of indexing) is set as the indexer.
+           For each entry of that dataset, its similarity scores are being calculated with each entity of the target dataset.
+           The top-K best results for each source entity are chosen.
+        """
+        for i in range(0, self.indexed_entities_count):
+            candidates = set()
+            record = self.indexed_entities[i]
+            entity_id =  self.get_id_from_index(i)
+            for token in record:
+                if token in self.entity_index:
+                    current_candidates = self.entity_index[token]
+                    for candidate_id in current_candidates:
+                        if(not self.vectorizer_based()):
+                            if self._flags[candidate_id] != entity_id:
+                                self._counters[candidate_id] = 0
+                                self._flags[candidate_id] = entity_id
+                            self._counters[candidate_id] += 1
+                        candidates.add(candidate_id)
+            if 0 < len(candidates):
+                self._process_candidates(candidates, entity_id, len(record))
+            self._progress_bar.update(1)
+        
+    def setup_indexing(self):
+        """Defines the indexed and target entities, as well as their total count
+        
+        """
+        self.indexed_entities, self.indexed_entities_count = (self._entities_d1, self.data.num_of_entities_1) if (self.reverse_order or self.data.is_dirty_er) \
+                                                              else (self._entities_d2, self.data.num_of_entities_2)
+                                                              
+        self.target_entities, self.target_entities_count = (self._entities_d1, self.data.num_of_entities_1) if (not self.reverse_order or self.data.is_dirty_er) \
+                                                              else (self._entities_d2, self.data.num_of_entities_2)                                                      
+                                                    
     def fit(self,
             data: Data,
+            vectorizer: FrequencyEvaluator = None,
             reverse_order: bool = False,
             attributes_1: list = None,
             attributes_2: list = None,
-            tqdm_disable: bool = False
+            tqdm_disable: bool = False,
+            store_neighborhoods : bool = False
     ) -> networkx.Graph:
         """Joins main method
 
             Args:
                 data (Data): dataset module
+                vectorizer (FrequencyEvaluator, optional): Vectorizer will be used for similarity evaluation
                 reverse_order (bool, optional): _description_. Defaults to False.
                 attributes_1 (list, optional): _description_. Defaults to None.
                 attributes_2 (list, optional): _description_. Defaults to None.
                 tqdm_disable (bool, optional): _description_. Defaults to False.
-
+                save_to_json (bool, optional): Store indexed dataset neighborhoods in a dictionary of form
+                                               [indexed dataset entity id] -> [ids of top-k neighbors in target dataset]
             Returns:
                 networkx.Graph: graph containg nodes as entities and edges as similarity score
         """
@@ -69,8 +140,8 @@ class AbstractJoin(PYJEDAIFeature):
             raise ValueError("Can't have reverse order in Dirty Entity Resolution")
 
         start_time = time()
-        self.tqdm_disable, self.reverse_order, self.attributes_1, self.attributes_2, self.data = \
-            tqdm_disable, reverse_order, attributes_1, attributes_2, data
+        self.tqdm_disable, self.reverse_order, self.attributes_1, self.attributes_2, self.data, self.vectorizer, self.store_neighborhoods = \
+            tqdm_disable, reverse_order, attributes_1, attributes_2, data, vectorizer, store_neighborhoods
 
         self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
                             .apply(" ".join, axis=1) \
@@ -83,67 +154,28 @@ class AbstractJoin(PYJEDAIFeature):
                     .apply(self._tokenize_entity) \
                     .values.tolist()
 
-        num_of_entities = self.data.num_of_entities_2 if reverse_order else self.data.num_of_entities_1
-
+        self.neighborhoods = defaultdict(list) if self.store_neighborhoods else None
+        self.setup_indexing()
+        
         self._progress_bar = tqdm(
-            total=self.data.num_of_entities if not self.data.is_dirty_er else num_of_entities*2,
+            total=self.indexed_entities_count,
             desc=self._method_name+" ("+self.metric+")", disable=self.tqdm_disable
         )
-
-        self._flags, \
-        self._counters, \
-        self._sims, \
-        self._source_frequency, \
-        self.pairs = np.empty([num_of_entities]), \
-                    np.zeros([num_of_entities]), \
-                    np.empty([self.data.num_of_entities_1*self.data.num_of_entities_2]), \
-                    np.empty([num_of_entities]), \
-                    networkx.Graph()
-        self._flags[:] = -1
-        entity_index = self._create_entity_index(
-                self._entities_d2 if reverse_order else self._entities_d1
-            )
+        
+        self._flags = np.empty([self.target_entities_count]) if (not self.vectorizer_based()) else None
+        self._counters = np.zeros([self.target_entities_count]) if (not self.vectorizer_based()) else None
+        self._source_frequency = np.empty([self.target_entities_count]) if (not self.vectorizer_based()) else None
+        if(not self.vectorizer_based()) : self._flags[:] = -1
+        self.pairs = networkx.Graph()
+        self.entity_index = self._create_entity_index()
 
         if self.data.is_dirty_er:
-            eid = 0
-            for entity in self._entities_d1:
-                candidates = set()
-                for token in entity:
-                    if token in entity_index:
-                        current_candidates = entity_index[token]
-                        for candidate_id in current_candidates:
-                            if self._flags[candidate_id] != eid:
-                                self._counters[candidate_id] = 0
-                                self._flags[candidate_id] = eid
-                            self._counters[candidate_id] += 1
-                            candidates.add(candidate_id)
-                self._process_candidates(candidates, eid, len(entity))
-                self._progress_bar.update(1)
-                eid += 1
+            self.dirty_indexing()
         else:
-            if reverse_order:
-                entities = self._entities_d1
-                num_of_entities = self.data.num_of_entities_1
-            else:
-                entities = self._entities_d2
-                num_of_entities = self.data.num_of_entities_2
-
-            for i in range(0, num_of_entities):
-                candidates = set()
-                record = entities[i]
-                entity_id = i if reverse_order else i+self.data.dataset_limit
-                for token in record:
-                    if token in entity_index:
-                        current_candidates = entity_index[token]
-                        for candidate_id in current_candidates:
-                            if self._flags[candidate_id] != entity_id:
-                                self._counters[candidate_id] = 0
-                                self._flags[candidate_id] = entity_id
-                            self._counters[candidate_id] += 1
-                            candidates.add(candidate_id)
-                if 0 < len(candidates):
-                    self._process_candidates(candidates, entity_id, len(record))
-                self._progress_bar.update(1)
+            self.clean_indexing()
+            
+        if(self.store_neighborhoods): self._process_neighborhoods()   
+                
         self._progress_bar.close()
         self.execution_time = time() - start_time
         return self.pairs
@@ -209,46 +241,33 @@ class AbstractJoin(PYJEDAIFeature):
         """
         return self.vectorizer.predict(id1=id1, id2=id2)
 
-    def _create_entity_index(self, entities: list) -> dict:
+    def _create_entity_index(self) -> dict:
         entity_index = defaultdict(set)
-        entity_id = itertools.count()
-        for entity in entities:
-            eid = next(entity_id)
+        for eid, entity in enumerate(self.target_entities):
             for token in entity:
                 entity_index[token].add(eid)
-            self._source_frequency[eid] = len(entity)
+                
+            if(not self.vectorizer_based()):
+                self._source_frequency[eid] = len(entity)
             self._progress_bar.update(1)
 
-        return entity_index
-
-#     def _similarity(self, entity_id1: int, entity_id2: int, attributes: any=None) -> float:
-#         similarity: float = 0.0
-#         if isinstance(attributes, dict):
-#             for attribute, weight in self.attributes.items():
-#                 similarity += weight*self._metric(
-#                     self.data.entities.iloc[entity_id1][attribute],
-#                     self.data.entities.iloc[entity_id2][attribute]
-#                 )
-#         if isinstance(attributes, list):
-#             for attribute in self.attributes:
-#                 similarity += self._metric(
-#                     self.data.entities.iloc[entity_id1][attribute],
-#                     self.data.entities.iloc[entity_id2][attribute]
-#                 )
-#                 similarity /= len(self.attributes)
-#         else:
-#             # print(self.data.entities.iloc[entity_id1].str.cat(sep=' '),
-#                 # self.data.entities.iloc[entity_id2].str.cat(sep=' '))
-#             # concatenated row string
-#             similarity = self._metric(
-#                 self.data.entities.iloc[entity_id1].str.cat(sep=' '),
-#                 self.data.entities.iloc[entity_id2].str.cat(sep=' ')
-#             )
-#         return similarity
+        return entity_index   
 
     def _insert_to_graph(self, entity_id1, entity_id2, similarity):
         if self.similarity_threshold <= similarity:
             self.pairs.add_edge(entity_id1, entity_id2, weight=similarity)
+            
+    def _store_neighborhood(self, entity_id1, entity_id2, similarity):
+        if self.similarity_threshold <= similarity:
+            self.neighborhoods[entity_id2].append((similarity, entity_id1))
+            
+    def _process_neighborhoods(self):
+        """Sorts the candidates of each indexed entity's neighborhood in descending order
+           of similarity. 
+        """
+        for d1_id, d2_ids in self.neighborhoods.items():
+            self.neighborhoods[d1_id] = sorted(d2_ids, key=lambda x: (-x[0], x[1]))
+            
 
     def evaluate(self, prediction=None, export_to_df: bool = False,
                  export_to_dict: bool = False, with_classification_report: bool = False,
@@ -310,9 +329,6 @@ class AbstractJoin(PYJEDAIFeature):
             pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
 
         return pairs_df
-
-    
-    
     
 class EJoin(AbstractJoin):
     """
@@ -333,17 +349,17 @@ class EJoin(AbstractJoin):
 
     def _process_candidates(self, candidates: set, entity_id: int, tokens_size: int) -> None:
         for candidate_id in candidates:
-            self._insert_to_graph(
-                candidate_id+self.data.dataset_limit if self.reverse_order \
-                                                        and not self.data.is_dirty_er \
-                                                    else candidate_id,
-                entity_id,
-                self._calc_similarity(
-                    self._counters[candidate_id],
-                    self._source_frequency[candidate_id],
-                    tokens_size
+            sim = self._calc_similarity(
+                  self._counters[candidate_id],
+                  self._source_frequency[candidate_id],
+                  tokens_size
                 )
-            )
+            d1_id = candidate_id+self.data.dataset_limit if (self.reverse_order \
+                                                    and not self.data.is_dirty_er) \
+                                                    else candidate_id
+            d2_id = entity_id
+            self._insert_to_graph(d1_id, d2_id, sim)
+            if(self.store_neighborhoods): self._store_neighborhood(d1_id, d2_id, sim)
 
 class TopKJoin(AbstractJoin):
     """Top-K Join algorithm
@@ -388,6 +404,9 @@ class TopKJoin(AbstractJoin):
                 entity_id,
                 sim
             )
+            if(self.store_neighborhoods): self._store_neighborhood(candidate_id + self.data.dataset_limit if self.reverse_order else candidate_id, \
+                                                                   entity_id, \
+                                                                   sim)
 
     def _configuration(self) -> dict:
         return {
@@ -397,3 +416,129 @@ class TopKJoin(AbstractJoin):
             "tokenization" : self.tokenization,
             "qgrams": self.qgrams
         }
+        
+        
+class PETopKJoin(TopKJoin):
+    """Progressive Entity Resolution Top-K class of Joins module
+    """
+    _method_name = "Progressive Top-K Join"
+    _method_info = "Progressive Top-K Join algorithm"
+    _method_short_name = "PETopKJ"    
+
+    def __init__(
+            self,
+            K: int,
+            metric: str,
+            tokenization: str,
+            qgrams: int = 2
+    ) -> None:
+        """AbstractJoin Constructor
+
+        Args:
+            K (int): Number of candidates per entity
+            metric (str): String similarity metric
+            tokenization (str): Tokenizer
+            qgrams (int, optional): For Jaccard metric. Defaults to 2.
+        """
+        super().__init__(K=K,
+                        metric=metric,
+                        tokenization=tokenization,
+                        qgrams=qgrams)
+    
+    
+    def _get_similarity(self, target_id : int, indexed_id : int, tokens_size : int):
+        return self._calc_similarity(self._counters[target_id], self._source_frequency[target_id], tokens_size) \
+               if (self.vectorizer is None) else \
+               self._calc_vector_similarity(target_id , indexed_id)
+        
+    def _process_candidates(self, candidates: set, entity_id: int, tokens_size: int) -> None:
+        minimum_weight=0
+        pq = PriorityQueue()
+        for index, candidate_id in enumerate(candidates):
+            
+            _target_id = candidate_id
+            _indexed_id = entity_id + self.data.dataset_limit
+            
+            sim : float = self._get_similarity(target_id=_target_id,
+                                               indexed_id=_indexed_id,
+                                               tokens_size=tokens_size)
+            
+            # target dataset entity id set to negative
+            # so higher identifier kicked out first (simulating descending order with ascending PQ)
+            _pair = (sim, -_target_id, _indexed_id)
+
+            if minimum_weight <= sim:
+                pq.put(_pair)
+                if self.K < pq.qsize():
+                    minimum_weight, _, _ = pq.get()
+        
+        if(self.store_neighborhoods):
+            _first_element = True
+            while(not pq.empty()):
+                _sim, _target_id, _indexed_id = pq.get()
+                if _first_element:
+                    self.similarity_threshold = _sim
+                    _first_element = False
+                    
+                self._store_neighborhood(entity_id1= -_target_id,
+                                         entity_id2= _indexed_id,
+                                         similarity= _sim)
+                self._insert_to_graph(entity_id1=-_target_id,
+                                      entity_id2=_indexed_id,
+                                      similarity=_sim) 
+        else:
+            self.similarity_threshold, _, _ = pq.get()
+            for index, candidate_id in enumerate(candidates):
+                _target_id = candidate_id
+                _indexed_id = entity_id + self.data.dataset_limit
+                self._insert_to_graph(entity_id1=_target_id,
+                                      entity_id2=_indexed_id,
+                                      similarity=self._get_similarity(target_id=_target_id,
+                                                                      indexed_id=_indexed_id,
+                                                                      tokens_size=tokens_size))
+
+    def _process_neighborhoods(self, strict_top_k : bool = True):
+        """Sorts the candidates of each indexed entity's neighborhood in descending order
+           of similarity. If strict top-K instance is chosen, it retains max K best candidates
+           per entity.
+        Args:
+            strict_top_k (bool, optional): Retain strictly (max) top-K candidates per entity
+        """
+        for d1_id, d2_ids in self.neighborhoods.items():
+            _sorted_neighborhood = sorted(d2_ids, key=lambda x: (-x[0], x[1])) 
+            self.neighborhoods[d1_id] = _sorted_neighborhood[:self.K] if strict_top_k else \
+                                        _sorted_neighborhood
+
+    def setup_indexing(self):
+        """Defines the indexed and target entities, as well as their total count
+        
+        """
+        # self.indexed_entities, self.indexed_entities_count = (self._entities_d2, self.data.num_of_entities_2) if (self.reverse_order) \
+        #                                                       else (self._entities_d1, self.data.num_of_entities_1)
+                                                              
+        # self.target_entities, self.target_entities_count = (self._entities_d1, self.data.num_of_entities_1) if (self.reverse_order or self.data.is_dirty_er) \
+        #                                                       else (self._entities_d2, self.data.num_of_entities_2)     
+        self.indexed_entities, self.indexed_entities_count = (self._entities_d2, self.data.num_of_entities_2)
+                                                              
+        self.target_entities, self.target_entities_count = (self._entities_d1, self.data.num_of_entities_1)                                                      
+
+    def get_id_from_index(self, index : int):
+        return index
+
+    def _configuration(self) -> dict:
+        return {
+            "similarity_threshold" : self.similarity_threshold,
+            "K" : self.K,
+            "metric" : self.metric,
+            "tokenization" : self.tokenization,
+            "qgrams": self.qgrams
+        }
+
+
+
+
+
+
+        
+
+

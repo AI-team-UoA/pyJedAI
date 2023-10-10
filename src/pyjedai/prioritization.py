@@ -11,7 +11,7 @@ from .comparison_cleaning import (
     GlobalProgressiveSortedNeighborhood,
     LocalProgressiveSortedNeighborhood,
     ProgressiveEntityScheduling)
-from .joins import TopKJoin
+from .joins import PETopKJoin
 from .vector_based_blocking import EmbeddingsNNBlockBuilding
 
 from networkx import Graph
@@ -57,6 +57,8 @@ import os
 from collections import defaultdict
 import sys
 from faiss import METRIC_INNER_PRODUCT, METRIC_L2
+import json
+import re
 
 
 # Directory where the whoosh index is stored
@@ -144,10 +146,12 @@ class ProgressiveMatching(EntityMatching):
                         tokenizer_return_unique_values=tokenizer_return_unique_values,
                         attributes=attributes)
         self.similarity_function : str = similarity_function
+        self.dataset_identifier : str = None
         
     def predict(self,
             data: Data,
             blocks: dict,
+            dataset_identifier: str = "dataset",
             budget: int = 0,
             algorithm : str = 'HB',
             indexing : str = 'inorder',
@@ -177,6 +181,7 @@ class ProgressiveMatching(EntityMatching):
         self.data : Data = data
         self.duplicate_of = data.duplicate_of
         self.scheduler : DatasetScheduler = None
+        self.dataset_identifier : str = dataset_identifier
 
         if not blocks:
             raise ValueError("Empty blocks structure")
@@ -404,6 +409,7 @@ class BlockIndependentPM(ProgressiveMatching):
     def predict(self,
             data: Data,
             blocks: dict,
+            dataset_identifier: str = "dataset",
             budget: int = 0,
             algorithm : str = 'HB',
             indexing : str = 'inorder',
@@ -433,6 +439,7 @@ class BlockIndependentPM(ProgressiveMatching):
         self.data : Data = data
         self.duplicate_of = data.duplicate_of
         self.scheduler : DatasetScheduler = None
+        self.dataset_identifier : str = dataset_identifier
         
         if self.data.is_dirty_er and self._indexing == 'bilateral':
             raise ValueError("Cannot apply bilateral indexing to dirty Entity Resolution (single dataset)")
@@ -753,8 +760,70 @@ class EmbeddingsNNBPM(BlockIndependentPM):
         # that will be used to initialize the scheduler, we simply retrieve all the pairs and their scores
         self._top_pair_emission()
 
+    def save_datasets_embeddings(self, vectors_1: np.array, vectors_2: np.array) -> None:
+        """Stores the non-precalculated (not loaded) embeddings in corresponding dataset paths
+        """
+
+        if(self._d1_emb_load_path is None):
+            try:
+                print(f"Saving D1 Embeddings -> {self._d1_emb_save_path}")
+                np.save(self._d1_emb_save_path, vectors_1) 
+                pass
+            except FileNotFoundError:
+                print(f"Unable to save Embeddings -> {self._d1_emb_save_path}") 
+                
+        if(self._d2_emb_load_path is None):
+            try:
+                print(f"Saving D2 Embeddings -> {self._d2_emb_save_path}")
+                np.save(self._d2_emb_save_path, vectors_2) 
+                pass
+            except FileNotFoundError:
+                print(f"Unable to save Embeddings -> {self._d2_emb_save_path}") 
+                 
+    def retrieve_embeddings_file_paths(self):
+        return(self.retrieve_dataset_embeddings_file_path(first_dataset=True), self.retrieve_dataset_embeddings_file_path(first_dataset=False))
+            
+    def retrieve_dataset_embeddings_file_path(self, first_dataset : bool = True) -> str:
+        """Attemps to retrieve the precalculated embeddings of first/second dataset from disk for current experiment
+        Returns:
+            str: Precalculated Embeddings file path (None if doesn't exist)
+        """
+    
+        _requested_indexing, _opposite_indexing = ("reverse", "inorder") if (self._indexing == "reverse") \
+                                                else ("inorder", "reverse")
+        _requested_dataset, _opposite_dataset = ("1","2") if(first_dataset) \
+                                            else ("2", "1")
+        
+        _requested_indexing_file_name = '_'.join([_requested_indexing, self.dataset_identifier, self._language_model, _requested_dataset + ".npy"])
+        _opposite_indexing_file_name = '_'.join([_opposite_indexing, self.dataset_identifier, self._language_model, _opposite_dataset + ".npy"])
+        
+        hidden_directory_path = os.path.join(os.getcwd(), ".embs")
+        os.makedirs(hidden_directory_path, exist_ok=True)
+        
+        
+        _available_file_path : str = None
+        _requested_indexing_file_path = os.path.join(hidden_directory_path, _requested_indexing_file_name)
+        _opposite_indexing_file_path = os.path.join(hidden_directory_path, _opposite_indexing_file_name)
+        
+        if(os.path.exists(_requested_indexing_file_path) and os.path.isfile(_requested_indexing_file_path)):
+            _available_file_path = _requested_indexing_file_path
+        elif(os.path.exists(_opposite_indexing_file_path) and os.path.isfile(_opposite_indexing_file_path)):
+            _available_file_path = _opposite_indexing_file_path
+            
+        if(first_dataset):
+            self._d1_emb_load_path = _available_file_path
+            self._d1_emb_save_path = _requested_indexing_file_path
+        else:
+            self._d2_emb_load_path = _available_file_path
+            self._d2_emb_save_path = _requested_indexing_file_path
+            
+        return _available_file_path 
+
     def _predict_raw_blocks(self, blocks: dict = None) -> List[Tuple[int, int]]:
         self.ennbb : EmbeddingsNNBlockBuilding = EmbeddingsNNBlockBuilding(self._language_model, self._similarity_search)
+        
+        
+        load_path_d1, load_path_d2 = self.retrieve_embeddings_file_paths()
         
         self.final_blocks = self.ennbb.build_blocks(data=self.data,
                                                     vector_size=self._vector_size,
@@ -763,10 +832,14 @@ class EmbeddingsNNBPM(BlockIndependentPM):
                                                     return_vectors=False,
                                                     tqdm_disable=False,
                                                     save_embeddings=False,
-                                                    load_embeddings_if_exist=False,
+                                                    load_embeddings_if_exist=True,
+                                                    load_path_d1=load_path_d1,
+                                                    load_path_d2=load_path_d2,
                                                     with_entity_matching=False,
                                                     input_cleaned_blocks=blocks,
                                                     similarity_distance=self.similarity_function)
+        
+        self.save_datasets_embeddings(vectors_1=self.ennbb.vectors_1, vectors_2=self.ennbb.vectors_2)
         self.scores = self.ennbb.distances
         self.neighbors = self.ennbb.neighbors
         self.final_vectors = (self.ennbb.vectors_1, self.ennbb.vectors_2)
@@ -1113,26 +1186,155 @@ class TopKJoinPM(ProgressiveMatching):
         self.weighting_scheme : str = weighting_scheme
         self.qgram : int = qgram 
         
-    def _predict_raw_blocks(self, blocks: dict) -> List[Tuple[int, int]]:
-        ptkj : TopKJoin = TopKJoin(K=self.number_of_nearest_neighbors,
-                                   metric=self.similarity_function,
-                                   tokenization=self.tokenizer,
-                                   qgrams=self.qgram)
-        if(self.weighting_scheme is not None):
-            ptkj.vectorizer = self.initialize_vectorizer()
-        self.pairs = ptkj.fit(data=self.data,
-                              reverse_order=(self._indexing=='reverse'),
-                              attributes_1=self.data.attributes_1,
-                              attributes_2=self.data.attributes_2)
-        self.pairs = [(edge[2]['weight'], edge[0], edge[1]) for edge in self.pairs.edges(data=True)]
-        return self.pairs
+    def _predict_raw_blocks(self, blocks: dict, load_neighborhoods : bool = True) -> List[Tuple[int, int]]:
+        
+        _store_neighborhoods : bool = load_neighborhoods
+        _loaded_neighborhoods : dict[List[Tuple[float, int]]]
+        
+        if(load_neighborhoods):
+            print("Neighborhood Retrieval Enabled...")
+            _loaded_neighborhoods = self.retrieve_neighborhoods_from_disk()
+        else:
+            print("Neighborhood Retrieval Disabled...")
+            _loaded_neighborhoods = None
+        
+        if(_loaded_neighborhoods is None):
+            ptkj : PETopKJoin = PETopKJoin(K=self.number_of_nearest_neighbors,
+                                            metric=self.similarity_function,
+                                            tokenization=self.tokenizer,
+                                            qgrams=self.qgram)
 
+            _pet_vectorizer = self.initialize_vectorizer() if (self.weighting_scheme is not None) else None
+            self.pairs = ptkj.fit(data=self.data,
+                                reverse_order=True,
+                                attributes_1=self.data.attributes_1,
+                                attributes_2=self.data.attributes_2,
+                                vectorizer=_pet_vectorizer,
+                                store_neighborhoods=_store_neighborhoods)
+            
+            if(_store_neighborhoods): 
+                self.pairs = self.neighborhoods_to_pairs(neighborhoods=ptkj.neighborhoods, strict_top_k=True)
+                self.neighborhoods_to_json(neighborhoods=ptkj.neighborhoods)
+            else:
+                self.pairs = [(edge[2]['weight'], edge[0], edge[1]) for edge in self.pairs.edges(data=True)]
+        else:
+            self.pairs = self.neighborhoods_to_pairs(neighborhoods=_loaded_neighborhoods, strict_top_k=True) 
+            
+        return self.pairs
     
     def _predict_prunned_blocks(self, blocks: dict) -> List[Tuple[int, int]]:
         raise NotImplementedError("Progressive TopKJoin PM for prunned blocks - Not implemented yet!")
         
     
+    def neighborhoods_to_pairs(self, neighborhoods : dict[List[Tuple[float, int]]], strict_top_k : bool = False) -> List[Tuple[float, int, int]]:
+        previous_weight = None
+        _pairs : List[Tuple[float, int, int]] = []
+        for d1_id, d2_ids in neighborhoods.items():
+            distinct_weights = 0
+            _d1_id = int(d1_id)
+            for current_weight, d2_id in d2_ids:
+                if(strict_top_k or current_weight != previous_weight):
+                    previous_weight = current_weight
+                    distinct_weights += 1
+                if distinct_weights <= self.number_of_nearest_neighbors:
+                    _pairs.append((current_weight, d2_id, _d1_id))
+                else:
+                    break  
+        return _pairs
+    
+    def neighborhoods_to_json(self, neighborhoods : dict[List[Tuple[float, int]]]) -> None:
+        """Stores the neighborhood in the corresponding experiment's neighborhoods json file within the hidden .ngbs directory
+        Args:
+            neighborhoods (dict[List[Tuple[float, int]]]): Neighborhoods of indexed entities of current experiment, dictionary in the form
+                                                           [indexed entity id] -> [sorted target dataset neighbors in descending similarity order]
+        """
         
+        _json_file_name = '_'.join(self._requested_file_components)
+        
+        neighborhoods_directory_path = os.path.join(os.getcwd(), ".ngbs")
+        os.makedirs(neighborhoods_directory_path, exist_ok=True)
+        
+        _json_store_path = os.path.join(neighborhoods_directory_path, _json_file_name)
+        print(f"Storing Neighborhood Json in -> {_json_store_path}")
+        with open(_json_store_path, 'w') as json_file:
+            json.dump(neighborhoods, json_file, indent=4)
+    
+    def matching_file_components(self, 
+                                 source_components : List[str], 
+                                 target_components : List[str], 
+                                 variable_component_index : int = 6) -> bool:
+        """Takes as inputs lists containing the component of the source and target file name (strings connecte by underscore).
+           Checks whether those components match (files are equivalent). Variable component (number of nearest neighbor) must be less or equal
+           to the target component.
+        Args:
+            source_components (List[str]): Components (substrings seperated by underscore) that constitute source file name
+            target_components (List[str]): Components (substrings seperated by underscore) that constitute target file name
+            variable_component_index (int, optional): Index in file name's components list where the variable component is placed (number of nearest neighbors)
+        Returns:
+            bool: Source and target file name components are equivalent (target file can be loaded for source file request)
+        """
+        number_pattern = r"[-+]?\d*\.\d+|\d+"
+        zipped_components = list(zip(source_components, target_components))
+        matching_components = True
+        
+        for index, components in enumerate(zipped_components):
+            source_component, target_component = components
+            
+            if(index == variable_component_index):
+                source_nns = int((re.findall(number_pattern, source_component))[0])
+                target_nns = int((re.findall(number_pattern, target_component))[0])
+                if(source_nns > target_nns):
+                    matching_components = False
+                    break
+            else:
+                if(source_component != target_component):
+                    matching_components = False
+                    break   
+        return matching_components
+    
+    def retrieve_neighborhoods_from_disk(self) -> dict[List[Tuple[float, int]]]:
+        """Attemps to retrieve a precalculated neighborhoods for indexed entities of the current experiment
+        Returns:
+            dict[List[Tuple[float, int]]]: Dictionary of neighborhoods for each indexed entity containing a sorted list of neighbords in descending similarity order
+        """
+        self._requested_file_components = [self._indexing,
+                                      self.dataset_identifier,
+                                      self.weighting_scheme,
+                                      self.tokenizer.split('_')[0],
+                                      self.similarity_function,
+                                      "q" + str(self.qgram),
+                                      "n" + str(self.number_of_nearest_neighbors) + ".json"]
+        
+        _neighbors_count_index : int = len(self._requested_file_components) - 1
+        neighborhoods_directory_path : str = os.path.join(os.getcwd(), ".ngbs")
+        _matching_neighborhood_file_name : str = None
+        _matching_neighborhood : dict[List[Tuple[float, int]]] = None 
+        
+        os.makedirs(neighborhoods_directory_path, exist_ok=True)
+        print(f"Searching for matching neighborhood file in -> {neighborhoods_directory_path}")
+        
+        if os.path.isdir(neighborhoods_directory_path):
+            neighborhoods_file_names = os.listdir(neighborhoods_directory_path)
+    
+            for neighborhood_file_name in neighborhoods_file_names:
+                _neighborhood_file_components = neighborhood_file_name.split('_')
+                if(self.matching_file_components(source_components=self._requested_file_components,
+                                                target_components=_neighborhood_file_components,
+                                                variable_component_index=_neighbors_count_index)):
+                    _matching_neighborhood_file_name = neighborhood_file_name
+                    break
+        
+        if(_matching_neighborhood_file_name is not None):
+            _matching_neighborhood_file_path = os.path.join(neighborhoods_directory_path, _matching_neighborhood_file_name)
+            if(os.path.exists(_matching_neighborhood_file_path) and os.path.isfile(_matching_neighborhood_file_path)):
+                with open(_matching_neighborhood_file_path, 'r') as neighborhood_file:
+                    _matching_neighborhood = json.load(neighborhood_file)
+                print(f"Retrieved matching neighborhood from -> {_matching_neighborhood_file_path}!")
+        else:
+            print(f"Matching Neighborhood File not found - Executing Joins Algorithm!")
+            
+        return _matching_neighborhood
+                    
     def initialize_vectorizer(self) -> FrequencyEvaluator:
         self.vectorizer : FrequencyEvaluator = FrequencyEvaluator(vectorizer=self.weighting_scheme,
                                                                   tokenizer=self.tokenizer,
@@ -1147,12 +1349,12 @@ class TopKJoinPM(ProgressiveMatching):
         self._entities_d2 = d2 \
                     .apply(" ".join, axis=1) \
                     .apply(lambda x: x.lower()) \
-                    .values.tolist() if not self.data.is_dirty_er else None
-        
+                    .values.tolist() if not self.data.is_dirty_er else None         
         self.vectorizer.fit(metric=self.similarity_function,
+                            dataset_identifier=self.dataset_identifier,
+                            indexing=self._indexing,
                             d1_entities=self._entities_d1,
                             d2_entities=self._entities_d2)
-        
         return self.vectorizer
 
 class_references = {

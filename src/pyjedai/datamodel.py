@@ -158,6 +158,8 @@ class Data:
             self._gt_to_ids_reversed_1: dict
             self._ids_mapping_2: dict
             self._gt_to_ids_reversed_2: dict
+        else:
+            self.ground_truth = None
 
         self.entities = self.dataset_1 = self.dataset_1.astype(str)
         
@@ -170,8 +172,8 @@ class Data:
             self.entities = pd.concat([self.dataset_1, self.dataset_2],
                                       ignore_index=True)
 
+        self._create_gt_mapping()
         if ground_truth is not None:
-            self._create_gt_mapping()
             self._store_pairs()
         else:
             self.ground_truth = None
@@ -221,8 +223,8 @@ class Data:
         """
         if self.ground_truth is not None:
             self.ground_truth = self.ground_truth.astype(str)
-        else:
-            return
+        # else:
+        #     return
 
         self._ids_mapping_1 = dict(
             zip(

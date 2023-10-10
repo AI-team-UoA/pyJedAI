@@ -140,9 +140,6 @@ class AbstractBlockProcessing(PYJEDAIFeature):
         Returns:
             pd.DataFrame: Dataframe predicted pairs (can be exported to csv)
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
         pairs_df = pd.DataFrame(columns=['id1', 'id2'])
         for _, block in blocks.items():
             if self.data.is_dirty_er:

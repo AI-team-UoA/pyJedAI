@@ -69,9 +69,6 @@ class AbstractClustering(PYJEDAIFeature):
         Returns:
             pd.DataFrame: Dataframe containg evaluation scores and stats
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
         pairs_df = pd.DataFrame(columns=['id1', 'id2'])
         for cluster in prediction:
             lcluster = list(cluster)

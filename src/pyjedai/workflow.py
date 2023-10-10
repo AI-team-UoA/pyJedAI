@@ -26,8 +26,6 @@ from .utils import new_dictionary_from_keys, get_class_function_arguments, gener
 
 
 
-plt.style.use('seaborn-whitegrid')
-
 class PYJEDAIWorkFlow(ABC):
     """Main module of the pyjedAI and the simplest way to create an end-to-end ER workflow.
     """
@@ -350,7 +348,7 @@ class ProgressiveWorkFlow(PYJEDAIWorkFlow):
         #
         # Progressive Matching step
         #
-        self.final_pairs : List[Tuple[float, int, int]] = progressive_matcher.predict(data=data, blocks=bblocks, **self.predictor_arguments)
+        self.final_pairs : List[Tuple[float, int, int]] = progressive_matcher.predict(data=data, blocks=bblocks, dataset_identifier=self.dataset_name, **self.predictor_arguments)
         evaluator = Evaluation(self.data)
         self.tp_indices, self.total_emissions = evaluator.calculate_tps_indices(pairs=self.final_pairs,duplicate_of=progressive_matcher.duplicate_of, duplicate_emitted=progressive_matcher.duplicate_emitted)
         self.total_candidates = len(self.final_pairs)       
