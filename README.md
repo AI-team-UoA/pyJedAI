@@ -103,7 +103,7 @@ __Statistics & Info__
 
 [GitHub Discussions](https://github.com/AI-team-UoA/pyJedAI/discussions) is the discussion forum for general questions and discussions and our recommended starting point. Please report any bugs that you find [here](https://github.com/AI-team-UoA/pyJedAI/issues).
 
-# Java - Wed Application 
+# Java - Web Application 
 
 <img align="left" src="https://github.com/scify/JedAIToolkit/blob/master/documentation/JedAI_logo.png?raw=true" alt="pyJedAI" width="130"/>
 
