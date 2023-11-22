@@ -9,3 +9,4 @@ src/pyjedai/__pycache__/
 src/pyjedai.egg-info/*
 docs/_build/*
 docs/code/_autosummary/*
+data/ccer/D2/gt_kaggle.csv

@@ -337,7 +337,6 @@ class Data:
             
         return stats_df
 
-        
 class Block:
     """The main module used for storing entities in the blocking steps of pyjedai module. \
         Consists of 2 sets of profile entities 1 for Dirty ER and 2 for Clean-Clean ER.
@@ -386,3 +385,4 @@ class Block:
             print("Clean dataset 2: " + "[\033[1;34m" + str(len(self.entities_D2)) + \
             " entities\033[0m]")
             print(self.entities_D2)
+

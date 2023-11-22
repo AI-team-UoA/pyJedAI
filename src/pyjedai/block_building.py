@@ -13,7 +13,7 @@ import numpy as np
 from tqdm.auto import tqdm
 
 from .datamodel import Block, Data, PYJEDAIFeature
-from .utils import (are_matching, drop_big_blocks_by_size,
+from .utils import (are_matching, drop_big_blocks_by_size, create_entity_index,
                     drop_single_entity_blocks, get_blocks_cardinality)
 from .evaluation import Evaluation
 
@@ -93,39 +93,148 @@ class AbstractBlockProcessing(PYJEDAIFeature):
             self.stats(eval_blocks)
         return eval_result
 
-    def stats(self, blocks: dict) -> None:
-        self.list_of_sizes = []
+    def stats(self, blocks: dict, verbose: bool = True) -> dict:
+
+        # Atomic features
+        self.portion_of_singleton_entites =  0
+        self.portion_of_duplicate_blocks = 0 # contain the same entities
+        self.num_of_block_assignments = 0
+        self.num_of_minimal_blocks = 0 # one-comparison blocks
+        self.num_of_blocks_per_entity = 0
+        self.average_number_of_block_assignments_per_comparison = 0
+        self.optimality_distance = 0
         self.entities_in_blocks = set()
+        self.size_per_block = []
+        self.cardinalities = []
+        self.num_of_blocks = len(blocks)
         for block in blocks.values():
             self.sum_of_sizes += block.get_size()
             self.min_block_size = min(self.min_block_size, block.get_size()) if self.min_block_size else block.get_size()
             self.max_block_size = max(self.max_block_size, block.get_size()) if self.max_block_size else block.get_size()
             self.min_block_comparisons = min(self.min_block_comparisons, block.get_cardinality(self.data.is_dirty_er)) if self.min_block_comparisons else block.get_cardinality(self.data.is_dirty_er)
             self.max_block_comparisons = max(self.max_block_comparisons, block.get_cardinality(self.data.is_dirty_er)) if self.max_block_comparisons else block.get_cardinality(self.data.is_dirty_er)
-            self.list_of_sizes.append(block.get_size())
+            self.size_per_block.append(block.get_size())
             self.entities_in_blocks = self.entities_in_blocks.union(block.entities_D1)
             if not self.data.is_dirty_er:
                 self.entities_in_blocks = self.entities_in_blocks.union(block.entities_D2)
-            self.total_num_of_comparisons += block.get_cardinality(self.data.is_dirty_er)
-        
-        self.num_of_blocks = len(blocks)
+            cardinality = block.get_cardinality(self.data.is_dirty_er)
+            self.cardinalities.append(cardinality)
+            if cardinality == 1:
+                self.num_of_minimal_blocks += 1
+                
+        self.num_of_minimal_blocks /= self.num_of_blocks
+        self.num_of_entities_in_blocks = len(self.entities_in_blocks)
+        self.num_of_block_assignments = self.total_num_of_comparisons = sum(self.cardinalities)
         self.average_block_size = int(self.sum_of_sizes / self.num_of_blocks)
-        self.list_of_sizes = sorted(self.list_of_sizes)
-        median = self.list_of_sizes[int(len(self.list_of_sizes)/2)]
-        print(
-            "Statistics:" +
-            "\n\tNumber of blocks: " + str(self.num_of_blocks) +
-            "\n\tAverage block size: " + str(self.average_block_size) +
-            "\n\tMedian block size: " + str(median) +
-            "\n\tMax block size: " + str(self.max_block_size) +
-            "\n\tMin block size: " + str(self.min_block_size) +
-            "\n\tNumber of blocks dropped: " + str(self.num_of_blocks_dropped) +
-            "\n\tNumber of comparisons: " + str(self.total_num_of_comparisons) +
-            "\n\tMax comparisons per block: " + str(self.max_block_comparisons) +
-            "\n\tMin comparisons per block: " + str(self.min_block_comparisons) +
-            "\n\tEntities in blocks: " + str(len(self.entities_in_blocks))
-        )
-        print(u'\u2500' * 123)
+        self.size_per_block = sorted(self.size_per_block)
+        self.num_of_blocks_per_entity = self.num_of_blocks / self.num_of_entities_in_blocks
+        self.average_number_of_block_assignments_per_comparison = self.num_of_block_assignments / (2*self.total_num_of_comparisons)
+        median = self.size_per_block[int(len(self.size_per_block)/2)]
+
+        entity_index = create_entity_index(blocks, self.data.is_dirty_er)
+        
+        # Distributional features
+        self.blocks_frequency = []
+        self.relative_block_frequency = []
+        self.comparison_frequency = []
+        self.relative_comparison_frequency = []
+        
+        for entity in entity_index:
+            if len(entity_index[entity]) == 1:
+                self.portion_of_singleton_entites += 1
+            self.blocks_frequency.append(len(entity_index[entity]))
+            self.relative_block_frequency.append(len(entity_index[entity]) / self.num_of_blocks)
+            self.comparison_frequency.append(sum([blocks[block_key].get_cardinality(self.data.is_dirty_er) for block_key in entity_index[entity]]))
+            self.relative_comparison_frequency.append(sum([blocks[block_key].get_cardinality(self.data.is_dirty_er) for block_key in entity_index[entity]]) / self.total_num_of_comparisons)
+        
+        self.portion_of_singleton_entites /= self.num_of_entities_in_blocks
+        self.portion_of_minimal_blocks = self.num_of_minimal_blocks / self.num_of_blocks
+        
+        # Distributional features
+        self.average_blocks_per_entity = np.mean(self.blocks_frequency)
+        self.average_number_of_block_assignments_per_entity = np.mean(self.relative_block_frequency)
+        self.average_comparison_per_entity = np.mean(self.comparison_frequency)
+        self.average_relative_number_of_comparisons_per_entity = np.mean(self.relative_comparison_frequency)
+
+        self.entropy_of_blocks_per_entity = -np.sum([p * np.log2(p) for p in self.blocks_frequency])
+        self.entropy_of_comparison_per_entity = -np.sum([p * np.log2(p) for p in self.comparison_frequency])
+        
+        self.kurtosis_of_blocks_per_entity = np.sum([(p - self.average_blocks_per_entity)**4 for p in self.blocks_frequency]) /\
+                                                    (self.num_of_blocks * self.average_blocks_per_entity**4)
+        self.kurtosis_of_comparison_per_entity = np.sum([(p - self.average_comparison_per_entity)**4 for p in self.comparison_frequency]) /\
+                                                    (self.num_of_blocks * self.average_comparison_per_entity**4)
+        
+        self.skewness_of_blocks_per_entity = np.sum([(p - self.average_blocks_per_entity)**3 for p in self.blocks_frequency]) /\
+                                                (self.num_of_blocks * self.average_blocks_per_entity**3)
+        self.skewness_of_comparison_per_entity = np.sum([(p - self.average_comparison_per_entity)**3 for p in self.comparison_frequency]) /\
+                                                (self.num_of_blocks * self.average_comparison_per_entity**3)
+        
+        
+        if verbose:
+            print(
+                "Statistics:" +
+                "\n\tNumber of blocks: " + str(self.num_of_blocks) +
+                "\n\tAverage block size: " + str(self.average_block_size) +
+                "\n\tMedian block size: " + str(median) +
+                "\n\tMax block size: " + str(self.max_block_size) +
+                "\n\tMin block size: " + str(self.min_block_size) +
+                "\n\tNumber of blocks dropped: " + str(self.num_of_blocks_dropped) +
+                "\n\tNumber of comparisons: " + str(self.total_num_of_comparisons) +
+                "\n\tMax comparisons per block: " + str(self.max_block_comparisons) +
+                "\n\tMin comparisons per block: " + str(self.min_block_comparisons) +
+                "\n\tEntities in blocks: " + str(len(self.entities_in_blocks))
+            )
+            print(u'\u2500' * 123)
+            print(
+                "\tAtomic feautures" +
+                "\n\t\tNumber of entities in blocks: " + str(self.num_of_entities_in_blocks) +
+                "\n\t\tNumber of blocks: " + str(self.num_of_blocks) +
+                "\n\t\tPortion of singleton entities: " + str(self.portion_of_singleton_entites) +
+                "\n\t\tTotal number of comparisons: " + str(self.total_num_of_comparisons) +
+                "\n\t\tNumber of blocks: " + str(self.num_of_blocks) +
+                "\n\t\tNumber of block assignments: " + str(self.num_of_block_assignments) +
+                "\n\t\tPortion of minimal blocks: " + str(self.portion_of_minimal_blocks) +
+                "\n\t\tNumber of blocks per entity: " + str(self.num_of_blocks_per_entity) +
+                "\n\t\tAverage number of block assignments per comparison: " + str(self.average_number_of_block_assignments_per_comparison)                
+            )
+            print(u'\u2500' * 123)
+            print(
+                "\tDistributional feautures" +
+                "\n\t\tAverage blocks per entity: " + str(self.average_blocks_per_entity) +
+                "\n\t\tAverage number of block assignments per entity: " + str(self.average_number_of_block_assignments_per_entity) +
+                "\n\t\tAverage comparison per entity: " + str(self.average_comparison_per_entity) +
+                "\n\t\tAverage relative number of comparisons per entity: " + str(self.average_relative_number_of_comparisons_per_entity) +
+                "\n\t\tEntropy of blocks per entity: " + str(self.entropy_of_blocks_per_entity) +
+                "\n\t\tEntropy of comparison per entity: " + str(self.entropy_of_comparison_per_entity) +
+                "\n\t\tKurtosis of blocks per entity: " + str(self.kurtosis_of_blocks_per_entity) +
+                "\n\t\tKurtosis of comparison per entity: " + str(self.kurtosis_of_comparison_per_entity) +
+                "\n\t\tSkewness of blocks per entity: " + str(self.skewness_of_blocks_per_entity) +
+                "\n\t\tSkewness of comparison per entity: " + str(self.skewness_of_comparison_per_entity)
+            )
+            print(u'\u2500' * 123)
+        
+        return {
+            'num_of_blocks': self.num_of_blocks,
+            'average_block_size': self.average_block_size,
+            'median_block_size': median,
+            'max_block_size': self.max_block_size,
+            'min_block_size': self.min_block_size,
+            'num_of_blocks_dropped': self.num_of_blocks_dropped,
+            'total_num_of_comparisons': self.total_num_of_comparisons,
+            'max_block_comparisons': self.max_block_comparisons,
+            'min_block_comparisons': self.min_block_comparisons,
+            'entities_in_blocks': len(self.entities_in_blocks),
+            'average_blocks_per_entity': self.average_blocks_per_entity,
+            'average_number_of_block_assignments_per_entity': self.average_number_of_block_assignments_per_entity,
+            'average_comparison_per_entity': self.average_comparison_per_entity,
+            'average_relative_number_of_comparisons_per_entity': self.average_relative_number_of_comparisons_per_entity,
+            'entropy_of_blocks_per_entity': self.entropy_of_blocks_per_entity,
+            'entropy_of_comparison_per_entity': self.entropy_of_comparison_per_entity,
+            'kurtosis_of_blocks_per_entity': self.kurtosis_of_blocks_per_entity,
+            'kurtosis_of_comparison_per_entity': self.kurtosis_of_comparison_per_entity,
+            'skewness_of_blocks_per_entity': self.skewness_of_blocks_per_entity,
+            'skewness_of_comparison_per_entity': self.skewness_of_comparison_per_entity
+        }
 
     def export_to_df(
         self,
