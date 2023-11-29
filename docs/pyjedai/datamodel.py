@@ -79,7 +79,6 @@ class Data:
                 id_column_name_2: str = None,
                 dataset_name_2: str = None,
                 ground_truth: DataFrame = None,
-                inorder_gt: bool = True
     ) -> None:
         # Original Datasets as pd.DataFrame
         if isinstance(dataset_1, pd.DataFrame):
@@ -105,7 +104,6 @@ class Data:
         self.entities: DataFrame
 
         # Datasets specs
-        self.inorder_gt = inorder_gt
         self.is_dirty_er = dataset_2 is None
         self.dataset_limit = self.num_of_entities_1 = len(dataset_1)
         self.num_of_entities_2: int = len(dataset_2) if dataset_2 is not None else 0
@@ -160,6 +158,8 @@ class Data:
             self._gt_to_ids_reversed_1: dict
             self._ids_mapping_2: dict
             self._gt_to_ids_reversed_2: dict
+        else:
+            self.ground_truth = None
 
         self.entities = self.dataset_1 = self.dataset_1.astype(str)
         
@@ -172,23 +172,48 @@ class Data:
             self.entities = pd.concat([self.dataset_1, self.dataset_2],
                                       ignore_index=True)
 
+        self._create_gt_mapping()
         if ground_truth is not None:
-            self._create_gt_mapping()
             self._store_pairs()
         else:
             self.ground_truth = None
 
+    # def _store_pairs(self) -> None:
+    #     """Creates a mapping:
+    #         - pairs_of : ids of first dataset to ids of true matches from second dataset"""
+        
+    #     self.pairs_of = defaultdict(set)
+    #     d1_col_index, d2_col_index = (0, 1) if self.inorder_gt else (1,0)
+        
+    #     for _, row in self.ground_truth.iterrows():
+    #         id1, id2 = (row[d1_col_index], row[d2_col_index])
+    #         if id1 in self.pairs_of: self.pairs_of[id1].append(id2)
+    #         else: self.pairs_of[id1] = [id2]  
+    
+    
     def _store_pairs(self) -> None:
         """Creates a mapping:
             - pairs_of : ids of first dataset to ids of true matches from second dataset"""
         
-        self.pairs_of = defaultdict(set)
-        d1_col_index, d2_col_index = (0, 1) if self.inorder_gt else (1,0)
+        self.duplicate_of = defaultdict(set)
         
         for _, row in self.ground_truth.iterrows():
-            id1, id2 = (row[d1_col_index], row[d2_col_index])
-            if id1 in self.pairs_of: self.pairs_of[id1].append(id2)
-            else: self.pairs_of[id1] = [id2]  
+            id1, id2 = (row[0], row[1])
+            if id1 in self.duplicate_of: self.duplicate_of[id1].add(id2)
+            else: self.duplicate_of[id1] = {id2}
+            
+    def _are_true_positives(self, id1 : int, id2 : int):
+        """Checks if given pair of identifiers represents a duplicate.
+           Identifiers must be inorder, first one belonging to the first and the second to the second dataset
+
+        Args:
+            id1 (int, optional): Identifier from the first dataframe. 
+            id2 (int, optional): Identifier from the second dataframe.
+
+        Returns:
+            _type_: _description_
+        """
+        return id1 in self.duplicate_of and id2 in self.duplicate_of[id1]
     
     def _create_gt_mapping(self) -> None:
         """Creates two mappings:
@@ -198,8 +223,8 @@ class Data:
         """
         if self.ground_truth is not None:
             self.ground_truth = self.ground_truth.astype(str)
-        else:
-            return
+        # else:
+        #     return
 
         self._ids_mapping_1 = dict(
             zip(
@@ -312,7 +337,6 @@ class Data:
             
         return stats_df
 
-        
 class Block:
     """The main module used for storing entities in the blocking steps of pyjedai module. \
         Consists of 2 sets of profile entities 1 for Dirty ER and 2 for Clean-Clean ER.
@@ -361,3 +385,4 @@ class Block:
             print("Clean dataset 2: " + "[\033[1;34m" + str(len(self.entities_D2)) + \
             " entities\033[0m]")
             print(self.entities_D2)
+

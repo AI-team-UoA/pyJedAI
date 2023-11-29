@@ -31,7 +31,7 @@ from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
 from .utils import SubsetIndexer
 
-EMBEDDINGS_DIR = '.embeddings'
+EMBEDDINGS_DIR = '.embs'
 if not os.path.exists(EMBEDDINGS_DIR):
     os.makedirs(EMBEDDINGS_DIR)
     EMBEDDINGS_DIR = os.path.abspath(EMBEDDINGS_DIR)
@@ -105,6 +105,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                      tqdm_disable: bool = False,
                      save_embeddings: bool = True,
                      load_embeddings_if_exist: bool = False,
+                     load_path_d1: str = None,
+                     load_path_d2: str = None,
                      with_entity_matching: bool = False,
                      input_cleaned_blocks: dict = None,
                      similarity_distance: str = 'cosine'
@@ -142,9 +144,10 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self.with_entity_matching = with_entity_matching
         self.save_embeddings, self.load_embeddings_if_exist = save_embeddings, load_embeddings_if_exist
         self.max_word_embeddings_size = max_word_embeddings_size
-        self.simiarity_distance = similarity_distance
+        self.similarity_distance = similarity_distance
         self.data, self.attributes_1, self.attributes_2, self.vector_size, self.num_of_clusters, self.top_k, self.input_cleaned_blocks \
             = data, attributes_1, attributes_2, vector_size, num_of_clusters, top_k, input_cleaned_blocks
+        self.load_path_d1, self.load_path_d2 = load_path_d1, load_path_d2
         self._progress_bar = tqdm(total=data.num_of_entities,
                                   desc=(self._method_name + ' [' + self.vectorizer + ', ' + self.similarity_search + ']'),
                                   disable=tqdm_disable)
@@ -163,7 +166,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         self._si = SubsetIndexer(self.input_cleaned_blocks, self.data, self._applied_to_subset)
         self._d1_valid_indices: list[int] = self._si.d1_retained_ids
-        self._d2_valid_indices: list[int] = [x - self.data.dataset_limit for x in self._si.d2_retained_ids]   
+        self._d2_valid_indices: list[int] = [x - self.data.dataset_limit for x in self._si.d2_retained_ids]  if not data.is_dirty_er else None
 
         self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
                             .apply(" ".join, axis=1) \
@@ -188,29 +191,35 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self._d2_loaded : bool = False
         if load_embeddings_if_exist:
                 print("Loading embeddings from file...")
-                
-                p1 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_1 \
-                                                    if self.data.dataset_name_1 is not None else "d1") +'.npy')
-                print("Loading file: ", p1)
+                if(self.load_path_d1 is not None):
+                    p1 = self.load_path_d1
+                else:
+                    p1 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_1 \
+                                                        if self.data.dataset_name_1 is not None else "d1") +'.npy')
+                print("Attempting to load D1 embeddings...")
                 if os.path.exists(p1):
                     self.vectors_1 = vectors_1 = np.load(p1)
                     self.vectors_1 = vectors_1 = vectors_1[self._d1_valid_indices]
                     self._progress_bar.update(data.num_of_entities_1)
                     self._d1_loaded = True
+                    print(f"{p1} -> Loaded Successfully")
                 else:
                     print("Embeddings not found. Creating new ones.")
                 
-                p2 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_2 \
-                                                    if self.data.dataset_name_2 is not None else "d2") +'.npy')    
-                print("Loading file: ", p2)
+                if(self.load_path_d2 is not None):
+                    p2 = self.load_path_d2
+                else:
+                    p2 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_2 \
+                                                        if self.data.dataset_name_2 is not None else "d2") +'.npy')    
+                print("Attempting to load D2 embeddings...")
                 if os.path.exists(p2):
                     self.vectors_2 = vectors_2 = np.load(p2)
                     self.vectors_2 = vectors_2 = vectors_2[self._d2_valid_indices]
                     self._progress_bar.update(data.num_of_entities_2)
                     self._d2_loaded = True
+                    print(f"{p2} -> Loaded Successfully")
                 else:
                     print("Embeddings not found. Creating new ones.")
-                print("Loading embeddings from file finished")
         if not self._d1_loaded or not self._d2_loaded:
             if self.vectorizer in ['word2vec', 'fasttext', 'doc2vec', 'glove']:
                 self.vectors_1, self.vectors_2 = self._create_gensim_embeddings()
@@ -368,33 +377,33 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
     def _similarity_search_with_FAISS(self):
         index = faiss.IndexFlatL2(self.vectors_1.shape[1])
         
-        if self.simiarity_distance == 'cosine' or self.simiarity_distance == 'cosine_without_normalization':
+        if self.similarity_distance == 'cosine' or self.similarity_distance == 'cosine_without_normalization':
             index.metric_type = faiss.METRIC_INNER_PRODUCT
-        elif self.simiarity_distance == 'euclidean':
+        elif self.similarity_distance == 'euclidean':
             index.metric_type = faiss.METRIC_L2
         else:
-            raise ValueError("Invalid similarity distance: ", self.simiarity_distance)
+            raise ValueError("Invalid similarity distance: ", self.similarity_distance)
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
             
         index.train(self.vectors_1)  # train on the vectors of dataset 1
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
 
         index.add(self.vectors_1)   # add the vectors and update the index
 
-        if self.simiarity_distance == 'cosine':
+        if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
-            faiss.normalize_L2(self.vectors_2)
+            if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
         
         self.distances, self.neighbors = index.search(self.vectors_1 if self.data.is_dirty_er else self.vectors_2,
                                     self.top_k)
 
-        if self.simiarity_distance == 'euclidean':
+        if self.similarity_distance == 'euclidean':
             self.distances = 1/(1 + self.distances)
 
         self.blocks = dict()
@@ -516,12 +525,9 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         Returns:
             pd.DataFrame: Dataframe with the predicted pairs
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
         pairs_df = pd.DataFrame(columns=['id1', 'id2'])
         for entity_id, candidates in prediction:
-            id1 = self.data._gt_to_ids_reversed_1[entity_id]                                            
+            id1 = self.data._gt_to_ids_reversed_1[entity_id]
             for candiadate_id in candidates:
                 id2 = self.data._gt_to_ids_reversed_1[candiadate_id] if self.data.is_dirty_er \
                         else self.data._gt_to_ids_reversed_2[candiadate_id]

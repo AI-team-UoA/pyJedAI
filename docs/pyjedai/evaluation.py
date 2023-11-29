@@ -18,6 +18,7 @@ from .utils import batch_pairs
 from .utils import canonical_swap
 from math import inf
 from .utils import PredictionData
+from .utils import generate_unique_identifier
 import random
 import matplotlib.pyplot as plt
 
@@ -196,12 +197,19 @@ class Evaluation:
         plt.ylabel("Real matching pairs", fontsize=10, fontweight='bold')
         plt.show()
         
-    def visualize_roc(method_names : List[str], methods_data : List[Tuple[str, float, List[float]]], proportional : bool =True) -> None:
+    def visualize_roc(self, methods_data : List[dict], proportional : bool =True, drop_tp_indices=True) -> None:
         fig, ax = plt.subplots(figsize=(10, 6))  # set the size of the plot
         colors = []
         normalized_aucs = []
         # for each method layout its plot
-        for method_name, normalized_auc, cumulative_recall in methods_data:
+        for method_data in methods_data:
+            cumulative_recall, normalized_auc = self._generate_auc_data(total_candidates=method_data['total_emissions'], tp_positions=method_data['tp_idx'])
+            if(drop_tp_indices):
+                del(method_data['tp_idx'])
+            method_name=method_data['name']
+            method_data['auc'] = normalized_auc
+            method_data['recall'] = cumulative_recall[-1] if len(cumulative_recall) != 0 else 0.0
+            
             x_values = range(len(cumulative_recall))
             color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
             colors.append(color)
@@ -262,14 +270,14 @@ class Evaluation:
         Returns:
             bool: Stop emission on all TPs found / Emit all pairs
         """
-        return self._true_positive_checked is not None
+        return self._duplicate_emitted is not None
     
     def _all_tps_emitted(self) -> bool:
         """Checks if all TPs have been emitted (Defaults to False in the case of all pairs emission approach)
         Returns:
             bool: All TPs emitted / not emitted
         """
-        if(self._till_full_tps_emission()): return self._tps_found >= len(self._true_positive_checked)
+        if(self._till_full_tps_emission()): return self._tps_found >= len(self._duplicate_emitted)
         else: False
         
     def _update_true_positive_entry(self, entity : int, candidate : int) -> None:
@@ -280,75 +288,113 @@ class Evaluation:
             candidate (int): Candidate ID
         """
         if(self._till_full_tps_emission()):
-            if(not self._true_positive_checked[canonical_swap(entity, candidate)]):
-                self._true_positive_checked[canonical_swap(entity, candidate)] = True
+            if(not self._duplicate_emitted[(entity, candidate)]):
+                self._duplicate_emitted[(entity, candidate)] = True
                 self._tps_found += 1
                 return
     
 
-    def calculate_roc_auc_data(self, data: Data, pairs, batch_size : int  = 1, true_positive_checked : dict = None) -> List[Tuple[int, int]]:
-        """Progressively calculates total recall, AUC for each batch of candidate pairs
+    def calculate_tps_indices(self, pairs : List[Tuple[float, int, int]], duplicate_of : dict = None, duplicate_emitted : dict = None, batch_size : int  = 1) -> Tuple[List[int], int]:
+        """
         Args:
-            data (Data): Data Module
-            pairs: List containing pairs in form (entity1 id, entity2 id, score)
+            pairs (List[float, int, int]): Candidate pairs to emit in the form [similarity, first dataframe entity ID, second dataframe entity ID]
+            duplicate_of (dict, optional): Dictionary of the form [entity ID] -> [IDs of duplicate entities]. Defaults to None.
+            duplicate_emitted (dict, optional): Dictionary of the form [true positive pair] -> [emission status: emitted/not]. Defaults to None.
+            batch_size (int, optional): Recall update emission rate. Defaults to 1.
+
         Raises:
-            AttributeError: Ground Truth file hasn't been supplied, cannot calculate ROC AUC
+            AttributeError: No ground truth has been given
         Returns:
-            List[Tuple[int, int]]: List of ROC graph points information (recall up to e, normalized auc up to e)
+            Tuple[List[int], int]: Indices of true positive duplicates within the candidates list and the total emissions
         """
 
-        if(true_positive_checked is not None): 
-            for pair in true_positive_checked.keys():
-                true_positive_checked[pair] = False
+        if(duplicate_emitted is not None): 
+            for pair in duplicate_emitted.keys():
+                duplicate_emitted[pair] = False
 
-        if(data.ground_truth is None):
+        if(duplicate_of is None):
             raise AttributeError("Can calculate ROC AUC without a ground-truth file. \
                 Data object mush have initialized with the ground-truth file")
-
-        if(len(data.ground_truth) == 0):
-            raise AttributeError("Cannot calculate AUC score, number of true duplicates is equal to 0.")
         
-        _true_positives: int = 0
-        _normalized_auc: int = 0
-        _current_recall: int = 0
-        _new_recall: int = 0
         self._tps_found : int = 0
-        self._true_positive_checked : dict = true_positive_checked
-        self.num_of_true_duplicates = len(data.ground_truth)
-        _recall_progress = [0]
-
+        self._duplicate_emitted : dict = duplicate_emitted
+        self._tps_indices : List[int] = []
+        
         batches = batch_pairs(pairs, batch_size)
         # ideal_auc = self.calculate_ideal_auc(len(pairs), self.num_of_true_duplicates)
-        self._total_emissions : int = 0
+        self.total_emissions : int = 0
         for batch in batches:
-            _current_batch_size : int = 0
-            for entity, candidate in batch:
-                if(self._all_tps_emitted()): break
-                entity_id = data._gt_to_ids_reversed_1[entity] if entity < data.dataset_limit else data._gt_to_ids_reversed_2[entity]
-                candidate_id = data._gt_to_ids_reversed_1[candidate] if candidate < data.dataset_limit else data._gt_to_ids_reversed_2[candidate]
-                _d1_entity, _d2_entity = (entity_id, candidate_id) if entity < data.dataset_limit else (candidate_id, entity_id)
-                
-                if _d2_entity in self.data.pairs_of[_d1_entity]:
-                    self._update_true_positive_entry(entity_id, candidate_id)
-                    _true_positives += 1  
-                _current_batch_size += 1
-            self._total_emissions += 1
-            _new_recall = _true_positives / self.num_of_true_duplicates
+            for score, entity, candidate in batch:
+                if(self._all_tps_emitted()): break                
+                if candidate in duplicate_of[entity]:
+                    self._update_true_positive_entry(entity, candidate)
+                    self._tps_indices.append(self.total_emissions)
+                    
+            self.total_emissions += 1
             # _normalized_auc += ((_new_recall + _current_recall) / 2) * (_current_batch_size / self.num_of_true_duplicates)
-            _current_recall = _new_recall
-            _recall_progress.append(_current_recall)
             if(self._all_tps_emitted()): break
             
-
         # _normalized_auc = 0 if(ideal_auc == 0) else _normalized_auc / ideal_auc
-        _normalized_auc = sum(_recall_progress) / (len(pairs) + 1.0)
-        return _recall_progress, _normalized_auc
+        return self._tps_indices, self.total_emissions
     
-    def evaluate_auc_roc(self, matchers_data : List[Tuple], batch_size : int = 1, proportional : bool = True) -> None:
+    
+    def _generate_auc_data(self, total_candidates : int, tp_positions : List[int]) -> Tuple[List[float], float]:
+        """Generates the recall axis containing the recall value for each emission and calculates the normalized AUC
+
+        Args:
+            total_candidates (int): Total number of pairs emitted
+            tp_positions (List[int]): Indices of true positives within the candidate pairs list
+
+        Returns:
+            Tuple[List[float], float]: Recall axis and the normalized AUC
+        """
+        
+        _recall_axis : List[float] = []
+        _recall : float = 0.0
+        _tp_index : int = 0
+        _dataset_total_tps : int = len(self.data.ground_truth)
+        _total_found_tps : int = len(tp_positions)
+                
+        for recall_index in range(total_candidates):
+            if(_tp_index < _total_found_tps):
+                if(recall_index == tp_positions[_tp_index]):
+                   _recall =  (_tp_index + 1.0) / _dataset_total_tps
+                   _tp_index += 1
+            _recall_axis.append(_recall)
+            
+        _normalized_auc : float = sum(_recall_axis) / (total_candidates + 1.0)
+        
+        return _recall_axis, _normalized_auc    
+    
+    
+    def visualize_results_roc(self, results : dict, drop_tp_indices=True) -> None:
+        """For each of the executed workflows, calculates the cumulative recall and normalized AUC based upon true positive indices.
+           Finally, displays the ROC for all of the workflows with proper annotation (each workflow gains a unique identifier).
+        Args:
+            results (dict): Nested dictionary of the form [dataset] -> [matcher] -> [executed workflows and their info] / [model] -> [executed -//-]
+        """
+        
+        workflows_info : List[Tuple[dict]] = []
+        
+        for dataset in results:
+            matchers = results[dataset]
+            for matcher in matchers:
+                matcher_info = matchers[matcher]
+                if(isinstance(matcher_info, list)):
+                    for workflow_info in matcher_info:
+                        workflows_info.append((workflow_info))
+                else:
+                    for model in matcher_info:
+                        for workflow_info in matcher_info[model]:
+                            workflows_info.append((workflow_info))
+                          
+        self.visualize_roc(workflows_info, drop_tp_indices=drop_tp_indices)
+    
+    
+    def evaluate_auc_roc(self, matchers : List, batch_size : int = 1, proportional : bool = True, drop_tp_indices=True) -> None:
         """For each matcher, takes its prediction data, calculates cumulative recall and auc, plots the corresponding ROC curve, populates prediction data with performance info
         Args:
-            matchers_data List[Tuple[str, ProgressiveMatching]]: Progressive Matchers and their names
-            data (Data) : Data Module
+            matchers List[ProgressiveMatching]: Progressive Matchers
             batch_size (int, optional): Emitted pairs step at which cumulative recall is recalculated. Defaults to 1.
             proportional (bool) : Proportional Visualization
         Raises:
@@ -363,22 +409,18 @@ class Evaluation:
             raise AttributeError("Can not proceed to AUC ROC evaluation without a ground-truth file. " +
                     "Data object has not been initialized with the ground-truth file")
 
-        self._matchers_auc_roc_data = []
+        self.matchers_info = []
+        
+        for matcher in matchers:
+            _tp_indices, _total_emissions  = self.calculate_tps_indices(pairs=matcher.pairs, duplicate_of=matcher.duplicate_of, duplicate_emitted=matcher.duplicate_emitted)
+            matcher_info = {}
+            matcher_info['name'] = generate_unique_identifier()
+            matcher_info['total_emissions'] = _total_emissions
+            matcher_info['tp_idx'] = _tp_indices
+            matcher_info['time'] = matcher.execution_time
+            
+            matcher_prediction_data : PredictionData = PredictionData(matcher=matcher, matcher_info=matcher_info)
+            matcher.set_prediction_data(matcher_prediction_data)
+            self.matchers_info.append(matcher_info)
 
-        for matcher_data in matchers_data:
-            
-            matcher_name, progressive_matcher = matcher_data
-            matcher_prediction_data : PredictionData = PredictionData(matcher_name, progressive_matcher.pairs, progressive_matcher.true_pair_checked)
-            
-            matcher_predictions = matcher_prediction_data.get_predictions()
-            matcher_tps_checked = matcher_prediction_data.get_tps_checked()
-            
-            cumulative_recall, normalized_auc = self.calculate_roc_auc_data(self.data, matcher_predictions, batch_size, matcher_tps_checked)
-                    
-            self._matchers_auc_roc_data.append((matcher_name, normalized_auc, cumulative_recall))
-            matcher_prediction_data.set_total_emissions(self._total_emissions)
-            matcher_prediction_data.set_normalized_auc(normalized_auc)
-            matcher_prediction_data.set_cumulative_recall(cumulative_recall[-1])
-            progressive_matcher.set_prediction_data(matcher_prediction_data)
-
-        self.visualize_roc(methods_data = self._matchers_auc_roc_data, proportional = proportional)
+        self.visualize_roc(methods_data=self.matchers_info, drop_tp_indices=drop_tp_indices)

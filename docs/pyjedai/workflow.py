@@ -4,6 +4,8 @@ from time import time
 from typing import Callable, List, Tuple
 
 import matplotlib.pyplot as plt
+import os
+import json
 import optuna
 import pandas as pd
 from networkx import Graph
@@ -19,7 +21,10 @@ from .clustering import ConnectedComponentsClustering, UniqueMappingClustering
 from .vector_based_blocking import EmbeddingsNNBlockBuilding
 from .joins import EJoin, TopKJoin
 
-plt.style.use('seaborn-whitegrid')
+from .prioritization import ProgressiveMatching, BlockIndependentPM, class_references
+from .utils import new_dictionary_from_keys, get_class_function_arguments, generate_unique_identifier
+
+
 
 class PYJEDAIWorkFlow(ABC):
     """Main module of the pyjedAI and the simplest way to create an end-to-end ER workflow.
@@ -204,6 +209,270 @@ class PYJEDAIWorkFlow(ABC):
             Tuple[float, float, float]: F-Measure, Precision, Recall.
         """
         return self.f1[-1], self.precision[-1], self.recall[-1]
+class ProgressiveWorkFlow(PYJEDAIWorkFlow):
+    """Main module of the pyjedAI and the simplest way to create an end-to-end PER workflow.
+    """
+
+    def __init__(
+            self,
+            name: str = None
+    ) -> None:
+        self.f1: list = []
+        self.recall: list = []
+        self.precision: list = []
+        self.runtime: list = []
+        self.configurations: list = []
+        self.workflow_exec_time: float
+        self._id: int = next(self._id)
+        self.name: str = name if name else "Workflow-" + str(self._id)
+        self._workflow_bar: tqdm
+        self.final_pairs = None
+
+    def run(self,
+            data: Data,
+            verbose: bool = False,
+            with_classification_report: bool = False,
+            workflow_step_tqdm_disable: bool = True,
+            workflow_tqdm_enable: bool = False,
+            block_building : dict = None,
+            block_purging : dict = None,
+            block_filtering : dict = None,
+            **matcher_arguments
+        ) -> None:
+        """Main function for creating an Progressive ER workflow.
+
+        Args:
+            data (Data): Dataset Module, used to derive schema-awereness status
+            verbose (bool, optional): Print detailed report for each step. Defaults to False.
+            with_classification_report (bool, optional): Print pairs counts. Defaults to False.
+            workflow_step_tqdm_disable (bool, optional):  Tqdm progress bar in each step. Defaults to True.
+            workflow_tqdm_enable (bool, optional): Overall progress bar. Defaults to False.
+            number_of_nearest_neighbors (int, optional): Number of nearest neighbours in cardinality based algorithms. Defaults to None.
+            indexing (str, optional): Inorder/Reverse/Bilateral indexing of datasets. Defaults to None.
+            similarity_function (str, optional): Function used to evaluate the similarity of two vector based representations of entities. Defaults to None.
+            language_model (str, optional): Language model used to vectorize the entities. Defaults to None.
+            tokenizer (str, optional): Text tokenizer used. Defaults to None.
+            weighting_scheme (str, optional): Scheme used to evaluate the weight between nodes of intermediate representation graph. Defaults to None.
+            block_building (dict, optional): Algorithm and its parameters used to construct the blocks. Defaults to None.
+            block_purging (dict, optional): Algorithm and its parameters used to delete obsolete blocks. Defaults to None.
+            block_filtering (dict, optional): Algorithm and its parameters used to lower the cardinality of blocks. Defaults to None.
+            window_size (dict, optional): Window size in the Sorted Neighborhood Progressive ER workflows. Defaults to None.
+        """
+        self.block_building, self.block_purging, self.block_filtering, self.algorithm = \
+        block_building, block_purging, block_filtering, matcher_arguments['algorithm']
+        steps = [self.block_building, self.block_purging, self.block_filtering, self.algorithm]
+        num_of_steps = sum(x is not None for x in steps)
+        self._workflow_bar = tqdm(total=num_of_steps,
+                                  desc=self.name,
+                                  disable=not workflow_tqdm_enable)
+         
+        self.data : Data = data
+        self._init_experiment()
+        start_time = time()
+        self.matcher_arguments = matcher_arguments
+        self.matcher_name = self.matcher_arguments['matcher']
+        self.dataset_name = self.matcher_arguments['dataset']
+        matcher = class_references[matcher_arguments['matcher']]
+        self.constructor_arguments = new_dictionary_from_keys(dictionary=self.matcher_arguments, keys=get_class_function_arguments(class_reference=matcher, function_name='__init__'))
+        self.predictor_arguments = new_dictionary_from_keys(dictionary=self.matcher_arguments, keys=get_class_function_arguments(class_reference=matcher, function_name='predict'))
+        print(self.constructor_arguments)
+        print(self.predictor_arguments)
+        
+        progressive_matcher : ProgressiveMatching = matcher(**self.constructor_arguments)
+        self.progressive_matcher : ProgressiveMatching = progressive_matcher
+        #
+        # Block Building step: Only one algorithm can be performed
+        #
+        block_building_method = (self.block_building['method'](**self.block_building["params"]) \
+                                                    if "params" in self.block_building \
+                                                    else self.block_building['method']()) if self.block_building \
+                                                    else (None if not self._blocks_required() else StandardBlocking())
+
+        bblocks = None
+        block_building_blocks = None
+        if block_building_method:
+            block_building_blocks = \
+                block_building_method.build_blocks(data,
+                                                attributes_1=self.block_building["attributes_1"] \
+                                                                    if(self.block_building is not None and "attributes_1" in self.block_building) else None,
+                                                    attributes_2=self.block_building["attributes_2"] \
+                                                                    if(self.block_building is not None and "attributes_2" in self.block_building) else None,
+                                                    tqdm_disable=workflow_step_tqdm_disable)
+            self.final_pairs = bblocks = block_building_blocks
+            res = block_building_method.evaluate(block_building_blocks,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+            self._save_step(res, block_building_method.method_configuration())
+            self._workflow_bar.update(1)
+
+        if(block_building_blocks is not None):
+            #
+            # Block Purging step [optional]
+            #
+            bblocks = block_building_blocks
+            block_purging_blocks = None
+            if(self.block_purging is not None):
+                block_purging_method = self.block_purging['method'](**self.block_purging["params"]) \
+                                                if "params" in self.block_purging \
+                                                else self.block_purging['method']()
+                block_purging_blocks = block_purging_method.process(bblocks,
+                                                                    data,
+                                                                    tqdm_disable=workflow_step_tqdm_disable)
+                self.final_pairs = bblocks = block_purging_blocks
+                res = block_purging_method.evaluate(bblocks,
+                                                    export_to_dict=True,
+                                                    with_classification_report=with_classification_report,
+                                                    verbose=verbose)
+                self._save_step(res, block_purging_method.method_configuration())
+                self._workflow_bar.update(1)
+            #
+            # Block Filtering step [optional]
+            #
+            block_filtering_blocks = None
+            if(self.block_filtering is not None):
+                block_filtering_method = self.block_filtering['method'](**self.block_filtering["params"]) \
+                                                if "params" in self.block_filtering \
+                                                else self.block_filtering['method']()
+                block_filtering_blocks = block_filtering_method.process(bblocks,
+                                                                        data,
+                                                                        tqdm_disable=workflow_step_tqdm_disable)
+                self.final_pairs = bblocks = block_filtering_blocks
+                res = block_filtering_method.evaluate(bblocks,
+                                                    export_to_dict=True,
+                                                    with_classification_report=with_classification_report,
+                                                    verbose=verbose)
+                self._save_step(res, block_filtering_method.method_configuration())
+                self._workflow_bar.update(1)
+
+        #
+        # Progressive Matching step
+        #
+        self.final_pairs : List[Tuple[float, int, int]] = progressive_matcher.predict(data=data, blocks=bblocks, dataset_identifier=self.dataset_name, **self.predictor_arguments)
+        evaluator = Evaluation(self.data)
+        self.tp_indices, self.total_emissions = evaluator.calculate_tps_indices(pairs=self.final_pairs,duplicate_of=progressive_matcher.duplicate_of, duplicate_emitted=progressive_matcher.duplicate_emitted)
+        self.total_candidates = len(self.final_pairs)       
+        self._workflow_bar.update(1)
+        self.workflow_exec_time = time() - start_time
+
+    def _blocks_required(self):
+        return not isinstance(self.progressive_matcher, BlockIndependentPM)
+
+    def _init_experiment(self) -> None:
+        self.f1: list = []
+        self.recall: list = []
+        self.precision: list = []
+        self.runtime: list = []
+        self.configurations: list = []
+        self.workflow_exec_time: float
+
+    def visualize(
+            self,
+            f1: bool = True,
+            recall: bool = True,
+            precision: bool = True,
+            separate: bool = False
+    ) -> None:
+        pass
+
+    def to_df(self) -> pd.DataFrame:
+        pass
+
+    def export_pairs(self) -> pd.DataFrame:
+        pass
+
+    def _save_step(self, results: dict, configuration: dict) -> None:
+        pass
+
+    def get_final_scores(self) -> Tuple[float, float, float]:
+        pass
+    
+    def retrieve_matcher_workflows(self, workflows : dict, arguments : dict) -> list:
+        """Retrieves the list of already executed workflows for the matcher/model of current workflow 
+
+        Args:
+            workflows (dict): Dictionary of script's executed workflows' information
+            arguments (dict): Arguments that have been supplied for current workflow execution
+
+        Returns:
+            list: List of already executed workflows for given workflow's arguments' matcher/model
+        """
+        dataset : str = self.dataset_name
+        matcher : str = self.matcher_name
+        
+        workflows[dataset] = workflows[dataset] if dataset in workflows else dict()
+        matcher_results = workflows[dataset]
+        matcher_results[matcher] = matcher_results[matcher] if matcher in matcher_results \
+                                else ([] if('language_model' not in arguments) else {})
+                
+        matcher_info = matcher_results[matcher]
+        workflows_info = matcher_info
+        if(isinstance(matcher_info, dict)):
+            lm_name = arguments['language_model']
+            matcher_info[lm_name] = matcher_info[lm_name] if lm_name in matcher_info else []
+            workflows_info = matcher_info[lm_name]  
+            
+        return workflows_info
+    
+    
+    
+    def save(self, arguments : dict, path : str = None, results = None) -> dict:
+        """Stores argument / execution information for current workflow within a workflows dictionary.
+        
+        Args:
+            arguments (dict): Arguments that have been supplied for current workflow execution
+            path (str): Path where the workflows results are stored at (Default to None),
+            results (str): A dictionary of workflows results at which we want to store current workflow's arguments/info
+        Returns:
+            dict: Dictionary containing the information about the given workflow
+        """
+        if(path is None and results is None):
+            raise ValueError(f"No dictionary path or workflows dictionary given - Cannot save workflow.")
+        
+        if(results is not None):
+            workflows = results
+        elif(not os.path.exists(path) or os.path.getsize(path) == 0):
+            workflows = {}
+        else:
+            with open(path, 'r', encoding="utf-8") as file:
+                workflows = json.load(file)
+                
+        category_workflows = self.retrieve_matcher_workflows(workflows=workflows, arguments=arguments)
+        self.save_workflow_info(arguments=arguments) 
+        category_workflows.append(self.info)
+        
+        if(path is not None):
+            with open(path, 'w', encoding="utf-8") as file:
+                json.dump(workflows, file, indent=4)
+            
+        return self.info
+    
+    def save_workflow_info(self, arguments : dict) -> dict:
+        """Stores current workflow argument values and execution related data (like execution time and total emissions)
+
+        Args:
+            arguments (dict): Arguments that were passed to progressive workflow at hand
+        """
+        
+        workflow_info : dict = {k: v for k, v in arguments.items()}
+        workflow_info['total_candidates'] = self.total_candidates
+        workflow_info['total_emissions'] = self.total_emissions
+        workflow_info['time'] = self.workflow_exec_time
+        workflow_info['name'] = generate_unique_identifier()
+        workflow_info['tp_idx'] = self.tp_indices
+        workflow_info['dataset'] = self.dataset_name
+        workflow_info['matcher'] = self.matcher_name
+
+        self.info = workflow_info  
+    
+    def print_info(self, info : dict):
+        for attribute in info:
+            value = info[attribute]
+            if(attribute != 'tp_idx'):
+                print(f"{attribute} : {value}")
+            else:
+                print(f"true_positives : {len(value)}")
+    
 
 def compare_workflows(workflows: List[PYJEDAIWorkFlow], with_visualization=True) -> pd.DataFrame:
     """Compares workflows by creating multiple plots and tables with results.
@@ -526,8 +795,10 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
         self.comparison_cleaning = dict(method=WeightedEdgePruning, params=dict(weighting_scheme='EJS'))
         self.entity_matching = dict(method=EntityMatching,
                                     params=dict(metric='cosine',
-                                                     tokenizer='tfidf_char_3gram', 
-                                                     similarity_threshold=0.0))
+                                                    tokenizer='char_tokenizer', 
+                                                    vectorizer='tfidf',
+                                                    qgram=3,
+                                                    similarity_threshold=0.0))
         self.clustering = dict(method=UniqueMappingClustering, 
                                exec_params=dict(similarity_threshold=0.17))
         self.name="best-ccer-workflow"

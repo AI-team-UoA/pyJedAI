@@ -19,13 +19,11 @@ from py_stringmatching.similarity_measure.overlap_coefficient import \
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from py_stringmatching.tokenizer.whitespace_tokenizer import \
     WhitespaceTokenizer
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics.pairwise import pairwise_distances
 from tqdm.autonotebook import tqdm
 
 from .datamodel import Data, PYJEDAIFeature
 from .evaluation import Evaluation
-from .utils import WordQgramTokenizer, cosine, get_qgram_from_tokenizer_name
+from .utils import WordQgramTokenizer, cosine, get_qgram_from_tokenizer_name, FrequencyEvaluator
 
 
 metrics_mapping = {
@@ -51,36 +49,44 @@ set_metrics = [
 ]
 
 vector_metrics = [ 
-    'cosine', 'dice', 'jaccard'
+    'cosine', 'dice', 'jaccard', 'sqeuclidean'
 ]
 
 whoosh_index_metrics = [
     'TF-IDF', 'Frequency', 'PL2', 'BM25F'
 ] 
 
+faiss_metrics = [
+    'cosine', 'euclidean'
+]
+
 magellan_metrics = string_metrics + set_metrics
-available_metrics = magellan_metrics + vector_metrics + whoosh_index_metrics
+available_metrics = magellan_metrics + vector_metrics + whoosh_index_metrics + faiss_metrics
 
 #
 # Tokenizers
 #
-char_qgram_tokenizers = { 'char_'+ str(i) + 'gram':i for i in range(1, 7) }
-word_qgram_tokenizers = { 'word_'+ str(i) + 'gram':i for i in range(1, 7) }
+# char_qgram_tokenizers = { 'char_'+ str(i) + 'gram':i for i in range(1, 7) }
+# word_qgram_tokenizers = { 'word_'+ str(i) + 'gram':i for i in range(1, 7) }
+char_qgram_tokenizers = ['char_tokenizer']
+word_qgram_tokenizers = ['word_tokenizer']
 magellan_tokenizers = ['white_space_tokenizer']
+joins_tokenizers = ["qgrams", "standard", "standard_multiset", "qgrams_multiset"]
 
-tfidf_tokenizers = [ 'tfidf_' + cq for cq in char_qgram_tokenizers.keys() ] + \
-                    [ 'tfidf_' + wq for wq in word_qgram_tokenizers.keys() ]
+# tfidf_tokenizers = [ 'tfidf_' + cq for cq in char_qgram_tokenizers.keys() ] + \
+#                     [ 'tfidf_' + wq for wq in word_qgram_tokenizers.keys() ]
 
-tf_tokenizers = [ 'tf_' + cq for cq in char_qgram_tokenizers.keys() ] + \
-                    [ 'tf_' + wq for wq in word_qgram_tokenizers.keys() ]
+# tf_tokenizers = [ 'tf_' + cq for cq in char_qgram_tokenizers.keys() ] + \
+#                     [ 'tf_' + wq for wq in word_qgram_tokenizers.keys() ]
                         
-boolean_tokenizers = [ 'boolean_' + cq for cq in char_qgram_tokenizers.keys() ] + \
-                        [ 'boolean_' + wq for wq in word_qgram_tokenizers.keys() ]
+# boolean_tokenizers = [ 'boolean_' + cq for cq in char_qgram_tokenizers.keys() ] + \
+#                         [ 'boolean_' + wq for wq in word_qgram_tokenizers.keys() ]
 
-vector_tokenizers = tfidf_tokenizers + tf_tokenizers + boolean_tokenizers
+# vector_tokenizers = tfidf_tokenizers + tf_tokenizers + boolean_tokenizers
 
-available_tokenizers = [key for key in char_qgram_tokenizers] + [key for key in word_qgram_tokenizers] + magellan_tokenizers + vector_tokenizers
-
+# available_tokenizers = [key for key in char_qgram_tokenizers] + [key for key in word_qgram_tokenizers] + magellan_tokenizers + vector_tokenizers
+available_tokenizers = char_qgram_tokenizers + word_qgram_tokenizers + magellan_tokenizers + joins_tokenizers
+available_vectorizers = ['tfidf', 'tf', 'boolean']
 
 class AbstractEntityMatching(PYJEDAIFeature):
     """Calculates similarity from 0.0 to 1.0
@@ -337,6 +343,8 @@ class EntityMatching(AbstractEntityMatching):
             self,
             metric: str = 'dice',
             tokenizer: str = 'white_space_tokenizer',
+            vectorizer : str = None,
+            qgram : int = 1,
             similarity_threshold: float = 0.5,
             tokenizer_return_unique_values = False, # unique values or not,
             attributes: any = None,
@@ -348,7 +356,7 @@ class EntityMatching(AbstractEntityMatching):
         self.similarity_threshold = similarity_threshold
         self.tokenizer = tokenizer
         self.execution_time = 0
-        self._input_type = None
+        self.vectorizer = vectorizer
         self.qgram: int = -1
         #
         # Selecting tokenizer
@@ -362,36 +370,30 @@ class EntityMatching(AbstractEntityMatching):
         else:
             self._metric = metric
 
-        if metric in set_metrics:
-            self.tokenizer_return_set = True
-        else:
-            self.tokenizer_return_set = tokenizer_return_unique_values
-
-        if 'gram' in tokenizer:
-            self.qgram = get_qgram_from_tokenizer_name(tokenizer)
+        self.tokenizer_return_set = (metric in set_metrics) or tokenizer_return_unique_values    
+        self.qgram : int = qgram
         
-        if tokenizer == 'white_space_tokenizer':
-            self._input_type = 'white_space'
-            self._tokenizer = WhitespaceTokenizer(return_set=self.tokenizer_return_set)
-        elif tokenizer in char_qgram_tokenizers.keys():
-            self._input_type = 'char_qgram'
-            self._tokenizer = QgramTokenizer(qval=self.qgram,
-                                             return_set=self.tokenizer_return_set)
-        elif tokenizer in word_qgram_tokenizers.keys():
-            self._input_type = 'word_qgram'
-            self._tokenizer = WordQgramTokenizer(q=self.qgram)
-        elif 'tfidf' in tokenizer:
-            self._input_type = 'tfidf'
-        elif 'tf' in tokenizer:
-            self._input_type = 'tf'
-        elif 'boolean' in tokenizer:
-            self._input_type = 'boolean'
-        else:
-            raise AttributeError(
-                'Tokenizer ({}) does not exist. Please select one of the available. ({})'.format(
-                    tokenizer, available_tokenizers
+        if(vectorizer is not None):
+            if self.vectorizer not in available_vectorizers:
+                raise AttributeError(
+                    'Weighting Scheme ({}) does not exist. Please select one of the available. ({})'.format(
+                        vectorizer, available_vectorizers
+                    )
                 )
-            )
+        elif(tokenizer is not None):
+            if tokenizer == 'white_space_tokenizer':
+                self._tokenizer = WhitespaceTokenizer(return_set=self.tokenizer_return_set)
+            elif tokenizer == 'char_tokenizer':
+                self._tokenizer = QgramTokenizer(qval=self.qgram,
+                                                return_set=self.tokenizer_return_set)
+            elif tokenizer == 'word_tokenizer':
+                self._tokenizer = WordQgramTokenizer(q=self.qgram)
+            elif tokenizer not in available_tokenizers:
+                raise AttributeError(
+                    'Tokenizer ({}) does not exist. Please select one of the available. ({})'.format(
+                        tokenizer, available_tokenizers
+                    )
+                )
         
     def predict(self,
                 blocks: dict,
@@ -420,8 +422,8 @@ class EntityMatching(AbstractEntityMatching):
                                   desc=self._method_name+" ("+self.metric+ ", " + str(self.tokenizer) + ")",
                                   disable=self.tqdm_disable)
                 
-        if self._input_type in ['tfidf', 'tf', 'boolean']:
-            self._calculate_tf_tfidf()
+        if self.vectorizer is not None:
+            self.initialize_vectorizer()
 
         if 'Block' in str(type(all_blocks[0])):
             self._predict_raw_blocks(blocks)
@@ -459,52 +461,40 @@ class EntityMatching(AbstractEntityMatching):
                         self._insert_to_graph(entity_id1, entity_id2, similarity)
                 self._progress_bar.update(1)
 
-    def _calculate_tf_tfidf(self) -> None:
-        
-        analyzer = 'char' if 'char' in self.tokenizer else 'word'
-        
+    def initialize_vectorizer(self) -> None:
+        self.frequency_evaluator : FrequencyEvaluator = FrequencyEvaluator(vectorizer=self.vectorizer,
+                                                                            tokenizer=self.tokenizer,
+                                                                            qgram=self.qgram)
         d1 = self.data.dataset_1[self.attributes] if self.attributes else self.data.dataset_1
         self._entities_d1 = d1 \
                     .apply(" ".join, axis=1) \
                     .apply(lambda x: x.lower()) \
                     .values.tolist()
         
-        d2 = self.data.dataset_2[self.attributes] if self.attributes and not self.data.is_dirty_er else self.data.dataset_2
+        d2 = None
+        if(not self.data.is_dirty_er):
+            d2 = self.data.dataset_2
+            if self.attributes:
+                d2 = d2[self.attributes]
+
         self._entities_d2 = d2 \
                     .apply(" ".join, axis=1) \
                     .apply(lambda x: x.lower()) \
-                    .values.tolist() if not self.data.is_dirty_er else None
-
-        if self._input_type == 'tfidf' or self._input_type == 'boolean':
-            vectorizer = TfidfVectorizer(analyzer='') if self.qgram is None else \
-                            TfidfVectorizer(analyzer=analyzer, ngram_range=(self.qgram, self.qgram))
-        elif self._input_type == 'tf':
-            vectorizer = CountVectorizer(analyzer=analyzer) if self.qgram is None else \
-                            CountVectorizer(analyzer=analyzer, ngram_range=(self.qgram, self.qgram))
+                    .values.tolist() if not self.data.is_dirty_er else self._entities_d1 
         
-        self._calculate_tf_and_tfidf_similarities(vectorizer)
-
-    def _calculate_tf_and_tfidf_similarities(self, vectorizer) -> None:
-        if self.data.is_dirty_er:
-            raise NotImplementedError("TFIDF for dirty ER is not implemented yet")
-        else:
-            self.corpus = self._entities_d1 + self._entities_d2
-            self.corpus_as_matrix = vectorizer.fit_transform(self.corpus)
-            if self._input_type == 'boolean':
-                # transform to boolean if value is positive to 1 and negative to 0
-                self.similarity_matrix = self.corpus_as_matrix.astype(bool).astype(int)
-                
-            self.similarity_matrix = 1 - pairwise_distances(self.corpus_as_matrix.toarray(), 
-                                                            metric=self.metric)
-
-    def _calculate_vector_similarity(self, entity_id1: int, entity_id2: int) -> float:
-            return self.similarity_matrix[entity_id1][entity_id2]
+        
+        _dataset_identifier : str = ('_'.join([self.data.dataset_name_1, self.data.dataset_name_2])) if(self.data.dataset_name_1 is not None and self.data.dataset_name_2 is not None) else ("dataset") 
+        self.frequency_evaluator.fit(metric=self.metric,
+                                    dataset_identifier=_dataset_identifier,
+                                    indexing='inorder',
+                                    d1_entities=self._entities_d1,
+                                    d2_entities=self._entities_d2)
 
     def _similarity(self, entity_id1: int, entity_id2: int) -> float:
 
         similarity: float = 0.0
-        if self._input_type in ['tfidf', 'tf', 'boolean']:
-            return self._calculate_vector_similarity(entity_id1, entity_id2)
+        if self.vectorizer is not None:
+            return self.frequency_evaluator.predict(id1=entity_id1, id2=entity_id2)
         elif isinstance(self.attributes, dict):
             for attribute, weight in self.attributes.items():
                 e1 = self.data.entities.iloc[entity_id1][attribute].lower()
@@ -537,7 +527,9 @@ class EntityMatching(AbstractEntityMatching):
             "Metric" : self.metric,
             "Attributes" : self.attributes,
             "Similarity threshold" : self.similarity_threshold,
-            "Tokenizer" : self.tokenizer
+            "Tokenizer" : self.tokenizer,
+            "Vectorizer" : self.vectorizer if self.vectorizer is not None else "None",
+            "Qgrams" : self.qgram
         }
 
 class VectorBasedMatching(AbstractEntityMatching):
