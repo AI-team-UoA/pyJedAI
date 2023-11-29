@@ -11,19 +11,23 @@ parts:
     - file: tutorials/WorkFlow.ipynb
       title: User-Friendly approach
     - file: tutorials/CleanCleanER.ipynb
-      title: Clean-Clean Entity Resolution for Devs
+      title: Clean-Clean ER for Devs
     - file: tutorials/CleanCleanERwithoutGT.ipynb
-      title: Clean-Clean Entity Resolution without Ground Truth
+      title: Clean-Clean ER without GT
     - file: tutorials/DirtyER.ipynb
-      title: Dirty Entity Resolution for Devs
+      title: Dirty ER for Devs
     - file: tutorials/Optuna.ipynb
       title: Fine-tunning with Optuna
     - file: tutorials/SimilarityJoins.ipynb
       title: Similarity Joins workflow
     - file: tutorials/pyTorchWorkflow.ipynb
       title: Workflow with pyTorch embeddings
-    - file: tutorials/TfIdfWorkflow.ipynb
+    - file: tutorials/TfIdfWorkflow.ipynb 
       title: Matching with TF-IDF embeddings
+    - file: tutorials/ProgressiveCCER.ipynb
+      title: Progressive Entity Resolution
+    - file: tutorials/SchemaMatching.ipynb
+      title: Schema Matching with Valentine
     - file: tutorials/Readers.ipynb
       title: Examples in transforming datasets to pandas
   - caption: Benchmarks
