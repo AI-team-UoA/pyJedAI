@@ -65,7 +65,9 @@ dependencies = [
     "py-stringmatching >= 0.4",
     "valentine>=0.1; python_version > '3.7'",
     "ordered-set >= 4.0",
-    "plotly >= 5.16.0"
+    "plotly >= 5.16.0",
+    "shapely >= 2.0",
+    'scann ; platform_system != "Windows"'
 ]
 
 [project.optional-dependencies]
