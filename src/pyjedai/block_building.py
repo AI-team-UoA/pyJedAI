@@ -299,9 +299,9 @@ class AbstractBlockBuilding(AbstractBlockProcessing):
                 data (Data): Data module that contaiins the processed dataset
                 attributes_1 (list, optional): Attribute columns of the dataset 1 \
                     that will be processed. Defaults to None. \
-                    If not provided, all attributes are slected.
+                    If not provided, all attributes are selected.
                 attributes_2 (list, optional): Attribute columns of the dataset 2. \
-                    Defaults to None. If not provided, all attributes are slected.
+                    Defaults to None. If not provided, all attributes are selected.
                 tqdm_disable (bool, optional): Disables all tqdm at processing. Defaults to False.
 
             Returns:
