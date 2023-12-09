@@ -67,7 +67,7 @@ dependencies = [
     "ordered-set >= 4.0",
     "plotly >= 5.16.0",
     "shapely >= 2.0",
-    'scann ; platform_system != "Windows"'
+    'scann ; platform_system == "Linux"'
 ]
 
 [project.optional-dependencies]
