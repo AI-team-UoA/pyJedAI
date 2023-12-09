@@ -4,12 +4,16 @@ import pandas as pd
 from pandas import DataFrame, concat
 import re
 import nltk
-nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from ordered_set import OrderedSet
+from tqdm import tqdm
+
+from shapely.geometry import shape
+from shapely.wkt import loads
+import csv
 
 class PYJEDAIFeature(ABC):
 
@@ -283,7 +287,8 @@ class Data:
                       remove_unicodes: bool = True) -> None:
         """Removes stopwords, punctuation, uni-codes, numbers from the dataset.
         """
-        
+        nltk.download('stopwords')
+
         # Make self.dataset_1 and self.dataset_2 lowercase
         self.dataset_1 = self.dataset_1.applymap(lambda x: x.lower())
         if not self.is_dirty_er:
@@ -336,6 +341,113 @@ class Data:
             print(average_words_per_line_2)
             
         return stats_df
+
+class SpatialData:
+    def __init__(
+                self,
+                source_reader: csv.reader,
+                source_delimiter: str,
+                target_reader: csv.reader,
+                target_delimiter: str,
+                skip_header: bool=False
+    ) -> None:
+        self.source_geometriesSize = 0
+        self.source_reader = source_reader
+        self.source_delimiter = source_delimiter
+
+        self.targetGeometriesSize = 0
+        self.target_reader = target_reader
+        self.target_delimiter = target_delimiter
+
+        self.skip_header = skip_header
+        self.source_geometries = []
+        self.targetGeometries = []
+
+        self.readSourceGeometries()
+        self.readTargetGeometries()
+        return
+    
+    def readSourceGeometries(self) -> list:
+        geometries_loaded = 0
+        geometries_failed = 0
+        geoCollections = 0
+
+        if(self.skip_header == True):
+            next(self.source_reader)
+
+        for geometry in self.source_reader:
+            try:
+                geometry, *information = [s.split(self.source_delimiter)[0] for s in geometry]
+                geometry = shape(loads(geometry))
+            except:
+                geometries_failed += 1
+                continue
+
+            if geometry.geom_type == "GeometryCollection":
+                geoCollections += 1
+            else:
+                self.source_geometries.append(geometry)
+                geometries_loaded += 1
+
+        # print("SpatialData initialized:","\n Geometries loaded:", geometries_loaded, "\n Geometries failed:", geometries_failed, "\n GeoCollections found:", geoCollections,"\n")
+        self.source_geometries_size = geometries_loaded
+        return
+
+    def readTargetGeometries(self) -> list:
+        geometries_loaded = 0
+        geometries_failed = 0
+        geoCollections = 0
+
+        if(self.skip_header == True):
+            next(self.target_reader)
+
+        for geometry in self.target_reader:
+            try:
+                geometry, *information = [s.split(self.target_delimiter)[0] for s in geometry]
+                geometry = shape(loads(geometry))
+            except:
+                geometries_failed += 1
+                continue
+
+            if geometry.geom_type == "GeometryCollection":
+                geoCollections += 1
+            else:
+                self.targetGeometries.append(geometry)
+                geometries_loaded += 1
+
+        # print("SpatialData initialized:","\n Geometries loaded: ", geometries_loaded, "\n Geometries failed: ", geometries_failed, "\n GeoCollections found: ", geoCollections)
+        self.targetGeometriesSize = geometries_loaded
+        return
+
+class SchemaData:
+    """Data module for schema matching tasks. Valentine-based structure.
+    """
+
+    def __init__(
+                self,
+                dataset_1: DataFrame,
+                attributes_1: list,
+                dataset_2: DataFrame,
+                attributes_2: list,
+                dataset_name_1: str = None,
+                dataset_name_2: str = None,
+                ground_truth: DataFrame = None,
+    ) -> None:
+        # Original Datasets as pd.DataFrame
+        if isinstance(dataset_1, pd.DataFrame):
+            self.dataset_1 = dataset_1
+
+        else:
+            raise AttributeError("Dataset 1 must be a pandas DataFrame")
+
+        if dataset_2 is not None:
+            if isinstance(dataset_2, pd.DataFrame):
+                self.dataset_2 = dataset_2
+            else:
+                raise AttributeError("Dataset 2 must be a pandas DataFrame")
+        
+        if ground_truth is not None:
+            self.ground_truth = ground_truth.to_records(index=False).tolist()
 
 class Block:
     """The main module used for storing entities in the blocking steps of pyjedai module. \
