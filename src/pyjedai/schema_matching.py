@@ -6,12 +6,12 @@ from valentine.algorithms.base_matcher import BaseMatcher
 from valentine.algorithms.coma.coma import Coma
 from valentine.algorithms.cupid.cupid_model import Cupid
 from valentine.algorithms.distribution_based.distribution_based import DistributionBased
-from valentine.algorithms.jaccard_levenshtein.jaccard_leven import JaccardLevenMatcher
+from valentine.algorithms.jaccard_distance.jaccard_distance import JaccardDistanceMatcher
 from valentine.algorithms.similarity_flooding.similarity_flooding import SimilarityFlooding
 import valentine.metrics as valentine_metrics
 from pandas import DataFrame, concat
 
-from .datamodel import Block, Data, PYJEDAIFeature
+from .datamodel import Block, SchemaData, PYJEDAIFeature
 from .evaluation import Evaluation
 from abc import abstractmethod
 
@@ -38,13 +38,13 @@ class AbstractSchemaMatching(PYJEDAIFeature):
 
     @abstractmethod
     def process(self,
-                data: Data,
+                data: SchemaData,
                 ) -> list:
         pass
 
     @abstractmethod
     def process_sm_weighted(self,
-                            data: Data):
+                            data: SchemaData):
         pass
 
     def __init__(self):
@@ -89,8 +89,8 @@ class ValentineMethodBuilder(PYJEDAIFeature):
         return DistributionBased(threshold1, threshold2)
 
     @staticmethod
-    def jaccard_leven_matcher(threshold_leven: float = 0.8) -> JaccardLevenMatcher:
-        return JaccardLevenMatcher(threshold_leven)
+    def jaccard_distance_matcher(threshold_leven: float = 0.8) -> JaccardDistanceMatcher:
+        return JaccardDistanceMatcher(threshold_leven)
 
     @staticmethod
     def similarity_flooding_mathcer(coeff_policy: str = "inverse_average",
@@ -103,13 +103,13 @@ class ValentineSchemaMatching(AbstractSchemaMatching):
 
     def __init__(self, matcher: BaseMatcher):
         super().__init__()
-        self.data: Data = None
+        self.data: SchemaData = None
         self.matcher: BaseMatcher = matcher
         self.matches = None
         self.top_columns: list = []
 
     def process(self,
-                data: Data,
+                data: SchemaData,
                 ) -> list:
         self.data = data
         df1 = self.data.dataset_1
@@ -118,11 +118,15 @@ class ValentineSchemaMatching(AbstractSchemaMatching):
         self.top_columns = [[x[0][1] for x in self.matches.keys()], [x[1][1] for x in self.matches.keys()]]
         return self.top_columns
 
-    def process_sm_weighted(self, data: Data):
+    def process_sm_weighted(self, data: SchemaData):
         pass
 
     def print_matches(self):
-        print(self.matches)
+        for match, sim in self.matches.items():
+            print(match, " - ", sim)
+        
+    def get_matches(self) -> dict:
+        return self.matches
 
     def evaluate(self,
                  prediction=None,
@@ -138,7 +142,7 @@ class ValentineSchemaMatching(AbstractSchemaMatching):
             raise AttributeError("Can not proceed to evaluation without a ground-truth file. " +
                                  "Data object has not been initialized with the ground-truth file")
 
-        return valentine_metrics.all_metrics(self.matches, self.data.ground_truth.to_records(index=False).tolist())
+        return valentine_metrics.all_metrics(self.matches, self.data.ground_truth)
 
     def _configuration(self) -> dict:
         pass
