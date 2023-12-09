@@ -10,8 +10,12 @@ import warnings
 import pandas as pd
 from time import time
 from typing import List, Tuple
-
+from math import sqrt
 import faiss
+import platform
+RUNNING_OS = platform.system()
+if RUNNING_OS != "Windows":
+    import scann
 import gensim.downloader as api
 import networkx as nx
 import numpy as np
@@ -256,7 +260,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             self._similarity_search_with_FAISS()
         elif self.similarity_search == 'falconn':
             raise NotImplementedError("FALCONN")
-        elif self.similarity_search == 'scann'  and LINUX_ENV:
+        elif self.similarity_search == 'scann':
             self._similarity_search_with_SCANN()
         else:
             raise AttributeError("Not available method")
@@ -412,6 +416,59 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             
             _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]
             
+            # if _entity_id not in self.blocks:
+            #     self.blocks[_entity_id] = set()
+            
+            for _neighbor_index, _neighbor in enumerate(self.neighbors[_entity]):
+
+                if _neighbor == -1:
+                    continue
+                
+                _neighbor_id = self._si.d1_retained_ids[_neighbor]
+                
+                if _neighbor_id not in self.blocks:
+                    self.blocks[_neighbor_id] = set()
+
+                self.blocks[_neighbor_id].add(_entity_id)
+                # self.blocks[_entity_id].add(_neighbor_id)
+                
+                if self.with_entity_matching:
+                    self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
+
+    def _similarity_search_with_FALCONN(self):
+        raise NotImplementedError("FALCONN is not implemented yet.")
+
+    def _similarity_search_with_SCANN(self):
+        
+        if RUNNING_OS == "Windows":
+            raise NotImplementedError("SCANN is not implemented yet for Windows.")
+        
+        _scann_distance_metric : str = "dot_product" if (self.similarity_distance == 'cosine') else "squared_l2"
+        _normalized_source_vectors = self.vectors_1 / np.linalg.norm(self.vectors_1, axis=1)[:, np.newaxis]
+        _normalized_target_vectors = _normalized_source_vectors \
+                                    if self.data.is_dirty_er \
+                                    else self.vectors_2 / np.linalg.norm(self.vectors_2, axis=1)[:, np.newaxis]
+        _k : int = int(sqrt(self.data.num_of_entities_1))
+        
+        searcher = scann.scann_ops_pybind.builder(_normalized_source_vectors, self.top_k, _scann_distance_metric) \
+                        .tree(num_leaves=_k,
+                              num_leaves_to_search=int(_k),
+                              training_sample_size=int(self.data.num_of_entities_1/2)) \
+                        .score_ah(2, anisotropic_quantization_threshold=0.2) \
+                        .reorder(int(_k)) \
+                        .build()
+        print(_normalized_target_vectors.shape)
+        self.neighbors, self.distances = searcher.search_batched(_normalized_target_vectors, final_num_neighbors=self.top_k)
+
+        if self.similarity_distance == 'euclidean':
+            self.distances = 1/(1 + np.sqrt(self.distances))
+
+        self.blocks = dict()
+        
+        for _entity in range(0, self.neighbors.shape[0]):
+            
+            _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]
+            
             if _entity_id not in self.blocks:
                 self.blocks[_entity_id] = set()            
             
@@ -430,12 +487,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                 
                 if self.with_entity_matching:
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
-
-    def _similarity_search_with_FALCONN(self):
-        raise NotImplementedError("FALCONN is not implemented yet.")
-
-    def _similarity_search_with_SCANN(self):
-        raise NotImplementedError("SCANN is not implemented yet.")
 
     def _create_vector(self, tokens: List[str], vocabulary) -> np.array:
         num_of_tokens = 0
@@ -488,11 +539,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         return evaluation
 
-        if with_stats:
-            self.stats()
-
-        return evaluation
-
     def _configuration(self) -> dict:
         return {
             "Vectorizer" : self.vectorizer,
@@ -516,7 +562,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         print(u'\u2500' * 123)
         
     
-    def export_to_df(self, prediction) -> pd.DataFrame:
+    def export_to_df(self, prediction: dict) -> pd.DataFrame:
         """creates a dataframe with the predicted pairs
 
         Args:
@@ -526,7 +572,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             pd.DataFrame: Dataframe with the predicted pairs
         """
         pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for entity_id, candidates in prediction:
+        for entity_id, candidates in prediction.items():            
             id1 = self.data._gt_to_ids_reversed_1[entity_id]
             for candiadate_id in candidates:
                 id2 = self.data._gt_to_ids_reversed_1[candiadate_id] if self.data.is_dirty_er \
