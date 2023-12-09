@@ -783,8 +783,8 @@ class CorrelationClustering(AbstractClustering):
                 initial_threshold: float = 0.5,
                 similarity_threshold: float = 0.8,
                 non_similarity_threshold: float = 0.2,
-                move_limit: int = 1,
-                lsi_iterations: int = 10000) -> list:
+                move_limit: int = 3,
+                lsi_iterations: int = 100) -> list:
 
         start_time = time()
         self.data : Data = data
@@ -793,7 +793,12 @@ class CorrelationClustering(AbstractClustering):
         self.non_similarity_threshold : float = non_similarity_threshold
         self.move_limit : int = move_limit
         self.lsi_iterations: int = lsi_iterations
-        self.similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        
+        self.num_of_source_entities = self.data.num_of_entities_1
+        self.num_of_target_entities = self.data.num_of_entities_1 if self.data.is_dirty_er \
+                                      else self.data.num_of_entities_2
+        
+        self.similarity = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=float)
         new_graph = graph.copy()
 
         for (v1, v2, data) in graph.edges(data=True):
@@ -801,13 +806,11 @@ class CorrelationClustering(AbstractClustering):
             d1_index, d2_index = (self.id_to_index(d1_id), self.id_to_index(d2_id))
             similarity_score = data['weight']
             self.similarity[d1_index, d2_index] = similarity_score 
-            
             if similarity_score < self.initial_threshold:
                 new_graph.remove_edge(v1, v2)
 
         initial_clusters = [list(connected_component) for connected_component in connected_components(new_graph)]
         
-        print(len(initial_clusters))
         self.clusters = [EquivalenceCluster(data=self.data, flattened_cluster=cluster) for cluster in initial_clusters]
         self.initial_clusters_num = len(initial_clusters) 
         self.max_clusters_num = self.initial_clusters_num + 10
@@ -821,11 +824,11 @@ class CorrelationClustering(AbstractClustering):
                     self.entity_cluster_index[entity] = cluster_index
         self.valid_entities = list(self.valid_entities)
                               
-        self.similar = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=bool)
-        self.not_similar = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=bool)
+        self.similar = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=bool)
+        self.not_similar = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=bool)
 
-        for d1_index in range(self.data.num_of_entities_1):
-            for d2_index in range(d1_index, self.data.num_of_entities_2):
+        for d1_index in range(self.num_of_source_entities):
+            for d2_index in range(d1_index, self.num_of_target_entities):
                 self.not_similar[d1_index, d2_index] = self.similarity[d1_index, d2_index] < self.non_similarity_threshold
                 self.similar[d1_index, d2_index] = self.similarity[d1_index, d2_index] > self.similarity_threshold
         
@@ -833,7 +836,7 @@ class CorrelationClustering(AbstractClustering):
         previous_OF : int = self.calculate_OF()
         
         for iteration in range(self.lsi_iterations):
-            move_index : int = random.randint(0, self.move_limit - 1)
+            move_index : int = self.choose_move()
             current_OF : int = self.move(move_index, previous_OF)
             previous_OF = current_OF
 
@@ -847,10 +850,10 @@ class CorrelationClustering(AbstractClustering):
     def calculate_OF(self) -> int:
         OF : int = 0
         
-        for d1_index in range(self.data.num_of_entities_1):
-            for d2_index in range(d1_index, self.data.num_of_entities_2):
+        for d1_index in range(self.num_of_source_entities):
+            for d2_index in range(d1_index, self.num_of_target_entities):
                 d1_entity = self.index_to_id(index=d1_index, left_dataset=True)
-                d2_entity = self.index_to_id(index=d2_index, left_dataset=False)
+                d2_entity = self.index_to_id(index=d2_index, left_dataset=self.data.is_dirty_er)
                 
                 similar_and_cluster_match = self.similar[d1_index, d2_index] and \
                 (self.entity_cluster_index[d1_entity] == self.entity_cluster_index[d2_entity])
@@ -861,6 +864,12 @@ class CorrelationClustering(AbstractClustering):
                     OF += 1
                     
         return OF   
+     
+    def choose_move(self) -> int:
+        move = random.randint(0, self.move_limit - 1)
+        while(move == 1 and len(self.clusters) == 1):
+            move = random.randint(0, self.move_limit - 1)
+        return move
             
     def move(self, move_index : int, previous_OF : int):
         print(f"Move[{move_index}] OF[{previous_OF}]")
@@ -896,6 +905,7 @@ class CorrelationClustering(AbstractClustering):
         self.entity_cluster_index[entity] = new_cluster
         
         new_OF = self.calculate_OF()
+        print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             self.clusters[previous_cluster].remove_entity(entity)
             self.clusters[new_cluster].add_entity(entity)
@@ -915,7 +925,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        
+        print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             previous_cluster.remove_entities(previous_cluster_entities)
             new_cluster.add_entities(previous_cluster_entities)
@@ -938,7 +948,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[to_be_removed_entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        
+        print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             self.clusters.append(EquivalenceCluster(data=self.data, flattened_cluster=to_be_removed_entities))
             self.initial_clusters_num += 1
