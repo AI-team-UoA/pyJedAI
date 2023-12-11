@@ -28,6 +28,8 @@ parts:
       title: Progressive Entity Resolution
     - file: tutorials/SchemaMatching.ipynb
       title: Schema Matching with Valentine
+    - file: tutorials/Spatial.ipynb
+      title: Spatial component
     - file: tutorials/Readers.ipynb
       title: Examples in transforming datasets to pandas
   - caption: Benchmarks
