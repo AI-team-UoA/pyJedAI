@@ -209,6 +209,7 @@ class PYJEDAIWorkFlow(ABC):
             Tuple[float, float, float]: F-Measure, Precision, Recall.
         """
         return self.f1[-1], self.precision[-1], self.recall[-1]
+
 class ProgressiveWorkFlow(PYJEDAIWorkFlow):
     """Main module of the pyjedAI and the simplest way to create an end-to-end PER workflow.
     """
@@ -680,11 +681,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                 if "attributes_2" in self.block_building else None,
                                                 tqdm_disable=workflow_step_tqdm_disable)
         self.final_pairs = block_building_blocks
-        res = block_building_method.evaluate(block_building_blocks,
-                                            export_to_dict=True,
-                                            with_classification_report=with_classification_report,
-                                            verbose=verbose)
-        self._save_step(res, block_building_method.method_configuration())
+        if data.ground_truth is not None:
+            res = block_building_method.evaluate(block_building_blocks,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+            self._save_step(res, block_building_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Block cleaning step [optional]: Multiple algorithms
@@ -703,11 +705,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                       tqdm_disable=workflow_step_tqdm_disable)
                 
                 self.final_pairs = bblocks = block_cleaning_blocks
-                res = block_cleaning_method.evaluate(bblocks,
-                                                    export_to_dict=True,
-                                                    with_classification_report=with_classification_report,
-                                                    verbose=verbose)
-                self._save_step(res, block_cleaning_method.method_configuration())
+                if data.ground_truth is not None:
+                    res = block_cleaning_method.evaluate(bblocks,
+                                                        export_to_dict=True,
+                                                        with_classification_report=with_classification_report,
+                                                        verbose=verbose)
+                    self._save_step(res, block_cleaning_method.method_configuration())
                 self._workflow_bar.update(1)
         #
         # Comparison cleaning step [optional]
@@ -723,11 +726,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                     else block_building_blocks,
                                                 data,
                                                 tqdm_disable=workflow_step_tqdm_disable)
-            res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
-                                                      export_to_dict=True,
-                                                      with_classification_report=with_classification_report,
-                                                      verbose=verbose)
-            self._save_step(res, comparison_cleaning_method.method_configuration())
+            if data.ground_truth is not None:
+                res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
+                                                        export_to_dict=True,
+                                                        with_classification_report=with_classification_report,
+                                                        verbose=verbose)
+                self._save_step(res, comparison_cleaning_method.method_configuration())
             self._workflow_bar.update(1)
         #
         # Entity Matching step
@@ -750,11 +754,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                 tqdm_disable=workflow_step_tqdm_disable,
                 **self.entity_matching["exec_params"])
 
-        res = entity_matching_method.evaluate(em_graph,
-                                                export_to_dict=True,
-                                                with_classification_report=with_classification_report,
-                                                verbose=verbose)
-        self._save_step(res, entity_matching_method.method_configuration())
+        if data.ground_truth is not None:
+            res = entity_matching_method.evaluate(em_graph,
+                                                    export_to_dict=True,
+                                                    with_classification_report=with_classification_report,
+                                                    verbose=verbose)
+            self._save_step(res, entity_matching_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Clustering step [optional]
@@ -768,15 +773,17 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
             else:
                 self.final_pairs = components = clustering_method.process(em_graph, data, **self.clustering["exec_params"])
             
-            res = clustering_method.evaluate(components,
-                                            export_to_dict=True,
-                                            with_classification_report=False,
-                                            verbose=verbose)
-            self._save_step(res, clustering_method.method_configuration())
+            self.clusters = components
+            if data.ground_truth is not None:
+                res = clustering_method.evaluate(components,
+                                                export_to_dict=True,
+                                                with_classification_report=False,
+                                                verbose=verbose)
+                self._save_step(res, clustering_method.method_configuration())
             self.workflow_exec_time = time() - start_time
             self._workflow_bar.update(1)
         # self.runtime.append(self.workflow_exec_time)
-
+    
     ############################################
     #  Pre-defined workflows same as JedAI     #
     ############################################
@@ -821,6 +828,38 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                 similarity_threshold=0.55))
         self.clustering = dict(method=ConnectedComponentsClustering),
         self.name="best-der-workflow"
+
+    def default_schema_clustering_workflow_der(self) -> None:
+        """Default D-ER workflow.
+
+        Returns:
+            PYJEDAIWorkFlow: Best workflow
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+            dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+            dict(method=BlockFiltering)
+        ]
+        self.entity_matching = dict(method=EntityMatching, 
+                                    params=dict(metric='cosine',
+                                                similarity_threshold=0.35))
+        self.clustering = dict(method=ConnectedComponentsClustering),
+        self.name="best-schema-clustering-der-workflow"
+
+
+    def default_schema_clustering_workflow_ccer(self) -> None:
+        """Default CC-ER workflow.
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+                dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+                dict(method=BlockFiltering)
+            ]
+        self.entity_matching = dict(method=EntityMatching,
+                                    metric='cosine',
+                                    similarity_threshold=0.35)
+        self.clustering = dict(method=ConnectedComponentsClustering)
+        self.name="default-schema-clustering-ccer-workflow"
 
     def default_blocking_workflow_ccer(self) -> None:
         """Default CC-ER workflow.

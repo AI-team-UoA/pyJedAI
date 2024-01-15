@@ -1130,7 +1130,6 @@ class FrequencyEvaluator(ABC):
         try:
             print(f"Loading Distance Matrix from: {path}")
             return np.load(path) 
-            pass
         except FileNotFoundError:
             print(f"Unable to load distance matrix -> {path}")       
             
@@ -1193,7 +1192,7 @@ class FrequencyEvaluator(ABC):
             indexing : str,
             d1_entities : list = None, 
             d2_entities : list = None, 
-            save_dm : bool = True) -> None:
+            save_dm : bool = False) -> None:
         """Initializes the entities' corpus, and constructs the similarity matrix 
         Args:
             metric (str): Distance metric for entity strings

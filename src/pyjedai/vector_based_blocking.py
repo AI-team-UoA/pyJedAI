@@ -16,6 +16,7 @@ import platform
 RUNNING_OS = platform.system()
 if RUNNING_OS != "Windows":
     import scann
+    import falconn
 import gensim.downloader as api
 import networkx as nx
 import numpy as np
@@ -27,6 +28,7 @@ from transformers import (AlbertModel, AlbertTokenizer, BertModel,
                           BertTokenizer, DistilBertModel, DistilBertTokenizer,
                           RobertaModel, RobertaTokenizer, XLNetModel,
                           XLNetTokenizer)
+from math import log
 
 transformers.logging.set_verbosity_error()
 from faiss import normalize_L2
@@ -41,14 +43,6 @@ if not os.path.exists(EMBEDDINGS_DIR):
     EMBEDDINGS_DIR = os.path.abspath(EMBEDDINGS_DIR)
     print('Created embeddings directory at: ' + EMBEDDINGS_DIR)
 
-LINUX_ENV=False
-# try:
-#     if 'linux' in sys.platform:
-#         import falconn
-#         import scann
-#         LINUX_ENV=True
-# except:
-#     warnings.warn(ImportWarning, "Can't use FALCONN/SCANN in windows environment")
 
 class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
     """Block building via creation of embeddings and a Nearest Neighbor Approach.
@@ -259,7 +253,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             self._faiss_metric_type = faiss.METRIC_L2
             self._similarity_search_with_FAISS()
         elif self.similarity_search == 'falconn':
-            raise NotImplementedError("FALCONN")
+            self._similarity_search_with_FALCONN()
         elif self.similarity_search == 'scann':
             self._similarity_search_with_SCANN()
         else:
@@ -436,7 +430,55 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
 
     def _similarity_search_with_FALCONN(self):
-        raise NotImplementedError("FALCONN is not implemented yet.")
+        _falconn_parameters = falconn.LSHConstructionParameters()
+        _falconn_parameters.distance_function = falconn.DistanceFunction.NegativeInnerProduct \
+                                                if (self.similarity_distance == 'cosine') \
+                                                else falconn.DistanceFunction.EuclideanSquared
+                                                
+        _normalized_source_vectors = self.vectors_1 / np.linalg.norm(self.vectors_1, axis=1)[:, np.newaxis]
+        _normalized_target_vectors = _normalized_source_vectors \
+                                    if self.data.is_dirty_er \
+                                    else self.vectors_2 / np.linalg.norm(self.vectors_2, axis=1)[:, np.newaxis]                                 
+              
+              
+        _normalized_source_vectors = - _normalized_source_vectors
+        _normalized_target_vectors = -_normalized_target_vectors      
+                                
+        _falconn_parameters.dimension = _normalized_source_vectors.shape[1]
+        _falconn_parameters.lsh_family = falconn.LSHFamily.CrossPolytope
+        _falconn_parameters.storage_hash_table = falconn.StorageHashTable.FlatHashTable
+        _falconn_parameters.num_setup_threads = 0     
+        _falconn_parameters.l = 50
+        _falconn_parameters.num_rotations = 1
+        falconn.compute_number_of_hash_functions(int(log(_normalized_source_vectors.shape[0],2)), _falconn_parameters)
+        _normalized_source_vectors = _normalized_source_vectors.astype(np.float32)
+        _normalized_target_vectors = _normalized_target_vectors.astype(np.float32)
+        
+        index = falconn.LSHIndex(_falconn_parameters)
+        index.setup(_normalized_source_vectors)
+        query_object = index.construct_query_object()
+                
+        self.blocks = dict()
+        
+        for _taget_entity_index, _normalized_target_vector in enumerate(_normalized_target_vectors):            
+            _target_entity_id = self._si.d1_retained_ids[_taget_entity_index] \
+                                if self.data.is_dirty_er \
+                                else self._si.d2_retained_ids[_taget_entity_index]
+            _source_entity_ids = query_object.find_k_nearest_neighbors(query=_normalized_target_vector, k=self.top_k)
+            # if _target_entity_id not in self.blocks:
+            #     self.blocks[_target_entity_id] = set()
+            
+            for id in _source_entity_ids:
+                
+                _source_entity_id = self._si.d1_retained_ids[id]
+                
+                if _source_entity_id not in self.blocks:
+                    self.blocks[_source_entity_id] = set()
+
+                self.blocks[_source_entity_id].add(_target_entity_id)
+                
+                if self.with_entity_matching:
+                    self.graph.add_edge(_source_entity_id, _target_entity_id)
 
     def _similarity_search_with_SCANN(self):
         
@@ -483,7 +525,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     self.blocks[_neighbor_id] = set()
 
                 self.blocks[_neighbor_id].add(_entity_id)
-                self.blocks[_entity_id].add(_neighbor_id)
+                # self.blocks[_entity_id].add(_neighbor_id)
                 
                 if self.with_entity_matching:
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])

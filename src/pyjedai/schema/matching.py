@@ -11,8 +11,8 @@ from valentine.algorithms.similarity_flooding.similarity_flooding import Similar
 import valentine.metrics as valentine_metrics
 from pandas import DataFrame, concat
 
-from .datamodel import Block, SchemaData, PYJEDAIFeature
-from .evaluation import Evaluation
+from ..datamodel import Block, SchemaData, PYJEDAIFeature
+from ..evaluation import Evaluation
 from abc import abstractmethod
 
 class AbstractSchemaMatching(PYJEDAIFeature):

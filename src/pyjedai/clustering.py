@@ -14,6 +14,7 @@ from .utils import are_matching
 from collections import defaultdict
 import random
 from ordered_set import OrderedSet
+import math
 
 RANDOM_SEED = 42
 
@@ -320,10 +321,15 @@ class RicochetCluster(PYJEDAIFeature):
         
 class AbstractClustering(PYJEDAIFeature):
     
+    _method_name: str = "Abstract Clustering"
+    _method_short_name: str = "AC"
+    _method_info: str = "Abstract Clustering Method"
+    
     def __init__(self) -> None:
         super().__init__()
         self.data: Data
         self.similarity_threshold: float = 0.1
+        self.execution_time: float = 0.0
         
     def evaluate(self,
                  prediction,
@@ -366,6 +372,9 @@ class AbstractClustering(PYJEDAIFeature):
     
     def stats(self) -> None:
         pass
+
+    def _configuration(self) -> dict:
+        return {}
 
     def export_to_df(self, prediction: list) -> pd.DataFrame:
         """creates a dataframe for the evaluation report
@@ -769,6 +778,7 @@ class CorrelationClustering(AbstractClustering):
         "In essence, it implements iterative clustering, " + \
         "reassigning clusters to randomly chosen entities based on the reassignment's effect on our objective function " + \
         "that evaluates the quality of the newly defined clusters." 
+    
     def __init__(self) -> None:
         super().__init__()
         self.similarity_threshold: float
@@ -777,6 +787,7 @@ class CorrelationClustering(AbstractClustering):
         self.non_similarity_threshold : float
         self.move_limit : int
         self.lsi_iterations: int
+
     def process(self,
                 graph: Graph,
                 data: Data,
@@ -1214,7 +1225,7 @@ class KiralyMSMApproximateClustering(AbstractClustering):
             for edge in edges:
                 man, woman, similarity = edge.left_node, edge.right_node, edge.similarity
                 new_graph.add_edge(man, woman, weight=similarity)
-
+                
         clusters = list(connected_components(new_graph))
         self.execution_time = time() - start_time
         return clusters
@@ -1430,6 +1441,148 @@ class RicochetSRClustering(AbstractClustering):
         
         self.execution_time = time() - start_time
         return clusters
+    
+    def _configuration(self) -> dict:
+        return {}
+    
+    
+class RowColumnClustering(AbstractClustering):
+    """Ιmplements the Row Column Clustering algorithm. For each row and column find their equivalent
+       column and row respectively corresponding to the smallest similarity. Subsequently, chooses
+       either rows or columns dependent on which one has the highest out of the lowest similariities 
+       on average.        
+    """
+
+    _method_name: str = "Row Column Clustering"
+    _method_short_name: str = "RCC"
+    _method_info: str = "Ιmplements the Row Column Clustering algorithm," + \
+        "In essence, it is a 3/2-approximation to the Maximum Stable Marriage (MSM) problem."
+    def __init__(self) -> None:
+        super().__init__()
+        self.similarity_threshold : float
+        
+    def process(self, 
+                graph: Graph,
+                data: Data, 
+                similarity_threshold: float = 0.5) -> list:
+
+        start_time = time()
+        self.similarity_threshold : float = similarity_threshold
+        self.data = data
+        number_of_comparisons : int = len(graph.edges(data=True))
+        self.similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        matched_ids = set()
+        new_graph : Graph = Graph()
+        clusters : list = []
+        
+        if(number_of_comparisons == 0):
+            return clusters
+        
+        if self.data.is_dirty_er:
+            raise ValueError(f"Kiraly MSM Approximate Clustering doesn't support Dirty ER.")
+        
+        for (v1, v2, data) in graph.edges(data=True):
+            d1_id, d2_id = self.sorted_indicators(v1, v2)
+            d1_index, d2_index = (self.id_to_index(d1_id), self.id_to_index(d2_id))
+            similarity_score = data.get('weight', 0)
+            
+            if(similarity_score > self.similarity_threshold):
+                self.similarity[d1_index, d2_index] = similarity_score 
+        
+        self.initialize(self.get_negative(self.similarity))
+        self.solution_proxy = self.get_solution()
+        
+        for entry in range(len(self.solution_proxy)):
+            d1_index = entry
+            d2_index = self.solution_proxy[entry]
+            _similarity = self.similarity[d1_index, d2_index]
+            if(_similarity < self.similarity_threshold):
+                continue
+            d2_index += self.data.dataset_limit
+            
+            if(d1_index in matched_ids or d2_index in matched_ids):
+                continue
+                
+            matched_ids.add(d1_index)
+            matched_ids.add(d2_index)
+            new_graph.add_edge(d1_index, d2_index, weight=_similarity)
+        
+        
+        clusters = list(connected_components(new_graph))    
+        self.execution_time = time() - start_time
+        return clusters
+    
+    def get_min_row(self, column):
+        position = -1
+        minimum = math.inf
+        
+        for row in range(self.similarity.shape[0]):
+            if(self.row_covered[row]): continue
+            if(self.similarity[row, column] < minimum):
+                position = row
+                minimum = self.similarity[row, column]
+                
+        return position
+    
+    def get_min_column(self, row):
+        position = -1
+        minimum = math.inf
+    
+        for column in range(self.similarity.shape[1]):
+            if(self.column_covered[column]): continue
+            if(self.similarity[row, column] < minimum):
+                position = column
+                minimum = self.similarity[row, column]
+                
+        return position
+    
+    def get_row_assignment(self):
+        self.row_scan_cost = 0.0
+        
+        for row in range(self.similarity.shape[0]):
+            self.selected_column[row] = self.get_min_column(row)
+            _selected_column = self.selected_column[row]
+            if(_selected_column == -1): break
+            self.column_covered[_selected_column] = True
+            self.row_scan_cost += self.similarity[row, _selected_column]        
+        
+    def get_column_assignment(self):
+        self.column_scan_cost = 0.0
+        
+        for column in range(self.similarity.shape[1]):
+            self.selected_row[column] = self.get_min_row(column)
+            _selected_row = self.selected_row[column]
+            if(_selected_row == -1): break
+            self.columns_from_selected_row[_selected_row] = column
+            self.row_covered[_selected_row] = True
+            self.column_scan_cost += self.similarity[_selected_row, column] 
+    
+    def get_solution(self):
+        self.get_row_assignment()
+        self.get_column_assignment()
+        
+        if(self.row_scan_cost < self.column_scan_cost):
+            return self.selected_column
+        else:
+            return self.columns_from_selected_row
+    
+    def get_negative(self, similarity_matrix) -> np.array:
+        self.negative_similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        
+        for row in range(similarity_matrix.shape[0]):
+            for column in range(similarity_matrix.shape[1]):
+                self.negative_similarity[row, column] = 1.0 - similarity_matrix[row, column]
+                
+        return self.negative_similarity
+    
+    def initialize(self, similarity_matrix) -> None:
+        self.similarity = similarity_matrix
+        self.selected_column = [0] * similarity_matrix.shape[0]
+        self.selected_row = [0] * similarity_matrix.shape[1]
+        self.row_covered = [False] * similarity_matrix.shape[0]
+        self.column_covered = [False] * similarity_matrix.shape[1]
+    
+        self.columns_from_selected_row = [0] * similarity_matrix.shape[0]    
     
     def _configuration(self) -> dict:
         return {}

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.1.4"
+version = "0.1.5"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -67,7 +67,8 @@ dependencies = [
     "ordered-set >= 4.0",
     "plotly >= 5.16.0",
     "shapely >= 2.0",
-    'scann ; platform_system == "Linux"'
+    'scann ; platform_system == "Linux"',
+    'falconn ; platform_system == "Linux"'
 ]
 
 [project.optional-dependencies]
