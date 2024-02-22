@@ -56,6 +56,8 @@ parts:
     chapters:
     - file: pages/publications.md
       title: Publications
+    - file: pages/icwe2024.md
+      title: ICWE 2024
     - url: https://stelar-project.eu
       title: STELAR - HORIZON-EU
   - caption: Links

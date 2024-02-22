@@ -67,7 +67,7 @@ dependencies = [
     "ordered-set >= 4.0",
     "plotly >= 5.16.0",
     "shapely >= 2.0",
-    'scann ; platform_system == "Linux"',
+    'scann ; platform_system == "Linux"',   
     'falconn ; platform_system == "Linux"'
 ]
 
