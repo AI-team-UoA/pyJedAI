@@ -63,7 +63,12 @@ go to the root directory with `cd pyJedAI` and type:
 pip install .
 ```
 
+### Docker
 
+Available at [Docker Hub](https://hub.docker.com/r/aiteamuoa/pyjedai), or clone this repo and:
+```
+docker build -f Dockerfile
+```
 
 # Dependencies
 
