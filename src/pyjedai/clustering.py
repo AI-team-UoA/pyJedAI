@@ -412,7 +412,7 @@ class AbstractClustering(PYJEDAIFeature):
         
     def index_to_id(self, index : int, left_dataset : True):
         return index if left_dataset else index + self.data.dataset_limit 
-    
+
 class ConnectedComponentsClustering(AbstractClustering):
     """Creates the connected components of the graph. \
         Applied to graph created from entity matching. \
@@ -528,17 +528,17 @@ class ExactClustering(AbstractClustering):
 
     _method_name: str = "Exact Clustering"
     _method_short_name: str = "EC"
-    _method_info: str = "Ιmplements an adapted, simplified version of the Exact THRESHOLD algorithm," + \
+    _method_info: str = "Implements an adapted, simplified version of the Exact THRESHOLD algorithm," + \
         "In essence, it keeps the top-1 candidate per entity, as long as the candidate also considers this node as its top candidate."
 
-    def __init__(self, similarity_threshold: float = 0.1) -> None:
+    def __init__(self) -> None:
         """"""
         super().__init__()
-        self.similarity_threshold = similarity_threshold
 
-    def process(self, graph: Graph, data: Data) -> list:
+    def process(self, graph: Graph, data: Data, similarity_threshold: float = 0.1) -> list:
         """
         """
+        self.similarity_threshold = similarity_threshold
         raise NotImplementedError("Exact Clustering is not implemented yet.")
 
     def _configuration(self) -> dict:
@@ -555,7 +555,7 @@ class CenterClustering(AbstractClustering):
 
     _method_name: str = "Center Clustering"
     _method_short_name: str = "CC"
-    _method_info: str = "Ιmplements the Center Clustering algorithm," + \
+    _method_info: str = "Implements the Center Clustering algorithm," + \
         "In essence, it keeps it defines if a node within an edge constitutes a center or member of future clusters" + \
         " by normalized over the graph weight sum comparison"
     def __init__(self) -> None:
@@ -623,7 +623,7 @@ class BestMatchClustering(AbstractClustering):
 
     _method_name: str = "Best Match Clustering"
     _method_short_name: str = "BMC"
-    _method_info: str = "Ιmplements the Best Match Clustering algorithm," + \
+    _method_info: str = "Implements the Best Match Clustering algorithm," + \
         "In essence, it keeps the best candidate for each entity of the source dataset (defined through ordering)"
     def __init__(self) -> None:
         super().__init__()
@@ -712,7 +712,7 @@ class MergeCenterClustering(AbstractClustering):
 
     _method_name: str = "Merge Center Clustering"
     _method_short_name: str = "MCC"
-    _method_info: str = "Ιmplements the Merge Center Clustering algorithm," + \
+    _method_info: str = "Implements the Merge Center Clustering algorithm," + \
         "In essence, it implements Center Clustering without the cumulative, " + \
         "normalized weight calculation. Left dataset entities are set as candidate cluster centers."
     def __init__(self) -> None:
@@ -774,7 +774,7 @@ class CorrelationClustering(AbstractClustering):
 
     _method_name: str = "Correlation Clustering"
     _method_short_name: str = "CC"
-    _method_info: str = "Ιmplements the Correlation Clustering algorithm," + \
+    _method_info: str = "Implements the Correlation Clustering algorithm," + \
         "In essence, it implements iterative clustering, " + \
         "reassigning clusters to randomly chosen entities based on the reassignment's effect on our objective function " + \
         "that evaluates the quality of the newly defined clusters." 
@@ -883,7 +883,7 @@ class CorrelationClustering(AbstractClustering):
         return move
             
     def move(self, move_index : int, previous_OF : int):
-        print(f"Move[{move_index}] OF[{previous_OF}]")
+        # print(f"Move[{move_index}] OF[{previous_OF}]")
         if(move_index == 0):
             random_entity = random.choice(self.valid_entities)
             random_cluster = random.randint(0, self.initial_clusters_num - 1)
@@ -916,7 +916,7 @@ class CorrelationClustering(AbstractClustering):
         self.entity_cluster_index[entity] = new_cluster
         
         new_OF = self.calculate_OF()
-        print(previous_OF, new_OF)
+        # print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             self.clusters[previous_cluster].remove_entity(entity)
             self.clusters[new_cluster].add_entity(entity)
@@ -936,7 +936,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        print(previous_OF, new_OF)
+        # print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             previous_cluster.remove_entities(previous_cluster_entities)
             new_cluster.add_entities(previous_cluster_entities)
@@ -959,7 +959,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[to_be_removed_entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        print(previous_OF, new_OF)
+        # print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             self.clusters.append(EquivalenceCluster(data=self.data, flattened_cluster=to_be_removed_entities))
             self.initial_clusters_num += 1
@@ -983,7 +983,7 @@ class CutClustering(AbstractClustering):
 
     _method_name: str = "Cut Clustering"
     _method_short_name: str = "CTC"
-    _method_info: str = "Ιmplements the Cut Clustering algorithm," + \
+    _method_info: str = "Implements the Cut Clustering algorithm," + \
         "In essence, it calculates the Gomory Hu Tree of the graph resulting from input similarity pairs. " + \
         "We retain the connected components of this tree."
     def __init__(self) -> None:
@@ -1013,7 +1013,7 @@ class CutClustering(AbstractClustering):
         final_gomory_hu_tree.remove_node(sink_node)
         clusters = list(connected_components(final_gomory_hu_tree))
         
-        print(len(clusters))
+        # print(len(clusters))
         self.execution_time = time() - start_time
         return clusters
 
@@ -1074,7 +1074,7 @@ class MarkovClustering(AbstractClustering):
             self.normalize()
             self.expand()
             self.normalize()
-            print(check+1)
+            # print(check+1)
             if(self.equilibrium()):
                 break
         
@@ -1097,7 +1097,7 @@ class MarkovClustering(AbstractClustering):
     
     def set_node_loop(self, similarity : float = 1.0) -> None:
         rows : int = self.current_similarity.shape[0]
-        print(rows)
+        # print(rows)
         for row in range(rows):
             self.current_similarity[row, row] = similarity
             
