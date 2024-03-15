@@ -777,7 +777,7 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
             if data.ground_truth is not None:
                 res = clustering_method.evaluate(components,
                                                 export_to_dict=True,
-                                                with_classification_report=False,
+                                                with_classification_report=with_classification_report,
                                                 verbose=verbose)
                 self._save_step(res, clustering_method.method_configuration())
             self.workflow_exec_time = time() - start_time
@@ -960,11 +960,12 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                                 **self.block_building["exec_params"])                
 
         self.final_pairs = block_building_blocks
-        res = block_building_method.evaluate(block_building_blocks,
-                                            export_to_dict=True,
-                                            with_classification_report=with_classification_report,
-                                            verbose=verbose)
-        self._save_step(res, block_building_method.method_configuration())
+        if data.ground_truth is not None:
+            res = block_building_method.evaluate(block_building_blocks,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+            self._save_step(res, block_building_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Clustering step [optional]
@@ -974,11 +975,13 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                             if "params" in self.clustering \
                                             else self.clustering['method']()
             self.final_pairs = components = clustering_method.process(em_graph, data)
-            res = clustering_method.evaluate(components,
-                                            export_to_dict=True,
-                                            with_classification_report=False,
-                                            verbose=verbose)
-            self._save_step(res, clustering_method.method_configuration())
+            if data.ground_truth is not None:
+                res = clustering_method.evaluate(components,
+                                                export_to_dict=True,
+                                                with_classification_report=False,
+                                                verbose=verbose)
+                self._save_step(res, clustering_method.method_configuration())
+            self.clusters = components
             self.workflow_exec_time = time() - start_time
             self._workflow_bar.update(1)
         # self.runtime.append(self.workflow_exec_time)
