@@ -146,11 +146,13 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self.data, self.attributes_1, self.attributes_2, self.vector_size, self.num_of_clusters, self.top_k, self.input_cleaned_blocks \
             = data, attributes_1, attributes_2, vector_size, num_of_clusters, top_k, input_cleaned_blocks
         self.load_path_d1, self.load_path_d2 = load_path_d1, load_path_d2
-        self._progress_bar = tqdm(total=data.num_of_entities,
-                                  desc=(self._method_name + ' [' + self.vectorizer + ', ' + self.similarity_search + ']'),
-                                  disable=tqdm_disable)
+        
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-            
+        self._progress_bar = tqdm(total=data.num_of_entities,
+                                  desc=(self._method_name + ' [' + self.vectorizer + ', ' + self.similarity_search + ', ' + str(self.device) + ']'),
+                                  disable=tqdm_disable)
+        
         if(input_cleaned_blocks == None):
             self._applied_to_subset = False
         else:
@@ -179,8 +181,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         self.vectors_1 = None
         self.vectors_2 = None
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print("Device selected: ", self.device)
         
         if self.with_entity_matching:
             self.graph = nx.Graph()
@@ -316,7 +316,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                                                                      model,
                                                                      tokenizer) if not self._d1_loaded else self.vectors_1
         self.vector_size = self.vectors_1[0].shape[0]
-        print("Vector size: ", self.vectors_1.shape)
         self.vectors_2 = self._transform_entities_to_word_embeddings(self._entities_d2,
                                                                      model,
                                                                      tokenizer) if not self.data.is_dirty_er and not self._d2_loaded else self.vectors_2
@@ -499,7 +498,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                         .score_ah(2, anisotropic_quantization_threshold=0.2) \
                         .reorder(int(_k)) \
                         .build()
-        print(_normalized_target_vectors.shape)
+
         self.neighbors, self.distances = searcher.search_batched(_normalized_target_vectors, final_num_neighbors=self.top_k)
 
         if self.similarity_distance == 'euclidean':
@@ -509,10 +508,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         
         for _entity in range(0, self.neighbors.shape[0]):
             
-            _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]
-            
-            if _entity_id not in self.blocks:
-                self.blocks[_entity_id] = set()            
+            _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]       
             
             for _neighbor_index, _neighbor in enumerate(self.neighbors[_entity]):
 
@@ -525,8 +521,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     self.blocks[_neighbor_id] = set()
 
                 self.blocks[_neighbor_id].add(_entity_id)
-                # self.blocks[_entity_id].add(_neighbor_id)
-                
+                                
                 if self.with_entity_matching:
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
 
