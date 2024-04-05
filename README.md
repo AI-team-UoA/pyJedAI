@@ -120,12 +120,13 @@ For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolki
 
 <img align="right" src="https://github.com/AI-team-UoA/.github/blob/main/AI_LOGO.png?raw=true" alt="pyJedAI" width="200"/>
 
-- [Konstantinos Nikoletos](https://nikoletos-k.github.io)
-- Jakub Maciejewski
-- [George Papadakis](https://gpapadis.wordpress.com)
-- [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/)
+- [Konstantinos Nikoletos](https://nikoletos-k.github.io), Research Associate at University of Athens, Greece
+- [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/), Research Associate at University of Athens, Greece
+- [Ekaterini Ioannou](https://www.tilburguniversity.edu/staff/ekaterini-ioannou), Assistant Professor at Tilburg University, The Netherlands 
+- [George Papadakis](https://gpapadis.wordpress.com), Senior Researcher at University of Athens, Greece
+- [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/), Professor at University of Athens, Greece
 
-Research and development is made under the supervision of Pr. Manolis Koubarakis. This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
+This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
 
 # License
 
