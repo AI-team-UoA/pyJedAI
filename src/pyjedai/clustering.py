@@ -374,7 +374,7 @@ class AbstractClustering(PYJEDAIFeature):
         pass
 
     def _configuration(self) -> dict:
-        return {}
+        pass
 
     def export_to_df(self, prediction: list) -> pd.DataFrame:
         """creates a dataframe for the evaluation report
@@ -455,7 +455,9 @@ class ConnectedComponentsClustering(AbstractClustering):
         return resulting_clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class UniqueMappingClustering(AbstractClustering):
     """Prunes all edges with a weight lower than t, sorts the remaining ones in
@@ -517,7 +519,9 @@ class UniqueMappingClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class ExactClustering(AbstractClustering):
     """Implements an adapted, simplified version of the Exact THRESHOLD algorithm,
@@ -542,7 +546,9 @@ class ExactClustering(AbstractClustering):
         raise NotImplementedError("Exact Clustering is not implemented yet.")
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class CenterClustering(AbstractClustering):
     """Implements the Center Clustering algorithm. Input comparisons (graph edges) are sorted in descending order of similarity.
@@ -613,7 +619,9 @@ class CenterClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class BestMatchClustering(AbstractClustering):
     """Implements the Best Match Clustering algorithm. Based on supplied order, it either traverse the entities of the left (inorder)
@@ -696,7 +704,9 @@ class BestMatchClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
     def set_order(self, order : str) -> None:
         self.order : str = order
@@ -761,8 +771,9 @@ class MergeCenterClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
-    
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class CorrelationClustering(AbstractClustering):
     """Implements the Correlation Clustering algorithm. Candidate pairs are mapped into a graph, whose connected components
@@ -781,7 +792,6 @@ class CorrelationClustering(AbstractClustering):
     
     def __init__(self) -> None:
         super().__init__()
-        self.similarity_threshold: float
         self.initial_threshold : float
         self.similarity_threshold : float
         self.non_similarity_threshold : float
@@ -883,7 +893,7 @@ class CorrelationClustering(AbstractClustering):
         return move
             
     def move(self, move_index : int, previous_OF : int):
-        # print(f"Move[{move_index}] OF[{previous_OF}]")
+
         if(move_index == 0):
             random_entity = random.choice(self.valid_entities)
             random_cluster = random.randint(0, self.initial_clusters_num - 1)
@@ -908,7 +918,6 @@ class CorrelationClustering(AbstractClustering):
             return self.seperate_clusters(previous_OF, previous_cluster)
         else:
             raise ValueError(f"Invalid Move Index \"{move_index}\": Choose 0->2")
-            return float("inf")
         
         
     def change_entity_cluster(self, previous_OF : int, entity : int, new_cluster : int):
@@ -916,7 +925,7 @@ class CorrelationClustering(AbstractClustering):
         self.entity_cluster_index[entity] = new_cluster
         
         new_OF = self.calculate_OF()
-        # print(previous_OF, new_OF)
+
         if(new_OF > previous_OF):
             self.clusters[previous_cluster].remove_entity(entity)
             self.clusters[new_cluster].add_entity(entity)
@@ -936,7 +945,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        # print(previous_OF, new_OF)
+
         if(new_OF > previous_OF):
             previous_cluster.remove_entities(previous_cluster_entities)
             new_cluster.add_entities(previous_cluster_entities)
@@ -972,7 +981,13 @@ class CorrelationClustering(AbstractClustering):
         return previous_OF
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Initial Threshold" : self.initial_threshold,
+            "Similarity Threshold" : self.similarity_threshold,
+            "Non-Similarity Threshold" : self.non_similarity_threshold,
+            "Move limit" : self.move_limit,
+            "LSI Iterations" : self.lsi_iterations
+        }
     
 class CutClustering(AbstractClustering):
     """Implements the Cut Clustering algorithm. Retains the candidate pairs whose similarity is over the specified threshold.
@@ -1018,7 +1033,9 @@ class CutClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class MarkovClustering(AbstractClustering):
     """Implements the Markov Clustering algorithm. It simulates random walks on a (n x n) matrix as the adjacency matrix
@@ -1131,7 +1148,12 @@ class MarkovClustering(AbstractClustering):
         return set([indices for indices in zip(*matrix.nonzero())])
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold" : self.similarity_threshold,
+            "Cluster Threshold" : self.cluster_threshold,
+            "Matrix Similarity Threshold" : self.matrix_similarity_threshold,
+            "Similarity Checks Limit" : self.similarity_checks_limit
+        }
     
 class KiralyMSMApproximateClustering(AbstractClustering):
     """Implements the Kiraly MSM Approximate Clustering algorithm. Implements the so-called "New Algorithm"
@@ -1299,7 +1321,9 @@ class KiralyMSMApproximateClustering(AbstractClustering):
         return (man_score > current_fiance_score)
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class RicochetSRClustering(AbstractClustering):
     """Implements the Ricochet SR Clustering algorithm. Implements the so-called "New Algorithm"
@@ -1310,16 +1334,19 @@ class RicochetSRClustering(AbstractClustering):
 
     _method_name: str = "Ricochet SR Clustering"
     _method_short_name: str = "RSRC"
-    _method_info: str = "Ιmplements the Ricochet SR Clustering algorithm," + \
+    _method_info: str = "Implements the Ricochet SR Clustering algorithm," + \
         "In essence, it is a 3/2-approximation to the Maximum Stable Marriage (MSM) problem."
     def __init__(self) -> None:
         super().__init__()
         self.similarity_threshold : float
         
-    def process(self, 
+    def process(self,
                 graph: Graph,
                 data: Data, 
                 similarity_threshold: float = 0.5) -> list:
+
+        if self.data.is_dirty_er:
+            raise ValueError(f"RicochetSRClustering doesn't support Dirty ER.")
 
         start_time = time()
         self.similarity_threshold : float = similarity_threshold
@@ -1330,8 +1357,8 @@ class RicochetSRClustering(AbstractClustering):
         
         for (v1, v2, data) in graph.edges(data=True):
             d1_id, d2_id = self.sorted_indicators(v1, v2)
-            similarity = data.get('weight', 0) 
-            if similarity > self.similarity_threshold:  
+            similarity = data.get('weight', 0)
+            if similarity > self.similarity_threshold:
                 if d1_id not in self.vertices: self.vertices[d1_id] = Vertex(identifier=d1_id)
                 if d2_id not in self.vertices: self.vertices[d2_id] = Vertex(identifier=d2_id)
                 self.vertices[d1_id].insert_edge(edge=(d2_id, similarity))
@@ -1341,9 +1368,9 @@ class RicochetSRClustering(AbstractClustering):
             if(vertex.has_edges()):
                 self.sorted_vertices.put(vertex)
 
-        if(self.sorted_vertices.empty()):            
+        if(self.sorted_vertices.empty()):
             return clusters
-        
+
         self.centers : set = set()
         self.members : set = set()
         self.center_of : dict = {}
@@ -1443,11 +1470,13 @@ class RicochetSRClustering(AbstractClustering):
         return clusters
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold" : self.similarity_threshold
+        }
     
     
 class RowColumnClustering(AbstractClustering):
-    """Ιmplements the Row Column Clustering algorithm. For each row and column find their equivalent
+    """Implements the Row Column Clustering algorithm. For each row and column find their equivalent
        column and row respectively corresponding to the smallest similarity. Subsequently, chooses
        either rows or columns dependent on which one has the highest out of the lowest similariities 
        on average.        
@@ -1455,7 +1484,7 @@ class RowColumnClustering(AbstractClustering):
 
     _method_name: str = "Row Column Clustering"
     _method_short_name: str = "RCC"
-    _method_info: str = "Ιmplements the Row Column Clustering algorithm," + \
+    _method_info: str = "Implements the Row Column Clustering algorithm," + \
         "In essence, it is a 3/2-approximation to the Maximum Stable Marriage (MSM) problem."
     def __init__(self) -> None:
         super().__init__()
@@ -1585,4 +1614,6 @@ class RowColumnClustering(AbstractClustering):
         self.columns_from_selected_row = [0] * similarity_matrix.shape[0]    
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold" : self.similarity_threshold
+        }
