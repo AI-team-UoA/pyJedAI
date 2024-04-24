@@ -100,7 +100,7 @@ class Evaluation:
         if verbose:
             if configuration:
                 print('*' * 123)
-                print(' ' * 40, 'Μethod: ', configuration['name'])
+                print(' ' * 40, 'Method: ', configuration['name'])
                 print('*' * 123)
                 print(
                     "Method name: " + configuration['name'] +
