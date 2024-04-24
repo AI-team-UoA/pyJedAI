@@ -14,9 +14,7 @@ from math import sqrt
 import faiss
 import platform
 RUNNING_OS = platform.system()
-if RUNNING_OS != "Windows":
-    import scann
-    import falconn
+
 import gensim.downloader as api
 import networkx as nx
 import numpy as np
@@ -68,7 +66,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
     def __init__(
             self,
             vectorizer: str,
-            similarity_search: str
+            similarity_search: str = 'faiss'
     ) -> None:
         super().__init__()
         self.vectorizer, self.similarity_search = vectorizer, similarity_search
@@ -107,7 +105,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                      load_path_d2: str = None,
                      with_entity_matching: bool = False,
                      input_cleaned_blocks: dict = None,
-                     similarity_distance: str = 'cosine'
+                     similarity_distance: str = 'cosine',
+                     verbose: bool = False
     ) -> any:
         """Main method of the vector based approach. Contains two steps. First an embedding method. \
             And afterwards a similarity search upon the vectors created in the previous step.
@@ -136,9 +135,13 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             dict: Entity ids to sets of top-K candidate ids. OR
             Tuple(np.array, np.array): vectors from d1 and vectors from d2
         """
+        if self.similarity_search != 'faiss':
+            raise AttributeError("Only FAISS is available for now.")
+        
         print('Building blocks via Embeddings-NN Block Building [' + self.vectorizer + ', ' + self.similarity_search + ']')
         _start_time = time()
         self.blocks = dict()
+        self.verbose = verbose
         self.with_entity_matching = with_entity_matching
         self.save_embeddings, self.load_embeddings_if_exist = save_embeddings, load_embeddings_if_exist
         self.max_word_embeddings_size = max_word_embeddings_size
@@ -188,36 +191,41 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self._d1_loaded : bool = False
         self._d2_loaded : bool = False
         if load_embeddings_if_exist:
+            if verbose:
                 print("Loading embeddings from file...")
-                if(self.load_path_d1 is not None):
-                    p1 = self.load_path_d1
-                else:
-                    p1 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_1 \
-                                                        if self.data.dataset_name_1 is not None else "d1") +'.npy')
+            if(self.load_path_d1 is not None):
+                p1 = self.load_path_d1
+            else:
+                p1 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_1 \
+                                                    if self.data.dataset_name_1 is not None else "d1") +'.npy')
+            if verbose:
                 print("Attempting to load D1 embeddings...")
-                if os.path.exists(p1):
-                    self.vectors_1 = vectors_1 = np.load(p1)
-                    self.vectors_1 = vectors_1 = vectors_1[self._d1_valid_indices]
-                    self._progress_bar.update(data.num_of_entities_1)
-                    self._d1_loaded = True
+            if os.path.exists(p1):
+                self.vectors_1 = vectors_1 = np.load(p1)
+                self.vectors_1 = vectors_1 = vectors_1[self._d1_valid_indices]
+                self._progress_bar.update(data.num_of_entities_1)
+                self._d1_loaded = True
+                if verbose:
                     print(f"{p1} -> Loaded Successfully")
-                else:
-                    print("Embeddings not found. Creating new ones.")
-                
+            else:
+                if verbose:
+                    print("Embeddings not found for D1. Creating new ones.")
+            
+            if not data.is_dirty_er:
                 if(self.load_path_d2 is not None):
                     p2 = self.load_path_d2
                 else:
                     p2 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_2 \
                                                         if self.data.dataset_name_2 is not None else "d2") +'.npy')    
-                print("Attempting to load D2 embeddings...")
+                if verbose: print("Attempting to load D2 embeddings...")
                 if os.path.exists(p2):
                     self.vectors_2 = vectors_2 = np.load(p2)
                     self.vectors_2 = vectors_2 = vectors_2[self._d2_valid_indices]
                     self._progress_bar.update(data.num_of_entities_2)
                     self._d2_loaded = True
-                    print(f"{p2} -> Loaded Successfully")
+                    if verbose: print(f"{p2} -> Loaded Successfully")
                 else:
-                    print("Embeddings not found. Creating new ones.")
+                    if verbose: print("Embeddings not found for D2. Creating new ones.")
         if not self._d1_loaded or not self._d2_loaded:
             if self.vectorizer in ['word2vec', 'fasttext', 'doc2vec', 'glove']:
                 self.vectors_1, self.vectors_2 = self._create_gensim_embeddings()
@@ -229,33 +237,31 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                 raise AttributeError("Not available vectorizer")
             
         if save_embeddings:
-            print("Saving embeddings...")
+            if verbose: print("Saving embeddings...")
             
             if self._applied_to_subset:
-                print("Cannot save embeddings, subset embeddings storing not supported.")
+                if verbose: print("Cannot save embeddings, subset embeddings storing not supported.")
             else:
                 if not self._d1_loaded:
                     p1 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_1 \
                                                             if self.data.dataset_name_1 is not None else "d1") +'.npy')
-                    print("Saving file: ", p1)
+                    if verbose: print("Saving file: ", p1)
                     np.save(p1, self.vectors_1)
                 
-                if not self._d2_loaded:
+                if not data.is_dirty_er and not self._d2_loaded:
                     p2 = os.path.join(EMBEDDINGS_DIR, self.vectorizer + '_' + (self.data.dataset_name_2 \
                                                             if self.data.dataset_name_2 is not None else "d2") +'.npy')
-                    print("Saving file: ", p2)
+                    if verbose: print("Saving file: ", p2)
                     np.save(p2, self.vectors_2)
 
         if return_vectors:
             return (self.vectors_1, _) if data.is_dirty_er else (self.vectors_1, self.vectors_2)
 
         if self.similarity_search == 'faiss':
+            if verbose: print("Starting similarity search with FAISS...")
             self._faiss_metric_type = faiss.METRIC_L2
             self._similarity_search_with_FAISS()
-        elif self.similarity_search == 'falconn':
-            self._similarity_search_with_FALCONN()
-        elif self.similarity_search == 'scann':
-            self._similarity_search_with_SCANN()
+            if verbose: print("Similarity search with FAISS is done.")
         else:
             raise AttributeError("Not available method")
         self._progress_bar.close()        
@@ -372,6 +378,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         return vectors_1, vectors_2 
 
     def _similarity_search_with_FAISS(self):
+        if self.verbose:
+            print("Creating index...")
         index = faiss.IndexFlatL2(self.vectors_1.shape[1])
         
         if self.similarity_distance == 'cosine' or self.similarity_distance == 'cosine_without_normalization':
@@ -384,28 +392,36 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
             if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
-            
+        
+        if self.verbose:
+            print("Training index...")
         index.train(self.vectors_1)  # train on the vectors of dataset 1
+
 
         if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
             if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
 
+        if self.verbose:
+            print("Adding vectors to index...")
         index.add(self.vectors_1)   # add the vectors and update the index
 
         if self.similarity_distance == 'cosine':
             faiss.normalize_L2(self.vectors_1)
             if not self.data.is_dirty_er: faiss.normalize_L2(self.vectors_2)
-        
-        self.distances, self.neighbors = index.search(self.vectors_1 if self.data.is_dirty_er else self.vectors_2,
-                                    self.top_k)
+
+        if self.verbose:
+            print("Searching for neighbors...")
+        self.distances, self.neighbors = index.search(self.vectors_1 if self.data.is_dirty_er else self.vectors_2, self.top_k)
 
         if self.similarity_distance == 'euclidean':
             self.distances = 1/(1 + self.distances)
 
         self.blocks = dict()
-        
-        for _entity in range(0, self.neighbors.shape[0]):
+        if self.verbose:
+            print("Building blocks...")
+        print("disable", not self.verbose)
+        for _entity in tqdm(range(0, self.neighbors.shape[0]), desc="Building blocks", disable=not self.verbose):
             
             _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]
             
@@ -425,103 +441,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                 self.blocks[_neighbor_id].add(_entity_id)
                 # self.blocks[_entity_id].add(_neighbor_id)
                 
-                if self.with_entity_matching:
-                    self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
-
-    def _similarity_search_with_FALCONN(self):
-        _falconn_parameters = falconn.LSHConstructionParameters()
-        _falconn_parameters.distance_function = falconn.DistanceFunction.NegativeInnerProduct \
-                                                if (self.similarity_distance == 'cosine') \
-                                                else falconn.DistanceFunction.EuclideanSquared
-                                                
-        _normalized_source_vectors = self.vectors_1 / np.linalg.norm(self.vectors_1, axis=1)[:, np.newaxis]
-        _normalized_target_vectors = _normalized_source_vectors \
-                                    if self.data.is_dirty_er \
-                                    else self.vectors_2 / np.linalg.norm(self.vectors_2, axis=1)[:, np.newaxis]                                 
-              
-              
-        _normalized_source_vectors = - _normalized_source_vectors
-        _normalized_target_vectors = -_normalized_target_vectors      
-                                
-        _falconn_parameters.dimension = _normalized_source_vectors.shape[1]
-        _falconn_parameters.lsh_family = falconn.LSHFamily.CrossPolytope
-        _falconn_parameters.storage_hash_table = falconn.StorageHashTable.FlatHashTable
-        _falconn_parameters.num_setup_threads = 0     
-        _falconn_parameters.l = 50
-        _falconn_parameters.num_rotations = 1
-        falconn.compute_number_of_hash_functions(int(log(_normalized_source_vectors.shape[0],2)), _falconn_parameters)
-        _normalized_source_vectors = _normalized_source_vectors.astype(np.float32)
-        _normalized_target_vectors = _normalized_target_vectors.astype(np.float32)
-        
-        index = falconn.LSHIndex(_falconn_parameters)
-        index.setup(_normalized_source_vectors)
-        query_object = index.construct_query_object()
-                
-        self.blocks = dict()
-        
-        for _taget_entity_index, _normalized_target_vector in enumerate(_normalized_target_vectors):            
-            _target_entity_id = self._si.d1_retained_ids[_taget_entity_index] \
-                                if self.data.is_dirty_er \
-                                else self._si.d2_retained_ids[_taget_entity_index]
-            _source_entity_ids = query_object.find_k_nearest_neighbors(query=_normalized_target_vector, k=self.top_k)
-            # if _target_entity_id not in self.blocks:
-            #     self.blocks[_target_entity_id] = set()
-            
-            for id in _source_entity_ids:
-                
-                _source_entity_id = self._si.d1_retained_ids[id]
-                
-                if _source_entity_id not in self.blocks:
-                    self.blocks[_source_entity_id] = set()
-
-                self.blocks[_source_entity_id].add(_target_entity_id)
-                
-                if self.with_entity_matching:
-                    self.graph.add_edge(_source_entity_id, _target_entity_id)
-
-    def _similarity_search_with_SCANN(self):
-        
-        if RUNNING_OS == "Windows":
-            raise NotImplementedError("SCANN is not implemented yet for Windows.")
-        
-        _scann_distance_metric : str = "dot_product" if (self.similarity_distance == 'cosine') else "squared_l2"
-        _normalized_source_vectors = self.vectors_1 / np.linalg.norm(self.vectors_1, axis=1)[:, np.newaxis]
-        _normalized_target_vectors = _normalized_source_vectors \
-                                    if self.data.is_dirty_er \
-                                    else self.vectors_2 / np.linalg.norm(self.vectors_2, axis=1)[:, np.newaxis]
-        _k : int = int(sqrt(self.data.num_of_entities_1))
-        
-        searcher = scann.scann_ops_pybind.builder(_normalized_source_vectors, self.top_k, _scann_distance_metric) \
-                        .tree(num_leaves=_k,
-                              num_leaves_to_search=int(_k),
-                              training_sample_size=int(self.data.num_of_entities_1/2)) \
-                        .score_ah(2, anisotropic_quantization_threshold=0.2) \
-                        .reorder(int(_k)) \
-                        .build()
-
-        self.neighbors, self.distances = searcher.search_batched(_normalized_target_vectors, final_num_neighbors=self.top_k)
-
-        if self.similarity_distance == 'euclidean':
-            self.distances = 1/(1 + np.sqrt(self.distances))
-
-        self.blocks = dict()
-        
-        for _entity in range(0, self.neighbors.shape[0]):
-            
-            _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]       
-            
-            for _neighbor_index, _neighbor in enumerate(self.neighbors[_entity]):
-
-                if _neighbor == -1:
-                    continue
-                
-                _neighbor_id = self._si.d1_retained_ids[_neighbor]
-                
-                if _neighbor_id not in self.blocks:
-                    self.blocks[_neighbor_id] = set()
-
-                self.blocks[_neighbor_id].add(_entity_id)
-                                
                 if self.with_entity_matching:
                     self.graph.add_edge(_entity_id, _neighbor_id, weight=self.distances[_entity][_neighbor_index])
 
@@ -588,14 +507,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         print("Statistics:")
         if self.similarity_search == 'faiss':
             print(" FAISS:" +
-                # "\n\tNumber of entries in each list:  " + str(self._faiss_num_lists) + 
                 "\n\tIndices shape returned after search: " + str(self.neighbors.shape)
             )
-        elif self.similarity_search == 'falconn':           
-            pass
-        elif self.similarity_search == 'scann'  and LINUX_ENV:
-            pass
-        
         print(u'\u2500' * 123)
         
     
