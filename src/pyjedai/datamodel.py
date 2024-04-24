@@ -123,8 +123,10 @@ class Data:
         self.dataset_name_2 = dataset_name_2
         
         # Fill NaN values with empty string
+        self.dataset_1 = self.dataset_1.astype(str)
         self.dataset_1.fillna("", inplace=True)
         if not self.is_dirty_er:
+            self.dataset_2 = self.dataset_2.astype(str)
             self.dataset_2.fillna("", inplace=True)
 
         # Attributes
@@ -154,6 +156,7 @@ class Data:
         self.skip_ground_truth_processing = skip_ground_truth_processing
         if ground_truth is not None and not skip_ground_truth_processing:
             self.ground_truth = ground_truth.astype(str)
+            self.ground_truth.drop_duplicates(inplace=True)
             self._ids_mapping_1: dict
             self._gt_to_ids_reversed_1: dict
             self._ids_mapping_2: dict
@@ -187,7 +190,7 @@ class Data:
         self.duplicate_of = defaultdict(set)
         
         for _, row in self.ground_truth.iterrows():
-            id1, id2 = (row[0], row[1])
+            id1, id2 = (row.iloc[0], row.iloc[1])
             if id1 in self.duplicate_of: self.duplicate_of[id1].add(id2)
             else: self.duplicate_of[id1] = {id2}
             
@@ -252,7 +255,6 @@ class Data:
         else:
             return self._gt_to_ids_reversed_2[pyjedai_id]
         
-        
     def print_specs(self) -> None:
         """Dataset report.
         """
@@ -275,26 +277,33 @@ class Data:
             
             return memory_usage, unit
 
-        print(25*"-", "Data", 25*"-")
+        print('*' * 123)
+        print(' ' * 50, 'Data Report')
+        print('*' * 123)
         print("Type of Entity Resolution: ", "Dirty" if self.is_dirty_er else "Clean-Clean" )
-        print("Dataset-1:")
+        name1 = self.dataset_name_1 if self.dataset_name_1 is not None else "D1"
+        print("Dataset 1 (" + name1 + "):")
         print("\tNumber of entities: ", self.num_of_entities_1)
         print("\tNumber of NaN values: ", self.dataset_1.isnull().sum().sum())
         memory_usage, unit = calculate_memory_usage_of_pandas(self.dataset_1)
         print("\tMemory usage [" + unit + "]: ", "{:.2f}".format(memory_usage))
-        print("\tAttributes: \n\t\t", self.attributes_1)
+        print("\tAttributes:")
+        for attr in self.attributes_1:
+            print("\t\t", attr)
         if not self.is_dirty_er:
-            print("Dataset-2:")
+            name2 = self.dataset_name_2 if self.dataset_name_2 is not None else "D2"
+            print("Dataset 2 (" + name2 + "):")
             print("\tNumber of entities: ", self.num_of_entities_2)
             print("\tNumber of NaN values: ", self.dataset_2.isnull().sum().sum())
             memory_usage, unit = calculate_memory_usage_of_pandas(self.dataset_2)
             print("\tMemory usage [" + unit + "]: ", "{:.2f}".format(memory_usage))
-            print("\tAttributes: \n\t\t", self.attributes_2)
+            print("\tAttributes:")
+            for attr in self.attributes_2:
+                print("\t\t", attr)
         print("\nTotal number of entities: ", self.num_of_entities)
         if self.ground_truth is not None:
             print("Number of matching pairs in ground-truth: ", len(self.ground_truth))
-        print(56*"-", "\n")
-
+        print(u'\u2500' * 123)
     
     # Functions that removes stopwords, punctuation, uni-codes, numbers from the dataset
     def clean_dataset(self, 
