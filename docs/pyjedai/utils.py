@@ -1,27 +1,28 @@
-from abc import ABC, abstractmethod
-from collections import defaultdict
-from sklearn.metrics.pairwise import pairwise_distances
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import numpy as np
 import re
-from nltk import ngrams
-from nltk.tokenize import word_tokenize
-from pyjedai.datamodel import Block, Data
-from typing import List, Tuple
 import random
-from queue import PriorityQueue
 import math
-import sys
-from time import time
-from networkx import Graph
-import inspect
-from ordered_set import OrderedSet
 import uuid
 import os
 import json
-import copy
-from math import floor
 import pandas as pd
+import inspect
+
+from abc import ABC, abstractmethod
+from typing import List, Tuple
+
+from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+from nltk import ngrams
+from nltk.tokenize import word_tokenize
+
+from queue import PriorityQueue
+from networkx import Graph
+from ordered_set import OrderedSet
+
+from pyjedai.datamodel import Block, Data
+
 # ----------------------- #
 # Constants
 # ----------------------- #
@@ -1130,7 +1131,6 @@ class FrequencyEvaluator(ABC):
         try:
             print(f"Loading Distance Matrix from: {path}")
             return np.load(path) 
-            pass
         except FileNotFoundError:
             print(f"Unable to load distance matrix -> {path}")       
             
@@ -1193,7 +1193,7 @@ class FrequencyEvaluator(ABC):
             indexing : str,
             d1_entities : list = None, 
             d2_entities : list = None, 
-            save_dm : bool = True) -> None:
+            save_dm : bool = False) -> None:
         """Initializes the entities' corpus, and constructs the similarity matrix 
         Args:
             metric (str): Distance metric for entity strings
@@ -1258,4 +1258,3 @@ class FrequencyEvaluator(ABC):
         _id2 = (id2 - self._entities_d1_num)
 
         return self.distance_matrix[_id1][_id2]
-    

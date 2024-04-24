@@ -1,15 +1,21 @@
 """Datamodel of pyjedai.
 """
 import pandas as pd
-from pandas import DataFrame, concat
+from pandas import DataFrame
+
 import re
+import csv
+
 import nltk
-nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from ordered_set import OrderedSet
+from tqdm import tqdm
+
+from shapely.geometry import shape
+from shapely.wkt import loads
 
 class PYJEDAIFeature(ABC):
 
@@ -79,6 +85,7 @@ class Data:
                 id_column_name_2: str = None,
                 dataset_name_2: str = None,
                 ground_truth: DataFrame = None,
+                skip_ground_truth_processing: bool = False
     ) -> None:
         # Original Datasets as pd.DataFrame
         if isinstance(dataset_1, pd.DataFrame):
@@ -116,18 +123,12 @@ class Data:
         self.dataset_name_2 = dataset_name_2
         
         # Fill NaN values with empty string
+        self.dataset_1 = self.dataset_1.astype(str)
         self.dataset_1.fillna("", inplace=True)
         if not self.is_dirty_er:
+            self.dataset_2 = self.dataset_2.astype(str)
             self.dataset_2.fillna("", inplace=True)
 
-        self.dataset_name_1 = dataset_name_1
-        self.dataset_name_2 = dataset_name_2
-        
-        # Fill NaN values with empty string
-        self.dataset_1.fillna("", inplace=True)
-        if not self.is_dirty_er:
-            self.dataset_2.fillna("", inplace=True)
-            
         # Attributes
         if attributes_1 is None:
             if dataset_1.columns.values.tolist():
@@ -145,60 +146,51 @@ class Data:
                 if dataset_2.columns.values.tolist():
                     self.attributes_2 = dataset_2.columns.values.tolist()
                     if self.id_column_name_2 in self.attributes_2:
-                        self.attributes_2.remove(self.id_column_name_1)
+                        self.attributes_2.remove(self.id_column_name_2)
                 else:
                     raise AttributeError("Dataset 2 must contain column names if attributes_2 is empty.")
             else:
                 self.attributes_2: list = attributes_2
 
         # Ground truth data
-        if ground_truth is not None:
+        self.skip_ground_truth_processing = skip_ground_truth_processing
+        if ground_truth is not None and not skip_ground_truth_processing:
             self.ground_truth = ground_truth.astype(str)
+            self.ground_truth.drop_duplicates(inplace=True)
             self._ids_mapping_1: dict
             self._gt_to_ids_reversed_1: dict
             self._ids_mapping_2: dict
             self._gt_to_ids_reversed_2: dict
         else:
             self.ground_truth = None
-
+        
         self.entities = self.dataset_1 = self.dataset_1.astype(str)
         
         # Concatenated columns into new dataframe
         self.entities_d1 = self.dataset_1[self.attributes_1]
-
+        
         if not self.is_dirty_er:
             self.dataset_2 = self.dataset_2.astype(str)
             self.entities_d2 = self.dataset_2[self.attributes_2]
             self.entities = pd.concat([self.dataset_1, self.dataset_2],
                                       ignore_index=True)
-
+        # if not skip_ground_truth_processing:
         self._create_gt_mapping()
         if ground_truth is not None:
-            self._store_pairs()
+            if skip_ground_truth_processing:
+                self.ground_truth = ground_truth
+            else:
+                self._store_pairs()
         else:
             self.ground_truth = None
-
-    # def _store_pairs(self) -> None:
-    #     """Creates a mapping:
-    #         - pairs_of : ids of first dataset to ids of true matches from second dataset"""
-        
-    #     self.pairs_of = defaultdict(set)
-    #     d1_col_index, d2_col_index = (0, 1) if self.inorder_gt else (1,0)
-        
-    #     for _, row in self.ground_truth.iterrows():
-    #         id1, id2 = (row[d1_col_index], row[d2_col_index])
-    #         if id1 in self.pairs_of: self.pairs_of[id1].append(id2)
-    #         else: self.pairs_of[id1] = [id2]  
-    
     
     def _store_pairs(self) -> None:
         """Creates a mapping:
             - pairs_of : ids of first dataset to ids of true matches from second dataset"""
-        
         self.duplicate_of = defaultdict(set)
         
         for _, row in self.ground_truth.iterrows():
-            id1, id2 = (row[0], row[1])
+            id1, id2 = (row.iloc[0], row.iloc[1])
             if id1 in self.duplicate_of: self.duplicate_of[id1].add(id2)
             else: self.duplicate_of[id1] = {id2}
             
@@ -225,7 +217,6 @@ class Data:
             self.ground_truth = self.ground_truth.astype(str)
         # else:
         #     return
-
         self._ids_mapping_1 = dict(
             zip(
                 self.dataset_1[self.id_column_name_1].tolist(),
@@ -254,26 +245,65 @@ class Data:
                     self._ids_mapping_2.keys()
                 )
             )
-
+            
+    def get_pyjedai_id_of(self, dataset_id: any) -> int:
+        pass
+    
+    def get_real_id_of(self, pyjedai_id: int) -> any:
+        if pyjedai_id < self.dataset_limit:
+            return self._gt_to_ids_reversed_1[pyjedai_id]
+        else:
+            return self._gt_to_ids_reversed_2[pyjedai_id]
+        
     def print_specs(self) -> None:
         """Dataset report.
         """
-        print(25*"-", "Data", 25*"-")
+        def calculate_memory_usage_of_pandas(dataframe: pd.DataFrame) -> float:
+            memory_usage = dataframe.memory_usage(deep=True).sum()
+            if memory_usage > 1024**4:
+                memory_usage /= (1024**4)
+                unit = "TB"
+            elif memory_usage > 1024**3:
+                memory_usage /= (1024**3)
+                unit = "GB"
+            elif memory_usage > 1024**2:
+                memory_usage /= (1024**2)
+                unit = "MB"
+            elif memory_usage > 1024:
+                memory_usage /= (1024)
+                unit = "KB"
+            else:
+                unit = "B"
+            
+            return memory_usage, unit
+
+        print('*' * 123)
+        print(' ' * 50, 'Data Report')
+        print('*' * 123)
         print("Type of Entity Resolution: ", "Dirty" if self.is_dirty_er else "Clean-Clean" )
-        print("Dataset-1:")
+        name1 = self.dataset_name_1 if self.dataset_name_1 is not None else "D1"
+        print("Dataset 1 (" + name1 + "):")
         print("\tNumber of entities: ", self.num_of_entities_1)
         print("\tNumber of NaN values: ", self.dataset_1.isnull().sum().sum())
-        print("\tAttributes: \n\t\t", self.attributes_1)
+        memory_usage, unit = calculate_memory_usage_of_pandas(self.dataset_1)
+        print("\tMemory usage [" + unit + "]: ", "{:.2f}".format(memory_usage))
+        print("\tAttributes:")
+        for attr in self.attributes_1:
+            print("\t\t", attr)
         if not self.is_dirty_er:
-            print("Dataset-2:")
+            name2 = self.dataset_name_2 if self.dataset_name_2 is not None else "D2"
+            print("Dataset 2 (" + name2 + "):")
             print("\tNumber of entities: ", self.num_of_entities_2)
             print("\tNumber of NaN values: ", self.dataset_2.isnull().sum().sum())
-            print("\tAttributes: \n\t\t", self.attributes_2)
+            memory_usage, unit = calculate_memory_usage_of_pandas(self.dataset_2)
+            print("\tMemory usage [" + unit + "]: ", "{:.2f}".format(memory_usage))
+            print("\tAttributes:")
+            for attr in self.attributes_2:
+                print("\t\t", attr)
         print("\nTotal number of entities: ", self.num_of_entities)
         if self.ground_truth is not None:
             print("Number of matching pairs in ground-truth: ", len(self.ground_truth))
-        print(56*"-", "\n")
-
+        print(u'\u2500' * 123)
     
     # Functions that removes stopwords, punctuation, uni-codes, numbers from the dataset
     def clean_dataset(self, 
@@ -283,7 +313,8 @@ class Data:
                       remove_unicodes: bool = True) -> None:
         """Removes stopwords, punctuation, uni-codes, numbers from the dataset.
         """
-        
+        nltk.download('stopwords')
+
         # Make self.dataset_1 and self.dataset_2 lowercase
         self.dataset_1 = self.dataset_1.applymap(lambda x: x.lower())
         if not self.is_dirty_er:
@@ -336,6 +367,113 @@ class Data:
             print(average_words_per_line_2)
             
         return stats_df
+
+class SpatialData:
+    def __init__(
+                self,
+                source_reader: csv.reader,
+                source_delimiter: str,
+                target_reader: csv.reader,
+                target_delimiter: str,
+                skip_header: bool=False
+    ) -> None:
+        self.source_geometriesSize = 0
+        self.source_reader = source_reader
+        self.source_delimiter = source_delimiter
+
+        self.targetGeometriesSize = 0
+        self.target_reader = target_reader
+        self.target_delimiter = target_delimiter
+
+        self.skip_header = skip_header
+        self.source_geometries = []
+        self.targetGeometries = []
+
+        self.readSourceGeometries()
+        self.readTargetGeometries()
+        return
+    
+    def readSourceGeometries(self) -> list:
+        geometries_loaded = 0
+        geometries_failed = 0
+        geoCollections = 0
+
+        if(self.skip_header == True):
+            next(self.source_reader)
+
+        for geometry in self.source_reader:
+            try:
+                geometry, *information = [s.split(self.source_delimiter)[0] for s in geometry]
+                geometry = shape(loads(geometry))
+            except:
+                geometries_failed += 1
+                continue
+
+            if geometry.geom_type == "GeometryCollection":
+                geoCollections += 1
+            else:
+                self.source_geometries.append(geometry)
+                geometries_loaded += 1
+
+        # print("SpatialData initialized:","\n Geometries loaded:", geometries_loaded, "\n Geometries failed:", geometries_failed, "\n GeoCollections found:", geoCollections,"\n")
+        self.source_geometries_size = geometries_loaded
+        return
+
+    def readTargetGeometries(self) -> list:
+        geometries_loaded = 0
+        geometries_failed = 0
+        geoCollections = 0
+
+        if(self.skip_header == True):
+            next(self.target_reader)
+
+        for geometry in self.target_reader:
+            try:
+                geometry, *information = [s.split(self.target_delimiter)[0] for s in geometry]
+                geometry = shape(loads(geometry))
+            except:
+                geometries_failed += 1
+                continue
+
+            if geometry.geom_type == "GeometryCollection":
+                geoCollections += 1
+            else:
+                self.targetGeometries.append(geometry)
+                geometries_loaded += 1
+
+        # print("SpatialData initialized:","\n Geometries loaded: ", geometries_loaded, "\n Geometries failed: ", geometries_failed, "\n GeoCollections found: ", geoCollections)
+        self.targetGeometriesSize = geometries_loaded
+        return
+
+class SchemaData:
+    """Data module for schema matching tasks. Valentine-based structure.
+    """
+
+    def __init__(
+                self,
+                dataset_1: DataFrame,
+                attributes_1: list,
+                dataset_2: DataFrame,
+                attributes_2: list,
+                dataset_name_1: str = None,
+                dataset_name_2: str = None,
+                ground_truth: DataFrame = None,
+    ) -> None:
+        # Original Datasets as pd.DataFrame
+        if isinstance(dataset_1, pd.DataFrame):
+            self.dataset_1 = dataset_1
+
+        else:
+            raise AttributeError("Dataset 1 must be a pandas DataFrame")
+
+        if dataset_2 is not None:
+            if isinstance(dataset_2, pd.DataFrame):
+                self.dataset_2 = dataset_2
+            else:
+                raise AttributeError("Dataset 2 must be a pandas DataFrame")
+        
+        if ground_truth is not None:
+            self.ground_truth = ground_truth.to_records(index=False).tolist()
 
 class Block:
     """The main module used for storing entities in the blocking steps of pyjedai module. \

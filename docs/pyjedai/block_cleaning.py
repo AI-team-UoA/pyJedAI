@@ -144,6 +144,7 @@ class BlockPurging(AbstractBlockCleaning):
         self._progress_bar = tqdm(total=2*len(new_blocks), desc=self._method_name, disable=self.tqdm_disable)            
         self._set_threshold(new_blocks)
         new_blocks = dict(filter(self._cardinality_threshold, blocks.items()))
+        self.num_of_blocks_dropped = len(blocks) - len(new_blocks)
         self._progress_bar.close()
         self.execution_time = time() - start_time
         self.blocks = new_blocks

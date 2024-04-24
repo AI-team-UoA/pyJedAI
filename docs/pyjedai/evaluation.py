@@ -44,9 +44,7 @@ class Evaluation:
                     "Data object has not been initialized with the ground-truth file")
 
         self.true_positives = self.true_negatives = self.false_positives = self.false_negatives = 0
-        self.all_gt_ids = set(self.data._ids_mapping_1.values()) if self.data.is_dirty_er else \
-                        set(self.data._ids_mapping_1.values()).union(set(self.data._ids_mapping_2.values()))
-
+        
     def _set_true_positives(self, true_positives) -> None:
         self.true_positives = true_positives
 
@@ -102,7 +100,7 @@ class Evaluation:
         if verbose:
             if configuration:
                 print('*' * 123)
-                print(' ' * 40, 'Μethod: ', configuration['name'])
+                print(' ' * 40, 'Method: ', configuration['name'])
                 print('*' * 123)
                 print(
                     "Method name: " + configuration['name'] +
@@ -134,6 +132,9 @@ class Evaluation:
             self,
             clusters: list,
     ) -> dict:
+        self.all_gt_ids = set(self.data._ids_mapping_1.values()) if self.data.is_dirty_er else \
+                        set(self.data._ids_mapping_1.values()).union(set(self.data._ids_mapping_2.values()))
+
         entity_index = dict()
         for cluster, cluster_id in zip(clusters, range(0, len(clusters))):
             cluster_entities_d1 = 0

@@ -6,7 +6,6 @@ from typing import Callable, List, Tuple
 import matplotlib.pyplot as plt
 import os
 import json
-import optuna
 import pandas as pd
 from networkx import Graph
 from tqdm.autonotebook import tqdm
@@ -209,6 +208,7 @@ class PYJEDAIWorkFlow(ABC):
             Tuple[float, float, float]: F-Measure, Precision, Recall.
         """
         return self.f1[-1], self.precision[-1], self.recall[-1]
+
 class ProgressiveWorkFlow(PYJEDAIWorkFlow):
     """Main module of the pyjedAI and the simplest way to create an end-to-end PER workflow.
     """
@@ -521,106 +521,6 @@ def compare_workflows(workflows: List[PYJEDAIWorkFlow], with_visualization=True)
 
     return workflow_df
 
-class OptimizeWorkflow:
-    """Optuna Framework for GridSearch/RandomSearch/Prunning in a given pyjedai workflow.
-    """
-
-    _id = count()
-
-    def __init__(
-            self,
-            block_building: Callable, # Mandatory: one method
-            entity_matching: Callable, # Mandatory: one method
-            block_cleaning: List[Callable] = None, # Optional: multiple methods
-            comparison_cleaning: List[Callable] = None, # Optional: multiple methods
-            clustering: Callable = None, # Optional: One method
-            joins: Callable = None, # Optional: One method
-            name: str = None
-    ) -> None:
-        self.block_cleaning, self.block_building, self.comparison_cleaning, \
-            self.clustering, self.joins, self.entity_matching = \
-            block_cleaning, block_building, comparison_cleaning, clustering, joins, entity_matching
-        self.f1: float
-        self.recall: float
-        self.precision: float
-        self.runtime: float
-        self.configurations: float
-        self.workflow_exec_time: float
-        self._id: int = next(self._id)
-        self.name: str = name if name else "OptWorkflow-" + str(self._id)
-        self._workflow_bar: tqdm
-
-    def objective(self, target_score: str = 'f1') -> any:
-        """Optuna objective function
-
-            Returns:
-                 One or more from F1,Recall,Precision
-        """
-        pass
-        # if target_score  == 'f1':
-        #     return f1
-        # elif target_score  == 'recall':
-        #     return recall
-        # else:
-        #     return precision
-
-    def run(
-            self,
-            data: Data,
-            num_of_trials = 30,
-            pruner: optuna.pruners = optuna.pruners.NopPruner,
-            sampler: optuna.samplers = optuna.samplers.BaseSampler,
-            study_name = "pyjedai_study",
-            storage_name = "pyjedai_storage_trials",
-            target_score = "f1",
-            load_if_exists=True,
-            verbose=False,
-            tqdm_disable=False,
-            workflow_tqdm_enable=False,
-            optuna_tqdm_enable=True
-    ) -> pd.DataFrame:
-        """Executes the experiments based on a workflow
-
-        Args:
-            data (Data): _description_
-            num_of_trials (int, optional): _description_. Defaults to 30.
-            pruner (optuna.pruners, optional): _description_. Defaults to optuna.pruners.NopPruner.
-            sampler (optuna.samplers, optional): _description_. Defaults to optuna.samplers.BaseSampler.
-            study_name (str, optional): _description_. Defaults to "pyjedai_study".
-            storage_name (str, optional): _description_. Defaults to "pyjedai_storage_trials".
-            target_score (str, optional): _description_. Defaults to "f1".
-            load_if_exists (bool, optional): _description_. Defaults to True.
-            verbose (bool, optional): _description_. Defaults to False.
-            tqdm_disable (bool, optional): _description_. Defaults to False.
-            workflow_tqdm_enable (bool, optional): _description_. Defaults to False.
-            optuna_tqdm_enable (bool, optional): _description_. Defaults to True.
-
-        Returns:
-            pd.DataFrame: _description_
-        """
-        study = optuna.create_study(
-            directions=["maximize"],
-            study_name=study_name,
-            storage=storage_name,
-            load_if_exists=load_if_exists
-        )
-        print("Optuna trials starting")
-        study.optimize(
-            self.objective, 
-            n_trials=num_of_trials, 
-            show_progress_bar=optuna_tqdm_enable
-        )
-        print("Optuna trials finished")
-
-    def visualize(self, with_plotly=True):
-        pass
-    
-    def get_best_trial(self):
-        pass
-    
-    def to_df():
-        pass
-
 class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
     """Blocking-based workflow.
     """
@@ -680,11 +580,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                 if "attributes_2" in self.block_building else None,
                                                 tqdm_disable=workflow_step_tqdm_disable)
         self.final_pairs = block_building_blocks
-        res = block_building_method.evaluate(block_building_blocks,
-                                            export_to_dict=True,
-                                            with_classification_report=with_classification_report,
-                                            verbose=verbose)
-        self._save_step(res, block_building_method.method_configuration())
+        if data.ground_truth is not None:
+            res = block_building_method.evaluate(block_building_blocks,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+            self._save_step(res, block_building_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Block cleaning step [optional]: Multiple algorithms
@@ -703,11 +604,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                       tqdm_disable=workflow_step_tqdm_disable)
                 
                 self.final_pairs = bblocks = block_cleaning_blocks
-                res = block_cleaning_method.evaluate(bblocks,
-                                                    export_to_dict=True,
-                                                    with_classification_report=with_classification_report,
-                                                    verbose=verbose)
-                self._save_step(res, block_cleaning_method.method_configuration())
+                if data.ground_truth is not None:
+                    res = block_cleaning_method.evaluate(bblocks,
+                                                        export_to_dict=True,
+                                                        with_classification_report=with_classification_report,
+                                                        verbose=verbose)
+                    self._save_step(res, block_cleaning_method.method_configuration())
                 self._workflow_bar.update(1)
         #
         # Comparison cleaning step [optional]
@@ -723,11 +625,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                     else block_building_blocks,
                                                 data,
                                                 tqdm_disable=workflow_step_tqdm_disable)
-            res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
-                                                      export_to_dict=True,
-                                                      with_classification_report=with_classification_report,
-                                                      verbose=verbose)
-            self._save_step(res, comparison_cleaning_method.method_configuration())
+            if data.ground_truth is not None:
+                res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
+                                                        export_to_dict=True,
+                                                        with_classification_report=with_classification_report,
+                                                        verbose=verbose)
+                self._save_step(res, comparison_cleaning_method.method_configuration())
             self._workflow_bar.update(1)
         #
         # Entity Matching step
@@ -750,11 +653,12 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                 tqdm_disable=workflow_step_tqdm_disable,
                 **self.entity_matching["exec_params"])
 
-        res = entity_matching_method.evaluate(em_graph,
-                                                export_to_dict=True,
-                                                with_classification_report=with_classification_report,
-                                                verbose=verbose)
-        self._save_step(res, entity_matching_method.method_configuration())
+        if data.ground_truth is not None:
+            res = entity_matching_method.evaluate(em_graph,
+                                                    export_to_dict=True,
+                                                    with_classification_report=with_classification_report,
+                                                    verbose=verbose)
+            self._save_step(res, entity_matching_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Clustering step [optional]
@@ -768,15 +672,17 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
             else:
                 self.final_pairs = components = clustering_method.process(em_graph, data, **self.clustering["exec_params"])
             
-            res = clustering_method.evaluate(components,
-                                            export_to_dict=True,
-                                            with_classification_report=False,
-                                            verbose=verbose)
-            self._save_step(res, clustering_method.method_configuration())
+            self.clusters = components
+            if data.ground_truth is not None:
+                res = clustering_method.evaluate(components,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+                self._save_step(res, clustering_method.method_configuration())
             self.workflow_exec_time = time() - start_time
             self._workflow_bar.update(1)
         # self.runtime.append(self.workflow_exec_time)
-
+    
     ############################################
     #  Pre-defined workflows same as JedAI     #
     ############################################
@@ -821,6 +727,38 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                 similarity_threshold=0.55))
         self.clustering = dict(method=ConnectedComponentsClustering),
         self.name="best-der-workflow"
+
+    def default_schema_clustering_workflow_der(self) -> None:
+        """Default D-ER workflow.
+
+        Returns:
+            PYJEDAIWorkFlow: Best workflow
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+            dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+            dict(method=BlockFiltering)
+        ]
+        self.entity_matching = dict(method=EntityMatching, 
+                                    params=dict(metric='cosine',
+                                                similarity_threshold=0.35))
+        self.clustering = dict(method=ConnectedComponentsClustering),
+        self.name="best-schema-clustering-der-workflow"
+
+
+    def default_schema_clustering_workflow_ccer(self) -> None:
+        """Default CC-ER workflow.
+        """
+        self.block_building = dict(method=StandardBlocking)
+        self.block_cleaning = [
+                dict(method=BlockPurging, params=dict(smoothing_factor=1.0)),
+                dict(method=BlockFiltering)
+            ]
+        self.entity_matching = dict(method=EntityMatching,
+                                    metric='cosine',
+                                    similarity_threshold=0.35)
+        self.clustering = dict(method=ConnectedComponentsClustering)
+        self.name="default-schema-clustering-ccer-workflow"
 
     def default_blocking_workflow_ccer(self) -> None:
         """Default CC-ER workflow.
@@ -921,11 +859,12 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                                 **self.block_building["exec_params"])                
 
         self.final_pairs = block_building_blocks
-        res = block_building_method.evaluate(block_building_blocks,
-                                            export_to_dict=True,
-                                            with_classification_report=with_classification_report,
-                                            verbose=verbose)
-        self._save_step(res, block_building_method.method_configuration())
+        if data.ground_truth is not None:
+            res = block_building_method.evaluate(block_building_blocks,
+                                                export_to_dict=True,
+                                                with_classification_report=with_classification_report,
+                                                verbose=verbose)
+            self._save_step(res, block_building_method.method_configuration())
         self._workflow_bar.update(1)
         #
         # Clustering step [optional]
@@ -935,11 +874,13 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                             if "params" in self.clustering \
                                             else self.clustering['method']()
             self.final_pairs = components = clustering_method.process(em_graph, data)
-            res = clustering_method.evaluate(components,
-                                            export_to_dict=True,
-                                            with_classification_report=False,
-                                            verbose=verbose)
-            self._save_step(res, clustering_method.method_configuration())
+            if data.ground_truth is not None:
+                res = clustering_method.evaluate(components,
+                                                export_to_dict=True,
+                                                with_classification_report=False,
+                                                verbose=verbose)
+                self._save_step(res, clustering_method.method_configuration())
+            self.clusters = components
             self.workflow_exec_time = time() - start_time
             self._workflow_bar.update(1)
         # self.runtime.append(self.workflow_exec_time)

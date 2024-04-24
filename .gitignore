@@ -9,5 +9,9 @@ src/pyjedai/__pycache__/
 src/pyjedai.egg-info/*
 docs/_build/*
 docs/code/_autosummary/*
+docs/tutorials/.ipynb_checkpoints/
+docs/tutorials/__pycache__/
+docs/pyjedai/__pycache__/
+docs/pyjedai/.ipynb_checkpoints/
 data/ccer/D2/gt_kaggle.csv
 *.pyc

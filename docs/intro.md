@@ -14,13 +14,16 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 
 # Install
 
+pyJedAI has been tested in Windows and Linux OS. 
+
+```{admonition} Basic requirements
+- Python version greater or equal to **3.8**.
+- For Windows, Microsoft Visual C++ 14.0 is required. Download it from [Microsoft Official site](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+```
+
 __PyPI__
 
 Install the latest version of pyjedai:
-
-```{warning}
-**Requires python >= 3.8**
-```
 
 ```
 pip install pyjedai
@@ -37,6 +40,15 @@ go to the root directory with `cd pyJedAI` and type:
 ```
 pip install .
 ```
+
+
+__Docker__
+
+Available at [Docker Hub](https://hub.docker.com/r/aiteamuoa/pyjedai), or clone this repo and:
+```
+docker build -f Dockerfile
+```
+
 
 # Tutorials
 

@@ -34,8 +34,6 @@ parts:
       title: Examples in transforming datasets to pandas
   - caption: Benchmarks
     chapters:
-    - file: pages/kaggle.md
-      title: Kaggle competitions
     - file: pages/benchmarks.md
       title: Results and Performance Demo
   - caption: Code
@@ -48,8 +46,6 @@ parts:
       title: New to pyJedAI?
   - caption: Releases and News
     chapters:
-    - file: pages/newsfeed.md
-      title: Newsfeed
     - url: https://github.com/AI-team-UoA/pyJedAI/releases
       title: Releases
   - caption: Publications & Fundings

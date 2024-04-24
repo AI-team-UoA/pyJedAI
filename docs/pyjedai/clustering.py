@@ -14,6 +14,7 @@ from .utils import are_matching
 from collections import defaultdict
 import random
 from ordered_set import OrderedSet
+import math
 
 RANDOM_SEED = 42
 
@@ -320,10 +321,15 @@ class RicochetCluster(PYJEDAIFeature):
         
 class AbstractClustering(PYJEDAIFeature):
     
+    _method_name: str = "Abstract Clustering"
+    _method_short_name: str = "AC"
+    _method_info: str = "Abstract Clustering Method"
+    
     def __init__(self) -> None:
         super().__init__()
         self.data: Data
         self.similarity_threshold: float = 0.1
+        self.execution_time: float = 0.0
         
     def evaluate(self,
                  prediction,
@@ -367,6 +373,9 @@ class AbstractClustering(PYJEDAIFeature):
     def stats(self) -> None:
         pass
 
+    def _configuration(self) -> dict:
+        pass
+
     def export_to_df(self, prediction: list) -> pd.DataFrame:
         """creates a dataframe for the evaluation report
 
@@ -403,7 +412,7 @@ class AbstractClustering(PYJEDAIFeature):
         
     def index_to_id(self, index : int, left_dataset : True):
         return index if left_dataset else index + self.data.dataset_limit 
-    
+
 class ConnectedComponentsClustering(AbstractClustering):
     """Creates the connected components of the graph. \
         Applied to graph created from entity matching. \
@@ -446,7 +455,9 @@ class ConnectedComponentsClustering(AbstractClustering):
         return resulting_clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class UniqueMappingClustering(AbstractClustering):
     """Prunes all edges with a weight lower than t, sorts the remaining ones in
@@ -508,7 +519,9 @@ class UniqueMappingClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class ExactClustering(AbstractClustering):
     """Implements an adapted, simplified version of the Exact THRESHOLD algorithm,
@@ -519,21 +532,23 @@ class ExactClustering(AbstractClustering):
 
     _method_name: str = "Exact Clustering"
     _method_short_name: str = "EC"
-    _method_info: str = "Ιmplements an adapted, simplified version of the Exact THRESHOLD algorithm," + \
+    _method_info: str = "Implements an adapted, simplified version of the Exact THRESHOLD algorithm," + \
         "In essence, it keeps the top-1 candidate per entity, as long as the candidate also considers this node as its top candidate."
 
-    def __init__(self, similarity_threshold: float = 0.1) -> None:
+    def __init__(self) -> None:
         """"""
         super().__init__()
-        self.similarity_threshold = similarity_threshold
 
-    def process(self, graph: Graph, data: Data) -> list:
+    def process(self, graph: Graph, data: Data, similarity_threshold: float = 0.1) -> list:
         """
         """
+        self.similarity_threshold = similarity_threshold
         raise NotImplementedError("Exact Clustering is not implemented yet.")
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class CenterClustering(AbstractClustering):
     """Implements the Center Clustering algorithm. Input comparisons (graph edges) are sorted in descending order of similarity.
@@ -546,7 +561,7 @@ class CenterClustering(AbstractClustering):
 
     _method_name: str = "Center Clustering"
     _method_short_name: str = "CC"
-    _method_info: str = "Ιmplements the Center Clustering algorithm," + \
+    _method_info: str = "Implements the Center Clustering algorithm," + \
         "In essence, it keeps it defines if a node within an edge constitutes a center or member of future clusters" + \
         " by normalized over the graph weight sum comparison"
     def __init__(self) -> None:
@@ -604,7 +619,9 @@ class CenterClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
 
 class BestMatchClustering(AbstractClustering):
     """Implements the Best Match Clustering algorithm. Based on supplied order, it either traverse the entities of the left (inorder)
@@ -614,7 +631,7 @@ class BestMatchClustering(AbstractClustering):
 
     _method_name: str = "Best Match Clustering"
     _method_short_name: str = "BMC"
-    _method_info: str = "Ιmplements the Best Match Clustering algorithm," + \
+    _method_info: str = "Implements the Best Match Clustering algorithm," + \
         "In essence, it keeps the best candidate for each entity of the source dataset (defined through ordering)"
     def __init__(self) -> None:
         super().__init__()
@@ -687,7 +704,9 @@ class BestMatchClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
     def set_order(self, order : str) -> None:
         self.order : str = order
@@ -703,7 +722,7 @@ class MergeCenterClustering(AbstractClustering):
 
     _method_name: str = "Merge Center Clustering"
     _method_short_name: str = "MCC"
-    _method_info: str = "Ιmplements the Merge Center Clustering algorithm," + \
+    _method_info: str = "Implements the Merge Center Clustering algorithm," + \
         "In essence, it implements Center Clustering without the cumulative, " + \
         "normalized weight calculation. Left dataset entities are set as candidate cluster centers."
     def __init__(self) -> None:
@@ -752,8 +771,9 @@ class MergeCenterClustering(AbstractClustering):
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
-    
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class CorrelationClustering(AbstractClustering):
     """Implements the Correlation Clustering algorithm. Candidate pairs are mapped into a graph, whose connected components
@@ -765,26 +785,27 @@ class CorrelationClustering(AbstractClustering):
 
     _method_name: str = "Correlation Clustering"
     _method_short_name: str = "CC"
-    _method_info: str = "Ιmplements the Correlation Clustering algorithm," + \
+    _method_info: str = "Implements the Correlation Clustering algorithm," + \
         "In essence, it implements iterative clustering, " + \
         "reassigning clusters to randomly chosen entities based on the reassignment's effect on our objective function " + \
         "that evaluates the quality of the newly defined clusters." 
+    
     def __init__(self) -> None:
         super().__init__()
-        self.similarity_threshold: float
         self.initial_threshold : float
         self.similarity_threshold : float
         self.non_similarity_threshold : float
         self.move_limit : int
         self.lsi_iterations: int
+
     def process(self,
                 graph: Graph,
                 data: Data,
                 initial_threshold: float = 0.5,
                 similarity_threshold: float = 0.8,
                 non_similarity_threshold: float = 0.2,
-                move_limit: int = 1,
-                lsi_iterations: int = 10000) -> list:
+                move_limit: int = 3,
+                lsi_iterations: int = 100) -> list:
 
         start_time = time()
         self.data : Data = data
@@ -793,7 +814,12 @@ class CorrelationClustering(AbstractClustering):
         self.non_similarity_threshold : float = non_similarity_threshold
         self.move_limit : int = move_limit
         self.lsi_iterations: int = lsi_iterations
-        self.similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        
+        self.num_of_source_entities = self.data.num_of_entities_1
+        self.num_of_target_entities = self.data.num_of_entities_1 if self.data.is_dirty_er \
+                                      else self.data.num_of_entities_2
+        
+        self.similarity = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=float)
         new_graph = graph.copy()
 
         for (v1, v2, data) in graph.edges(data=True):
@@ -801,13 +827,11 @@ class CorrelationClustering(AbstractClustering):
             d1_index, d2_index = (self.id_to_index(d1_id), self.id_to_index(d2_id))
             similarity_score = data['weight']
             self.similarity[d1_index, d2_index] = similarity_score 
-            
             if similarity_score < self.initial_threshold:
                 new_graph.remove_edge(v1, v2)
 
         initial_clusters = [list(connected_component) for connected_component in connected_components(new_graph)]
         
-        print(len(initial_clusters))
         self.clusters = [EquivalenceCluster(data=self.data, flattened_cluster=cluster) for cluster in initial_clusters]
         self.initial_clusters_num = len(initial_clusters) 
         self.max_clusters_num = self.initial_clusters_num + 10
@@ -821,11 +845,11 @@ class CorrelationClustering(AbstractClustering):
                     self.entity_cluster_index[entity] = cluster_index
         self.valid_entities = list(self.valid_entities)
                               
-        self.similar = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=bool)
-        self.not_similar = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=bool)
+        self.similar = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=bool)
+        self.not_similar = lil_matrix((self.num_of_source_entities, self.num_of_target_entities), dtype=bool)
 
-        for d1_index in range(self.data.num_of_entities_1):
-            for d2_index in range(d1_index, self.data.num_of_entities_2):
+        for d1_index in range(self.num_of_source_entities):
+            for d2_index in range(d1_index, self.num_of_target_entities):
                 self.not_similar[d1_index, d2_index] = self.similarity[d1_index, d2_index] < self.non_similarity_threshold
                 self.similar[d1_index, d2_index] = self.similarity[d1_index, d2_index] > self.similarity_threshold
         
@@ -833,7 +857,7 @@ class CorrelationClustering(AbstractClustering):
         previous_OF : int = self.calculate_OF()
         
         for iteration in range(self.lsi_iterations):
-            move_index : int = random.randint(0, self.move_limit - 1)
+            move_index : int = self.choose_move()
             current_OF : int = self.move(move_index, previous_OF)
             previous_OF = current_OF
 
@@ -847,10 +871,10 @@ class CorrelationClustering(AbstractClustering):
     def calculate_OF(self) -> int:
         OF : int = 0
         
-        for d1_index in range(self.data.num_of_entities_1):
-            for d2_index in range(d1_index, self.data.num_of_entities_2):
+        for d1_index in range(self.num_of_source_entities):
+            for d2_index in range(d1_index, self.num_of_target_entities):
                 d1_entity = self.index_to_id(index=d1_index, left_dataset=True)
-                d2_entity = self.index_to_id(index=d2_index, left_dataset=False)
+                d2_entity = self.index_to_id(index=d2_index, left_dataset=self.data.is_dirty_er)
                 
                 similar_and_cluster_match = self.similar[d1_index, d2_index] and \
                 (self.entity_cluster_index[d1_entity] == self.entity_cluster_index[d2_entity])
@@ -861,9 +885,15 @@ class CorrelationClustering(AbstractClustering):
                     OF += 1
                     
         return OF   
+     
+    def choose_move(self) -> int:
+        move = random.randint(0, self.move_limit - 1)
+        while(move == 1 and len(self.clusters) == 1):
+            move = random.randint(0, self.move_limit - 1)
+        return move
             
     def move(self, move_index : int, previous_OF : int):
-        print(f"Move[{move_index}] OF[{previous_OF}]")
+
         if(move_index == 0):
             random_entity = random.choice(self.valid_entities)
             random_cluster = random.randint(0, self.initial_clusters_num - 1)
@@ -888,7 +918,6 @@ class CorrelationClustering(AbstractClustering):
             return self.seperate_clusters(previous_OF, previous_cluster)
         else:
             raise ValueError(f"Invalid Move Index \"{move_index}\": Choose 0->2")
-            return float("inf")
         
         
     def change_entity_cluster(self, previous_OF : int, entity : int, new_cluster : int):
@@ -896,6 +925,7 @@ class CorrelationClustering(AbstractClustering):
         self.entity_cluster_index[entity] = new_cluster
         
         new_OF = self.calculate_OF()
+
         if(new_OF > previous_OF):
             self.clusters[previous_cluster].remove_entity(entity)
             self.clusters[new_cluster].add_entity(entity)
@@ -915,7 +945,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        
+
         if(new_OF > previous_OF):
             previous_cluster.remove_entities(previous_cluster_entities)
             new_cluster.add_entities(previous_cluster_entities)
@@ -938,7 +968,7 @@ class CorrelationClustering(AbstractClustering):
             self.entity_cluster_index[to_be_removed_entity] = new_cluster_index
         
         new_OF : int = self.calculate_OF()
-        
+        # print(previous_OF, new_OF)
         if(new_OF > previous_OF):
             self.clusters.append(EquivalenceCluster(data=self.data, flattened_cluster=to_be_removed_entities))
             self.initial_clusters_num += 1
@@ -951,7 +981,13 @@ class CorrelationClustering(AbstractClustering):
         return previous_OF
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Initial Threshold" : self.initial_threshold,
+            "Similarity Threshold" : self.similarity_threshold,
+            "Non-Similarity Threshold" : self.non_similarity_threshold,
+            "Move limit" : self.move_limit,
+            "LSI Iterations" : self.lsi_iterations
+        }
     
 class CutClustering(AbstractClustering):
     """Implements the Cut Clustering algorithm. Retains the candidate pairs whose similarity is over the specified threshold.
@@ -962,7 +998,7 @@ class CutClustering(AbstractClustering):
 
     _method_name: str = "Cut Clustering"
     _method_short_name: str = "CTC"
-    _method_info: str = "Ιmplements the Cut Clustering algorithm," + \
+    _method_info: str = "Implements the Cut Clustering algorithm," + \
         "In essence, it calculates the Gomory Hu Tree of the graph resulting from input similarity pairs. " + \
         "We retain the connected components of this tree."
     def __init__(self) -> None:
@@ -992,12 +1028,14 @@ class CutClustering(AbstractClustering):
         final_gomory_hu_tree.remove_node(sink_node)
         clusters = list(connected_components(final_gomory_hu_tree))
         
-        print(len(clusters))
+        # print(len(clusters))
         self.execution_time = time() - start_time
         return clusters
 
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class MarkovClustering(AbstractClustering):
     """Implements the Markov Clustering algorithm. It simulates random walks on a (n x n) matrix as the adjacency matrix
@@ -1053,7 +1091,7 @@ class MarkovClustering(AbstractClustering):
             self.normalize()
             self.expand()
             self.normalize()
-            print(check+1)
+            # print(check+1)
             if(self.equilibrium()):
                 break
         
@@ -1076,7 +1114,7 @@ class MarkovClustering(AbstractClustering):
     
     def set_node_loop(self, similarity : float = 1.0) -> None:
         rows : int = self.current_similarity.shape[0]
-        print(rows)
+        # print(rows)
         for row in range(rows):
             self.current_similarity[row, row] = similarity
             
@@ -1110,7 +1148,12 @@ class MarkovClustering(AbstractClustering):
         return set([indices for indices in zip(*matrix.nonzero())])
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold" : self.similarity_threshold,
+            "Cluster Threshold" : self.cluster_threshold,
+            "Matrix Similarity Threshold" : self.matrix_similarity_threshold,
+            "Similarity Checks Limit" : self.similarity_checks_limit
+        }
     
 class KiralyMSMApproximateClustering(AbstractClustering):
     """Implements the Kiraly MSM Approximate Clustering algorithm. Implements the so-called "New Algorithm"
@@ -1204,7 +1247,7 @@ class KiralyMSMApproximateClustering(AbstractClustering):
             for edge in edges:
                 man, woman, similarity = edge.left_node, edge.right_node, edge.similarity
                 new_graph.add_edge(man, woman, weight=similarity)
-
+                
         clusters = list(connected_components(new_graph))
         self.execution_time = time() - start_time
         return clusters
@@ -1278,7 +1321,9 @@ class KiralyMSMApproximateClustering(AbstractClustering):
         return (man_score > current_fiance_score)
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold": self.similarity_threshold
+        }
     
 class RicochetSRClustering(AbstractClustering):
     """Implements the Ricochet SR Clustering algorithm. Implements the so-called "New Algorithm"
@@ -1289,16 +1334,19 @@ class RicochetSRClustering(AbstractClustering):
 
     _method_name: str = "Ricochet SR Clustering"
     _method_short_name: str = "RSRC"
-    _method_info: str = "Ιmplements the Ricochet SR Clustering algorithm," + \
+    _method_info: str = "Implements the Ricochet SR Clustering algorithm," + \
         "In essence, it is a 3/2-approximation to the Maximum Stable Marriage (MSM) problem."
     def __init__(self) -> None:
         super().__init__()
         self.similarity_threshold : float
         
-    def process(self, 
+    def process(self,
                 graph: Graph,
                 data: Data, 
                 similarity_threshold: float = 0.5) -> list:
+
+        if self.data.is_dirty_er:
+            raise ValueError(f"RicochetSRClustering doesn't support Dirty ER.")
 
         start_time = time()
         self.similarity_threshold : float = similarity_threshold
@@ -1309,8 +1357,8 @@ class RicochetSRClustering(AbstractClustering):
         
         for (v1, v2, data) in graph.edges(data=True):
             d1_id, d2_id = self.sorted_indicators(v1, v2)
-            similarity = data.get('weight', 0) 
-            if similarity > self.similarity_threshold:  
+            similarity = data.get('weight', 0)
+            if similarity > self.similarity_threshold:
                 if d1_id not in self.vertices: self.vertices[d1_id] = Vertex(identifier=d1_id)
                 if d2_id not in self.vertices: self.vertices[d2_id] = Vertex(identifier=d2_id)
                 self.vertices[d1_id].insert_edge(edge=(d2_id, similarity))
@@ -1320,9 +1368,9 @@ class RicochetSRClustering(AbstractClustering):
             if(vertex.has_edges()):
                 self.sorted_vertices.put(vertex)
 
-        if(self.sorted_vertices.empty()):            
+        if(self.sorted_vertices.empty()):
             return clusters
-        
+
         self.centers : set = set()
         self.members : set = set()
         self.center_of : dict = {}
@@ -1422,4 +1470,150 @@ class RicochetSRClustering(AbstractClustering):
         return clusters
     
     def _configuration(self) -> dict:
-        return {}
+        return {
+            "Similarity Threshold" : self.similarity_threshold
+        }
+    
+    
+class RowColumnClustering(AbstractClustering):
+    """Implements the Row Column Clustering algorithm. For each row and column find their equivalent
+       column and row respectively corresponding to the smallest similarity. Subsequently, chooses
+       either rows or columns dependent on which one has the highest out of the lowest similariities 
+       on average.        
+    """
+
+    _method_name: str = "Row Column Clustering"
+    _method_short_name: str = "RCC"
+    _method_info: str = "Implements the Row Column Clustering algorithm," + \
+        "In essence, it is a 3/2-approximation to the Maximum Stable Marriage (MSM) problem."
+    def __init__(self) -> None:
+        super().__init__()
+        self.similarity_threshold : float
+        
+    def process(self, 
+                graph: Graph,
+                data: Data, 
+                similarity_threshold: float = 0.5) -> list:
+
+        start_time = time()
+        self.similarity_threshold : float = similarity_threshold
+        self.data = data
+        number_of_comparisons : int = len(graph.edges(data=True))
+        self.similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        matched_ids = set()
+        new_graph : Graph = Graph()
+        clusters : list = []
+        
+        if(number_of_comparisons == 0):
+            return clusters
+        
+        if self.data.is_dirty_er:
+            raise ValueError(f"Kiraly MSM Approximate Clustering doesn't support Dirty ER.")
+        
+        for (v1, v2, data) in graph.edges(data=True):
+            d1_id, d2_id = self.sorted_indicators(v1, v2)
+            d1_index, d2_index = (self.id_to_index(d1_id), self.id_to_index(d2_id))
+            similarity_score = data.get('weight', 0)
+            
+            if(similarity_score > self.similarity_threshold):
+                self.similarity[d1_index, d2_index] = similarity_score 
+        
+        self.initialize(self.get_negative(self.similarity))
+        self.solution_proxy = self.get_solution()
+        
+        for entry in range(len(self.solution_proxy)):
+            d1_index = entry
+            d2_index = self.solution_proxy[entry]
+            _similarity = self.similarity[d1_index, d2_index]
+            if(_similarity < self.similarity_threshold):
+                continue
+            d2_index += self.data.dataset_limit
+            
+            if(d1_index in matched_ids or d2_index in matched_ids):
+                continue
+                
+            matched_ids.add(d1_index)
+            matched_ids.add(d2_index)
+            new_graph.add_edge(d1_index, d2_index, weight=_similarity)
+        
+        
+        clusters = list(connected_components(new_graph))    
+        self.execution_time = time() - start_time
+        return clusters
+    
+    def get_min_row(self, column):
+        position = -1
+        minimum = math.inf
+        
+        for row in range(self.similarity.shape[0]):
+            if(self.row_covered[row]): continue
+            if(self.similarity[row, column] < minimum):
+                position = row
+                minimum = self.similarity[row, column]
+                
+        return position
+    
+    def get_min_column(self, row):
+        position = -1
+        minimum = math.inf
+    
+        for column in range(self.similarity.shape[1]):
+            if(self.column_covered[column]): continue
+            if(self.similarity[row, column] < minimum):
+                position = column
+                minimum = self.similarity[row, column]
+                
+        return position
+    
+    def get_row_assignment(self):
+        self.row_scan_cost = 0.0
+        
+        for row in range(self.similarity.shape[0]):
+            self.selected_column[row] = self.get_min_column(row)
+            _selected_column = self.selected_column[row]
+            if(_selected_column == -1): break
+            self.column_covered[_selected_column] = True
+            self.row_scan_cost += self.similarity[row, _selected_column]        
+        
+    def get_column_assignment(self):
+        self.column_scan_cost = 0.0
+        
+        for column in range(self.similarity.shape[1]):
+            self.selected_row[column] = self.get_min_row(column)
+            _selected_row = self.selected_row[column]
+            if(_selected_row == -1): break
+            self.columns_from_selected_row[_selected_row] = column
+            self.row_covered[_selected_row] = True
+            self.column_scan_cost += self.similarity[_selected_row, column] 
+    
+    def get_solution(self):
+        self.get_row_assignment()
+        self.get_column_assignment()
+        
+        if(self.row_scan_cost < self.column_scan_cost):
+            return self.selected_column
+        else:
+            return self.columns_from_selected_row
+    
+    def get_negative(self, similarity_matrix) -> np.array:
+        self.negative_similarity = lil_matrix((self.data.num_of_entities_1, self.data.num_of_entities_2), dtype=float)
+        
+        for row in range(similarity_matrix.shape[0]):
+            for column in range(similarity_matrix.shape[1]):
+                self.negative_similarity[row, column] = 1.0 - similarity_matrix[row, column]
+                
+        return self.negative_similarity
+    
+    def initialize(self, similarity_matrix) -> None:
+        self.similarity = similarity_matrix
+        self.selected_column = [0] * similarity_matrix.shape[0]
+        self.selected_row = [0] * similarity_matrix.shape[1]
+        self.row_covered = [False] * similarity_matrix.shape[0]
+        self.column_covered = [False] * similarity_matrix.shape[1]
+    
+        self.columns_from_selected_row = [0] * similarity_matrix.shape[0]    
+    
+    def _configuration(self) -> dict:
+        return {
+            "Similarity Threshold" : self.similarity_threshold
+        }
