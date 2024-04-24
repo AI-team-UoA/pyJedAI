@@ -6,7 +6,6 @@ from typing import Callable, List, Tuple
 import matplotlib.pyplot as plt
 import os
 import json
-import optuna
 import pandas as pd
 from networkx import Graph
 from tqdm.autonotebook import tqdm
@@ -521,106 +520,6 @@ def compare_workflows(workflows: List[PYJEDAIWorkFlow], with_visualization=True)
     plt.show()
 
     return workflow_df
-
-class OptimizeWorkflow:
-    """Optuna Framework for GridSearch/RandomSearch/Prunning in a given pyjedai workflow.
-    """
-
-    _id = count()
-
-    def __init__(
-            self,
-            block_building: Callable, # Mandatory: one method
-            entity_matching: Callable, # Mandatory: one method
-            block_cleaning: List[Callable] = None, # Optional: multiple methods
-            comparison_cleaning: List[Callable] = None, # Optional: multiple methods
-            clustering: Callable = None, # Optional: One method
-            joins: Callable = None, # Optional: One method
-            name: str = None
-    ) -> None:
-        self.block_cleaning, self.block_building, self.comparison_cleaning, \
-            self.clustering, self.joins, self.entity_matching = \
-            block_cleaning, block_building, comparison_cleaning, clustering, joins, entity_matching
-        self.f1: float
-        self.recall: float
-        self.precision: float
-        self.runtime: float
-        self.configurations: float
-        self.workflow_exec_time: float
-        self._id: int = next(self._id)
-        self.name: str = name if name else "OptWorkflow-" + str(self._id)
-        self._workflow_bar: tqdm
-
-    def objective(self, target_score: str = 'f1') -> any:
-        """Optuna objective function
-
-            Returns:
-                 One or more from F1,Recall,Precision
-        """
-        pass
-        # if target_score  == 'f1':
-        #     return f1
-        # elif target_score  == 'recall':
-        #     return recall
-        # else:
-        #     return precision
-
-    def run(
-            self,
-            data: Data,
-            num_of_trials = 30,
-            pruner: optuna.pruners = optuna.pruners.NopPruner,
-            sampler: optuna.samplers = optuna.samplers.BaseSampler,
-            study_name = "pyjedai_study",
-            storage_name = "pyjedai_storage_trials",
-            target_score = "f1",
-            load_if_exists=True,
-            verbose=False,
-            tqdm_disable=False,
-            workflow_tqdm_enable=False,
-            optuna_tqdm_enable=True
-    ) -> pd.DataFrame:
-        """Executes the experiments based on a workflow
-
-        Args:
-            data (Data): _description_
-            num_of_trials (int, optional): _description_. Defaults to 30.
-            pruner (optuna.pruners, optional): _description_. Defaults to optuna.pruners.NopPruner.
-            sampler (optuna.samplers, optional): _description_. Defaults to optuna.samplers.BaseSampler.
-            study_name (str, optional): _description_. Defaults to "pyjedai_study".
-            storage_name (str, optional): _description_. Defaults to "pyjedai_storage_trials".
-            target_score (str, optional): _description_. Defaults to "f1".
-            load_if_exists (bool, optional): _description_. Defaults to True.
-            verbose (bool, optional): _description_. Defaults to False.
-            tqdm_disable (bool, optional): _description_. Defaults to False.
-            workflow_tqdm_enable (bool, optional): _description_. Defaults to False.
-            optuna_tqdm_enable (bool, optional): _description_. Defaults to True.
-
-        Returns:
-            pd.DataFrame: _description_
-        """
-        study = optuna.create_study(
-            directions=["maximize"],
-            study_name=study_name,
-            storage=storage_name,
-            load_if_exists=load_if_exists
-        )
-        print("Optuna trials starting")
-        study.optimize(
-            self.objective, 
-            n_trials=num_of_trials, 
-            show_progress_bar=optuna_tqdm_enable
-        )
-        print("Optuna trials finished")
-
-    def visualize(self, with_plotly=True):
-        pass
-    
-    def get_best_trial(self):
-        pass
-    
-    def to_df():
-        pass
 
 class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
     """Blocking-based workflow.
