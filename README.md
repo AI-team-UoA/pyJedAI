@@ -45,8 +45,15 @@ __Google Colab Hands-on demo:__
 
 # Install
 
+pyJedAI has been tested in Windows and Linux OS. 
+
+__Basic requirements:__
+
+- Python version greater or equal to **3.8**.
+- For Windows, Microsoft Visual C++ 14.0 is required. Download it from [Microsoft Official site](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+
 ### PyPI
-Install the latest version of pyjedai __[requires python >= 3.8]__:
+Install the latest version of pyjedai:
 ```
 pip install pyjedai
 ```
@@ -132,7 +139,7 @@ This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Departm
 
 Released under the Apache-2.0 license (see [LICENSE.txt](https://github.com/AI-team-UoA/pyJedAI/blob/main/LICENSE)).
 
-Copyright © 2023 AI-Team, University of Athens
+Copyright © 2024 AI-Team, University of Athens
 
 <div align="center">
     <hr>

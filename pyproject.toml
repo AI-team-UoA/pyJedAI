@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.1.6"
+version = "0.1.7"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -39,36 +39,22 @@ classifiers = [
 keywords = ["deduplication", "entity-resolution", "link-discovery"]
 requires-python = ">=3.8"
 dependencies = [
-    "gensim >= 4.2.0",
-    "matplotlib >= 3.1.3",
-    "matplotlib-inline >= 0.1.3",
-    "networkx >= 2.3",
-    "nltk >= 3.7",
-    "numpy >= 1.21",
-    "pandas >= 0.25.3",
-    "pandas-profiling >= 3.2",
-    "pandocfilters >= 1.5",
-    "PyYAML >= 6.0",
-    "rdflib >= 6.1.1",
-    "rdfpandas >= 1.1.5",
-    "regex >= 2022.6.2",
-    "scipy >= 1.7",
-    "seaborn >= 0.11",
-    "strsim >= 0.0.3",
-    "strsimpy >= 0.2.1",
-    "tqdm >= 4.64",
-    "transformers >= 4.21",
-    "sentence-transformers >= 2.2",
-    "faiss-cpu >= 1.7",
-    "optuna >= 3.0",
-    'tomli; python_version < "3.11"',
-    "py-stringmatching >= 0.4",
-    "valentine>=0.1; python_version > '3.7'",
-    "ordered-set >= 4.0",
-    "plotly >= 5.16.0",
-    "shapely >= 2.0",
-    'scann ; platform_system == "Linux"',   
-    'falconn ; platform_system == "Linux"'
+    "gensim",
+    "matplotlib",
+    "networkx",
+    "nltk",
+    "numpy",
+    "pandas",
+    "scipy==1.12",
+    "seaborn",
+    "tqdm",
+    "transformers",
+    "sentence-transformers",
+    "faiss-cpu",
+    "py-stringmatching",
+    "valentine; python_version > '3.7'",
+    "ordered-set",
+    "shapely"
 ]
 
 [project.optional-dependencies]
