@@ -275,7 +275,6 @@ class SchemaClustering(AbstractSchemaClustering):
         
         return global_pairs_dict
 
-
 class RDFSchemaClustering(AbstractSchemaClustering):
     """Class to provide schema clustering methods
     """
@@ -491,7 +490,8 @@ class RDFSchemaClustering(AbstractSchemaClustering):
             return new_datasets
 
         print("Freeing memory")
-        del all_predicates_data, predicates_df, clusters, all_ids, redundant_entities, non_nan_indexes_d1, non_nan_indexes_d2
+        del all_predicates_data, predicates_df, clusters, all_ids, \
+            redundant_entities, non_nan_indexes_d1, non_nan_indexes_d2
 
         if pyjedai_workflow_for_er == None:
             pyjedai_workflow_for_er = self.pyjedai_workflow_for_er_on_subjects()
@@ -517,7 +517,6 @@ class RDFSchemaClustering(AbstractSchemaClustering):
             if d1.shape[0] < 2 or (not data.is_dirty_er and d2.shape[0] < 2):
                 continue
 
-            
             subjects_d1 = dict()
             for _, row in tqdm(d1.iterrows(), desc="Creating subjects for dataset 1"):
                 if row['subject'] not in subjects_d1:
