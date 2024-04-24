@@ -421,7 +421,7 @@ class EntityMatching(AbstractEntityMatching):
         self._progress_bar = tqdm(total=len(blocks),
                                   desc=self._method_name+" ("+self.metric+ ", " + str(self.tokenizer) + ")",
                                   disable=self.tqdm_disable)
-                
+
         if self.vectorizer is not None:
             self.initialize_vectorizer()
 
@@ -504,7 +504,7 @@ class EntityMatching(AbstractEntityMatching):
                     self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
                     self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
                 )
-        if isinstance(self.attributes, list):
+        elif isinstance(self.attributes, list):
             for attribute in self.attributes:
                 e1 = self.data.entities.iloc[entity_id1][attribute].lower()
                 e2 = self.data.entities.iloc[entity_id2][attribute].lower()
@@ -512,7 +512,7 @@ class EntityMatching(AbstractEntityMatching):
                     self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
                     self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
                 )
-                similarity /= len(self.attributes)
+            similarity /= len(self.attributes)
         else:
             # concatenated row string
             e1 = self.data.entities.iloc[entity_id1].str.cat(sep=' ').lower()
