@@ -5,7 +5,7 @@ Publications
 ```{tab-item} 2024
 
 [The Five Generations of Entity Resolution on Web Data](https://icwe2024.webengineering.org/tutorials-2/) 
-: Konstantinos Nikoletos, Ekaterini Ioannou,  George Papadakis, ISWE 2024
+: Konstantinos Nikoletos, Ekaterini Ioannou,  George Papadakis, ICWE 2024
 ```
 
 ```{tab-item} 2023
