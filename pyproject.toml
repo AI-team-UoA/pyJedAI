@@ -43,7 +43,7 @@ dependencies = [
     "matplotlib",
     "networkx",
     "nltk",
-    "numpy",
+    "numpy >= 1.7.0,<2.0",
     "pandas",
     "scipy==1.12",
     "seaborn",
