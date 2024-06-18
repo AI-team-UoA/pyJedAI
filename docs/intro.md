@@ -14,6 +14,10 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 
 # Install
 
+```{warning}
+We are currently experiencing issues with **Python 3.9 installation** due to a problem with the [py-stringmatching](https://pypi.org/project/py-stringmatching/) dependency. We are actively working on resolving it! Please prefer Python 3.10.
+```
+
 pyJedAI has been tested in Windows and Linux OS. 
 
 ```{admonition} Basic requirements
