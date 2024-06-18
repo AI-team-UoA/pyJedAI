@@ -15,8 +15,8 @@ pyJedAI is a python framework, aiming to offer experts and novice users, robust 
 # Install
 
 ```{warning}
-We are currently experiencing issues with pypi installation due to a problem with the [py-stringmatching](https://pypi.org/project/py-stringmatching/) dependency. We are actively working on resolving it! A temporary solution is to use first install:
-`pip install 'numpy>=1.7.0,<2.0'` and afterwords `pip install pyjedai`.
+We are currently experiencing issues with pypi installation due to a problem with the [py-stringmatching](https://pypi.org/project/py-stringmatching/) dependency. We are actively working on resolving it! A temporary solution is to first install:
+`pip install 'numpy>=1.7.0,<2.0'` and then `pip install pyjedai`.
 ```
 
 pyJedAI has been tested in Windows and Linux OS. 
