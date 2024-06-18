@@ -8,7 +8,7 @@ build:
   jobs:
     pre_build:
       # Generate on-the-fly Sphinx configuration from Jupyter Book's _config.yml
-      - "pip install 'numpy>=1.7.0,<2.0'"
+      - "pip install numpy==1.26.4"
       - "pip install py_stringmatching==0.4.5"
       - "pip install . "
       - "jupyter-book config sphinx docs/"
