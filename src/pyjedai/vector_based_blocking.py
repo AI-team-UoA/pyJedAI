@@ -138,7 +138,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         if self.similarity_search != 'faiss':
             raise AttributeError("Only FAISS is available for now.")
         
-        print('Building blocks via Embeddings-NN Block Building [' + self.vectorizer + ', ' + self.similarity_search + ']')
         _start_time = time()
         self.blocks = dict()
         self.verbose = verbose
@@ -226,7 +225,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     if verbose: print(f"{p2} -> Loaded Successfully")
                 else:
                     if verbose: print("Embeddings not found for D2. Creating new ones.")
-        if not self._d1_loaded or not self._d2_loaded:
+        if not self._d1_loaded or (not data.is_dirty_er and not self._d2_loaded):
             if self.vectorizer in ['word2vec', 'fasttext', 'doc2vec', 'glove']:
                 self.vectors_1, self.vectors_2 = self._create_gensim_embeddings()
             elif self.vectorizer in ['bert', 'distilbert', 'roberta', 'xlnet', 'albert']:
@@ -368,7 +367,6 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         vectors_2 = []
         if not self.data.is_dirty_er and not self._d2_loaded:            
             for e2 in self._entities_d2:
-                # print("e2: ", e2)
                 vector = model.encode(e2)
                 vectors_2.append(vector)
                 self._progress_bar.update(1)
@@ -420,7 +418,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self.blocks = dict()
         if self.verbose:
             print("Building blocks...")
-        print("disable", not self.verbose)
+
         for _entity in tqdm(range(0, self.neighbors.shape[0]), desc="Building blocks", disable=not self.verbose):
             
             _entity_id = self._si.d1_retained_ids[_entity] if self.data.is_dirty_er else self._si.d2_retained_ids[_entity]

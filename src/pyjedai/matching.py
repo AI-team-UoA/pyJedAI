@@ -155,7 +155,7 @@ class AbstractEntityMatching(PYJEDAIFeature):
     def get_weights_standard_deviation(self) -> float:
         return statistics.stdev([w for _, _, w in self.pairs.edges(data='weight')])
     
-    def plot_distribution_of_all_weights(self) -> None:
+    def plot_distribution_of_all_weights(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         plt.figure(figsize=(10, 6))
         all_weights = [w for _, _, w in self.pairs.edges(data='weight')]
@@ -168,9 +168,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median(), color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()+self.get_weights_standard_deviation(), color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_distribution_of_all_weights_2d(self) -> None:
+    def plot_distribution_of_all_weights_2d(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         plt.figure(figsize=(10, 6))
         all_weights = [w for _, _, w in self.pairs.edges(data='weight')]
@@ -182,9 +184,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median(), color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()+self.get_weights_standard_deviation(), color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_distribution_of_scores(self) -> None:
+    def plot_distribution_of_scores(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         def weight_distribution(G):
             bins = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -221,9 +225,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median()*10, color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()*10+self.get_weights_standard_deviation()*10, color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_gt_distribution_of_scores(self) -> None:
+    def plot_gt_distribution_of_scores(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric on ground truth pairs"
         def weight_distribution():
             bins = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -257,6 +263,8 @@ class AbstractEntityMatching(PYJEDAIFeature):
         ax.set_title(title)
         ax.set_xlabel('Similarity score range')
         fig.tight_layout()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
     def evaluate(self,
@@ -319,9 +327,6 @@ class AbstractEntityMatching(PYJEDAIFeature):
         Returns:
             pd.DataFrame: Dataframe with the predicted pairs
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
         pairs_df = pd.DataFrame(columns=['id1', 'id2'])
         for edge in prediction.edges:
             id1 = self.data._gt_to_ids_reversed_1[edge[0]]
@@ -345,7 +350,7 @@ class EntityMatching(AbstractEntityMatching):
             tokenizer: str = 'white_space_tokenizer',
             vectorizer : str = None,
             qgram : int = 1,
-            similarity_threshold: float = 0.5,
+            similarity_threshold: float = 0.0,
             tokenizer_return_unique_values = False, # unique values or not,
             attributes: any = None,
         ) -> None:

@@ -192,7 +192,7 @@ class PYJEDAIWorkFlow(ABC):
         Returns:
             pd.DataFrame: pairs as a DataFrame
         """
-        return write(self.final_pairs, self.data)
+        return self.final_step_method.export_to_df(self.final_pairs)
 
     def _save_step(self, results: dict, configuration: dict) -> None:
         self.f1.append(results['F1 %'])
@@ -580,6 +580,7 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                 if "attributes_2" in self.block_building else None,
                                                 tqdm_disable=workflow_step_tqdm_disable)
         self.final_pairs = block_building_blocks
+        self.final_step_method = block_building_method
         if data.ground_truth is not None:
             res = block_building_method.evaluate(block_building_blocks,
                                                 export_to_dict=True,
@@ -604,6 +605,7 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                                       tqdm_disable=workflow_step_tqdm_disable)
                 
                 self.final_pairs = bblocks = block_cleaning_blocks
+                # self.final_pairs = block_cleaning_method.export_to_df(self.final_pairs)
                 if data.ground_truth is not None:
                     res = block_cleaning_method.evaluate(bblocks,
                                                         export_to_dict=True,
@@ -625,6 +627,8 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                                                     else block_building_blocks,
                                                 data,
                                                 tqdm_disable=workflow_step_tqdm_disable)
+            self.final_step_method = comparison_cleaning_method
+
             if data.ground_truth is not None:
                 res = comparison_cleaning_method.evaluate(comparison_cleaning_blocks,
                                                         export_to_dict=True,
@@ -653,6 +657,8 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                 tqdm_disable=workflow_step_tqdm_disable,
                 **self.entity_matching["exec_params"])
 
+        self.final_step_method = entity_matching_method
+
         if data.ground_truth is not None:
             res = entity_matching_method.evaluate(em_graph,
                                                     export_to_dict=True,
@@ -671,7 +677,8 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
                 self.final_pairs = components = clustering_method.process(em_graph, data)
             else:
                 self.final_pairs = components = clustering_method.process(em_graph, data, **self.clustering["exec_params"])
-            
+
+            self.final_step_method = clustering_method
             self.clusters = components
             if data.ground_truth is not None:
                 res = clustering_method.evaluate(components,
@@ -859,6 +866,8 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                                 **self.block_building["exec_params"])                
 
         self.final_pairs = block_building_blocks
+        self.final_pairs = block_building_method.export_to_df(self.final_pairs)
+
         if data.ground_truth is not None:
             res = block_building_method.evaluate(block_building_blocks,
                                                 export_to_dict=True,
@@ -874,6 +883,8 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                             if "params" in self.clustering \
                                             else self.clustering['method']()
             self.final_pairs = components = clustering_method.process(em_graph, data)
+            self.final_pairs = clustering_method.export_to_df(self.final_pairs)
+
             if data.ground_truth is not None:
                 res = clustering_method.evaluate(components,
                                                 export_to_dict=True,

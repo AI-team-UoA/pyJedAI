@@ -123,12 +123,12 @@ class Data:
         self.dataset_name_2 = dataset_name_2
         
         # Fill NaN values with empty string
-        self.dataset_1 = self.dataset_1.astype(str)
         self.dataset_1.fillna("", inplace=True)
+        self.dataset_1 = self.dataset_1.astype(str)
         if not self.is_dirty_er:
-            self.dataset_2 = self.dataset_2.astype(str)
             self.dataset_2.fillna("", inplace=True)
-
+            self.dataset_2 = self.dataset_2.astype(str)
+            
         # Attributes
         if attributes_1 is None:
             if dataset_1.columns.values.tolist():
