@@ -508,23 +508,33 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                 "\n\tIndices shape returned after search: " + str(self.neighbors.shape)
             )
         print(u'\u2500' * 123)
-        
-    
-    def export_to_df(self, prediction: dict) -> pd.DataFrame:
-        """creates a dataframe with the predicted pairs
+
+    def export_to_df(self, prediction: dict, tqdm_enable:bool = False) -> pd.DataFrame:
+        """Creates a dataframe with the predicted pairs.
 
         Args:
-            prediction (any): Predicted candidate pairs
+            prediction (dict): Predicted candidate pairs.
 
         Returns:
-            pd.DataFrame: Dataframe with the predicted pairs
+            pd.DataFrame: Dataframe with the predicted pairs.
         """
-        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for entity_id, candidates in prediction.items():            
-            id1 = self.data._gt_to_ids_reversed_1[entity_id]
-            for candiadate_id in candidates:
-                id2 = self.data._gt_to_ids_reversed_1[candiadate_id] if self.data.is_dirty_er \
-                        else self.data._gt_to_ids_reversed_2[candiadate_id]
-                pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+        pairs_list = []
+
+        is_dirty_er = self.data.is_dirty_er
+        gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
+        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+
+        for entity_id, candidates in tqdm(prediction.items(), desc="Exporting to DataFrame", disable=not tqdm_enable):
+            id1 = gt_to_ids_reversed_1[entity_id]
+
+            for candidate_id in candidates:
+                if is_dirty_er:
+                    id2 = gt_to_ids_reversed_1[candidate_id]
+                else:
+                    id2 = gt_to_ids_reversed_2[candidate_id]
+
+                pairs_list.append((id1, id2))
+
+        pairs_df = pd.DataFrame(pairs_list, columns=['id1', 'id2'])
 
         return pairs_df
