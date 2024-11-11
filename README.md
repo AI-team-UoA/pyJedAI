@@ -127,6 +127,7 @@ For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolki
 
 <img align="right" src="https://github.com/AI-team-UoA/.github/blob/main/AI_LOGO.png?raw=true" alt="pyJedAI" width="200"/>
 
+- [Lefteris Stetsikas](https://github.com/Teris45), Research Associate at University of Athens, Greece
 - [Konstantinos Nikoletos](https://nikoletos-k.github.io), Research Associate at University of Athens, Greece
 - [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/), Research Associate at University of Athens, Greece
 - [George Papadakis](https://gpapadis.wordpress.com), Senior Researcher at University of Athens, Greece

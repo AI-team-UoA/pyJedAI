@@ -131,11 +131,16 @@ For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolki
 # Team & Authors
 
 ::::{grid}
-:gutter: 2
+:gutter: 3
+
+:::{grid-item-card} [Lefteris Stetsikas](https://github.com/Teris45)
+Research Associate at [University of Athens](https://en.uoa.gr)
+:::
 
 :::{grid-item-card} [Konstantinos Nikoletos](https://nikoletos-k.github.io)
 Research Associate at [University of Athens](https://en.uoa.gr)
 :::
+
 
 :::{grid-item-card} [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/)
 Research Associate at [University of Athens](https://en.uoa.gr)
