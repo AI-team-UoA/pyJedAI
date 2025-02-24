@@ -128,13 +128,27 @@ For Java users checkout the initial [JedAI](https://github.com/scify/JedAIToolki
 <img align="right" src="https://github.com/AI-team-UoA/.github/blob/main/AI_LOGO.png?raw=true" alt="pyJedAI" width="200"/>
 
 - [Lefteris Stetsikas](https://github.com/Teris45), Research Associate at University of Athens, Greece
-- [Konstantinos Nikoletos](https://nikoletos-k.github.io), Research Associate at University of Athens, Greece
+- [Konstantinos Nikoletos](https://nikoletos-k.github.io), Fellow Research Associate at University of Athens, Greece
 - [Jakub Maciejewski](https://www.linkedin.com/in/jakub-maciejewski-0270291b7/), Research Associate at University of Athens, Greece
 - [George Papadakis](https://gpapadis.wordpress.com), Senior Researcher at University of Athens, Greece
 - [Ekaterini Ioannou](https://www.tilburguniversity.edu/staff/ekaterini-ioannou), Assistant Professor at Tilburg University, The Netherlands 
 - [Manolis Koubarakis](https://cgi.di.uoa.gr/~koubarak/), Professor at University of Athens, Greece
 
 This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Department of Informatics and Telecommunications at the University of Athens.
+
+# Cite us
+
+If you use this code or find it helpful in your research, here's the .bibtex:
+
+```latex
+@inproceedings{pyJedAI,
+    author = {Nikoletos, Konstantinos and Papadakis, George and Koubarakis, Manolis},
+    booktitle = {Demo at International Semantic Web Conference.},
+    series = {ISWC},
+    title = {{pyJedAI: a lightsaber for Link Discovery}},
+    year = {2022}
+}
+```
 
 # License
 
