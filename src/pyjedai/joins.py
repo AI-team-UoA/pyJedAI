@@ -309,24 +309,40 @@ class AbstractJoin(PYJEDAIFeature):
             "qgrams": self.qgrams
         }    
 
-    def export_to_df(self, prediction) -> pd.DataFrame:
+    def export_to_df(self, prediction, tqdm_enable=False) -> pd.DataFrame:
         """creates a dataframe with the predicted pairs
 
         Args:
-            prediction (any): Predicted candidate pairs
+            prediction (any): Predicted candidate pairs,
+            tqdm_enable (bool, optional): Enable tqdm. Defaults to False.
 
         Returns:
             pd.DataFrame: Dataframe with the predicted pairs
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
-        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for edge in prediction.edges:
-            id1 = self.data._gt_to_ids_reversed_1[edge[0]]
-            id2 = self.data._gt_to_ids_reversed_1[edge[1]] if self.data.is_dirty_er \
-                        else self.data._gt_to_ids_reversed_2[edge[1]]
-            pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+        pairs_list = []
+
+        is_dirty_er = self.data.is_dirty_er
+        dataset_limit = self.data.dataset_limit
+        gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
+        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+
+        for edge in tqdm(prediction.edges, disable=not tqdm_enable, desc="Exporting to DataFrame"):
+            node1, node2 = edge
+
+            if not is_dirty_er:
+                if node1 < dataset_limit:
+                    id1 = gt_to_ids_reversed_1[node1]
+                    id2 = gt_to_ids_reversed_2[node2]
+                else:
+                    id1 = gt_to_ids_reversed_2[node1]
+                    id2 = gt_to_ids_reversed_1[node2]
+            else:
+                id1 = gt_to_ids_reversed_1[node1]
+                id2 = gt_to_ids_reversed_1[node2]
+
+            pairs_list.append((id1, id2))
+
+        pairs_df = pd.DataFrame(pairs_list, columns=['id1', 'id2'])
 
         return pairs_df
     
@@ -416,8 +432,7 @@ class TopKJoin(AbstractJoin):
             "tokenization" : self.tokenization,
             "qgrams": self.qgrams
         }
-        
-        
+    
 class PETopKJoin(TopKJoin):
     """Progressive Entity Resolution Top-K class of Joins module
     """
