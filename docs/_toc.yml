@@ -14,6 +14,8 @@ parts:
       title: Clean-Clean ER for Devs
     - file: tutorials/CleanCleanERwithoutGT.ipynb
       title: Clean-Clean ER without GT
+    - file: tutorials/Reproducibility.ipynb
+      title: Academic reproducibility
     - file: tutorials/DirtyER.ipynb
       title: Dirty ER for Devs
     - file: tutorials/Optuna.ipynb

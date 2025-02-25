@@ -1258,3 +1258,51 @@ class FrequencyEvaluator(ABC):
         _id2 = (id2 - self._entities_d1_num)
 
         return self.distance_matrix[_id1][_id2]
+
+def read_data_from_json(json_path, base_dir, verbose=True):
+    """
+    Reads dataset details from a JSON file and returns a Data object.
+
+    Parameters:
+    - json_path (str): Path to the JSON configuration file.
+    - verbose (bool): Whether to print information about the loaded datasets.
+
+    Returns:
+    - Data: A pyjedai Data object initialized with the dataset details.
+    """
+    # Load JSON configuration
+    with open(json_path, 'r') as f:
+        config = json.load(f)
+    
+    # Extract common settings
+    separator = config.get("separator", ",")
+    engine = config.get("engine", "python")
+    na_filter = config.get("na_filter", False)
+    dataset_dir = config.get("dir", "")
+
+    # Construct file paths
+    d1_path = f"{base_dir}{dataset_dir}/{config['d1']}.{config.get('format', 'csv')}"
+    d2_path = f"{base_dir}{dataset_dir}/{config['d2']}.{config.get('format', 'csv')}" if "d2" in config else None
+    gt_path = f"{base_dir}{dataset_dir}/{config['gt']}.{config.get('format', 'csv')}" if "gt" in config else None
+
+    # Load datasets
+    d1 = pd.read_csv(d1_path, sep=separator, engine=engine, na_filter=na_filter)
+    d2 = pd.read_csv(d2_path, sep=separator, engine=engine, na_filter=na_filter) if d2_path else None
+    gt = pd.read_csv(gt_path, sep=separator, engine=engine) if gt_path else None
+
+    # Initialize Data object
+    data = Data(
+        dataset_1=d1,
+        id_column_name_1=config["d1_id"],
+        dataset_name_1=config.get("d1", None),
+        dataset_2=d2,
+        id_column_name_2=config.get("d2_id", None),
+        dataset_name_2=config.get("d2", None),
+        ground_truth=gt,
+        skip_ground_truth_processing=config.get("skip_ground_truth_processing", False)
+    )
+
+    if verbose:
+        data.print_specs()
+    
+    return data

@@ -236,37 +236,41 @@ class AbstractBlockProcessing(PYJEDAIFeature):
             'skewness_of_comparison_per_entity': self.skewness_of_comparison_per_entity
         }
 
-    def export_to_df(
-        self,
-        blocks: dict
-    ) -> pd.DataFrame:
-        """creates a dataframe for the evaluation report
+    def export_to_df(self, blocks: dict, tqdm_enable:bool = False) -> pd.DataFrame:
+        """Creates a dataframe for the evaluation report.
 
         Args:
-            blocks (any): Predicted blocks
-            data (Data): initial dataset
+            blocks (dict): Predicted blocks.
 
         Returns:
-            pd.DataFrame: Dataframe predicted pairs (can be exported to csv)
+            pd.DataFrame: Dataframe with the predicted pairs (can be exported to CSV).
         """
-        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for _, block in blocks.items():
-            if self.data.is_dirty_er:
+        pairs_list = []
+
+        is_dirty_er = self.data.is_dirty_er
+        gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
+        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+
+        for block in tqdm(blocks.values(), desc="Exporting to DataFrame", disable=not tqdm_enable):
+            if is_dirty_er:
                 lblock = list(block.entities_D1)
-                for i1 in range(0, len(lblock)):
-                    for i2 in range(i1+1, len(lblock)):
-                        id1 = self.data._gt_to_ids_reversed_1[lblock[i1]]
-                        id2 = self.data._gt_to_ids_reversed_1[lblock[i2]] if self.data.is_dirty_er \
-                            else self.data._gt_to_ids_reversed_2[lblock[i2]]
-                        pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+                
+                for i1 in range(len(lblock)):
+                    for i2 in range(i1 + 1, len(lblock)):
+                        id1 = gt_to_ids_reversed_1[lblock[i1]]
+                        id2 = gt_to_ids_reversed_1[lblock[i2]]
+                        pairs_list.append((id1, id2))
             else:
                 for i1 in block.entities_D1:
                     for i2 in block.entities_D2:
-                        id1 = self.data._gt_to_ids_reversed_1[i1]
-                        id2 = self.data._gt_to_ids_reversed_1[i2] if self.data.is_dirty_er \
-                            else self.data._gt_to_ids_reversed_2[i2]
-                        pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+                        id1 = gt_to_ids_reversed_1[i1]
+                        id2 = gt_to_ids_reversed_2[i2]
+                        pairs_list.append((id1, id2))
+
+        pairs_df = pd.DataFrame(pairs_list, columns=['id1', 'id2'])
+
         return pairs_df
+
 
 class AbstractBlockBuilding(AbstractBlockProcessing):
     """Abstract class for the block building method

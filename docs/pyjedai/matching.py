@@ -155,7 +155,7 @@ class AbstractEntityMatching(PYJEDAIFeature):
     def get_weights_standard_deviation(self) -> float:
         return statistics.stdev([w for _, _, w in self.pairs.edges(data='weight')])
     
-    def plot_distribution_of_all_weights(self) -> None:
+    def plot_distribution_of_all_weights(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         plt.figure(figsize=(10, 6))
         all_weights = [w for _, _, w in self.pairs.edges(data='weight')]
@@ -168,9 +168,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median(), color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()+self.get_weights_standard_deviation(), color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_distribution_of_all_weights_2d(self) -> None:
+    def plot_distribution_of_all_weights_2d(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         plt.figure(figsize=(10, 6))
         all_weights = [w for _, _, w in self.pairs.edges(data='weight')]
@@ -182,9 +184,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median(), color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()+self.get_weights_standard_deviation(), color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_distribution_of_scores(self) -> None:
+    def plot_distribution_of_scores(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric in graph from entity matching"
         def weight_distribution(G):
             bins = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -221,9 +225,11 @@ class AbstractEntityMatching(PYJEDAIFeature):
         plt.axvline(x = self.get_weights_median()*10, color = 'black', label = 'Median weight')
         plt.axvline(x = self.get_weights_avg()*10+self.get_weights_standard_deviation()*10, color = 'green', label = 'Average + SD weight')
         plt.legend()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
-    def plot_gt_distribution_of_scores(self) -> None:
+    def plot_gt_distribution_of_scores(self, save_figure_path=None) -> None:
         title = "Distribution of scores with " + self.metric + " metric on ground truth pairs"
         def weight_distribution():
             bins = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -257,6 +263,8 @@ class AbstractEntityMatching(PYJEDAIFeature):
         ax.set_title(title)
         ax.set_xlabel('Similarity score range')
         fig.tight_layout()
+        if save_figure_path:
+            plt.savefig(save_figure_path)
         plt.show()
 
     def evaluate(self,
@@ -294,43 +302,43 @@ class AbstractEntityMatching(PYJEDAIFeature):
         
     def stats(self) -> None:
         pass
-    
-    def export_pairs_to_csv(self, filename: str, with_similarity: bool = True) -> None:
-        if self.pairs is None:
-            raise AttributeError("Pairs have not been initialized yet. " +
-                                 "Please run the method `run` first.")
-
-        with open(filename, 'w') as f:
-            for e1, e2, similarity in self.pairs.edges(data='weight'):
-                e1 = self.data._ids_mapping_1[e1] if e1 < self.data.dataset_limit else self.data._ids_mapping_2[e1]
-                e2 = self.data._ids_mapping_1[e2] if e2 < self.data.dataset_limit else self.data._ids_mapping_2[e2]
-                if with_similarity:
-                    f.write(f"{e1}, {e2}, {similarity}\n")
-                else:
-                    f.write(f"{e1}, {e2}\n")
-            f.close()
-
-    def export_to_df(self, prediction: Graph) -> pd.DataFrame:
-        """creates a dataframe with the predicted pairs
+        
+    def export_to_df(self, prediction: Graph, tqdm_enable=False) -> pd.DataFrame:
+        """Creates a dataframe with the predicted pairs.
 
         Args:
-            prediction (any): Predicted graph
+            prediction (Graph): Predicted graph
+            tqdm_enable (bool): Whether to enable tqdm progress bar
 
         Returns:
             pd.DataFrame: Dataframe with the predicted pairs
         """
-        if self.data.ground_truth is None:
-            raise AttributeError("Can not proceed to evaluation without a ground-truth file. \
-                Data object mush have initialized with the ground-truth file")
-        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for edge in prediction.edges:
-            id1 = self.data._gt_to_ids_reversed_1[edge[0]]
-            id2 = self.data._gt_to_ids_reversed_1[edge[1]] if self.data.is_dirty_er \
-                        else self.data._gt_to_ids_reversed_2[edge[1]]
-            pairs_df = pd.concat([pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], ignore_index=True)
+        pairs_list = []
+
+        is_dirty_er = self.data.is_dirty_er
+        dataset_limit = self.data.dataset_limit
+        gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
+        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+
+        for edge in tqdm(prediction.edges, disable=not tqdm_enable, desc="Exporting to DataFrame"):
+            node1, node2 = edge
+
+            if not is_dirty_er:
+                if node1 < dataset_limit:
+                    id1 = gt_to_ids_reversed_1[node1]
+                    id2 = gt_to_ids_reversed_2[node2]
+                else:
+                    id1 = gt_to_ids_reversed_2[node1]
+                    id2 = gt_to_ids_reversed_1[node2]
+            else:
+                id1 = gt_to_ids_reversed_1[node1]
+                id2 = gt_to_ids_reversed_1[node2]
+
+            pairs_list.append((id1, id2))
+
+        pairs_df = pd.DataFrame(pairs_list, columns=['id1', 'id2'])
 
         return pairs_df
-
 
 class EntityMatching(AbstractEntityMatching):
     """Calculates similarity from 0.0 to 1.0 for all blocks
@@ -345,7 +353,7 @@ class EntityMatching(AbstractEntityMatching):
             tokenizer: str = 'white_space_tokenizer',
             vectorizer : str = None,
             qgram : int = 1,
-            similarity_threshold: float = 0.5,
+            similarity_threshold: float = 0.0,
             tokenizer_return_unique_values = False, # unique values or not,
             attributes: any = None,
         ) -> None:

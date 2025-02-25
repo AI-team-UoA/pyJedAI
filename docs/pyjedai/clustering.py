@@ -376,31 +376,45 @@ class AbstractClustering(PYJEDAIFeature):
     def _configuration(self) -> dict:
         pass
 
-    def export_to_df(self, prediction: list) -> pd.DataFrame:
-        """creates a dataframe for the evaluation report
+    import pandas as pd
+
+    def export_to_df(self, prediction: list, tqdm_enable:bool = False) -> pd.DataFrame:
+        """Creates a dataframe for the evaluation report.
 
         Args:
-            prediction (any): Predicted clusters
+            prediction (list): Predicted clusters.
 
         Returns:
-            pd.DataFrame: Dataframe containg evaluation scores and stats
+            pd.DataFrame: Dataframe containing evaluation scores and stats.
         """
-        pairs_df = pd.DataFrame(columns=['id1', 'id2'])
-        for cluster in prediction:
+        pairs_list = []
+
+        dataset_limit = self.data.dataset_limit
+        is_dirty_er = self.data.is_dirty_er
+        gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
+        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+
+        for cluster in tqdm(prediction, desc="Exporting to DataFrame", disable=not tqdm_enable):
             lcluster = list(cluster)
-            for i1 in range(0, len(lcluster)):
-                for i2 in range(i1+1, len(lcluster)):
-                    if lcluster[i1] < self.data.dataset_limit:
-                        id1 = self.data._gt_to_ids_reversed_1[lcluster[i1]]
-                        id2 = self.data._gt_to_ids_reversed_1[lcluster[i2]] if self.data.is_dirty_er else self.data._gt_to_ids_reversed_2[lcluster[i2]]
+
+            for i1 in range(len(lcluster)):
+                for i2 in range(i1 + 1, len(lcluster)):
+                    node1 = lcluster[i1]
+                    node2 = lcluster[i2]
+
+                    if node1 < dataset_limit:
+                        id1 = gt_to_ids_reversed_1[node1]
+                        id2 = gt_to_ids_reversed_1[node2] if is_dirty_er else gt_to_ids_reversed_2[node2]
                     else:
-                        id2 = self.data._gt_to_ids_reversed_2[lcluster[i1]]
-                        id1 = self.data._gt_to_ids_reversed_1[lcluster[i2]]
-                    pairs_df = pd.concat(
-                        [pairs_df, pd.DataFrame([{'id1':id1, 'id2':id2}], index=[0])], 
-                        ignore_index=True
-                    )
+                        id2 = gt_to_ids_reversed_2[node1]
+                        id1 = gt_to_ids_reversed_1[node2]
+
+                    pairs_list.append((id1, id2))
+
+        pairs_df = pd.DataFrame(pairs_list, columns=['id1', 'id2'])
+
         return pairs_df
+
     
     def sorted_indicators(self, first_indicator : int, second_indicator : int):
         return (first_indicator, second_indicator) if (first_indicator < second_indicator) else (second_indicator, first_indicator)
