@@ -15,6 +15,11 @@ build:
       - echo "Command run at 'pre_create_environment' step"
       - pwd
 
+sphinx:
+  builder: html
+  fail_on_warning: true
+  configuration: docs/conf.py  # Path to your Sphinx conf.py
+
 python:
    install:
    - requirements: docs/requirements.txt
@@ -22,10 +27,6 @@ python:
      path: .
      extra_requirements:
       - sphinx
-
-sphinx:
-  builder: html
-  fail_on_warning: true
 
 formats:
   - pdf
