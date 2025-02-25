@@ -170,9 +170,25 @@ Research and development is made under the supervision of Pr. Manolis Koubarakis
 
 # License
 
-Released under the Apache-2.0 license [(see LICENSE.txt)](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE).
+`````{admonition} 📖 Don't forget to cite us! 
+:class: tip
 
-Copyright © 2023 AI-Team, University of Athens
+If you find this work useful, please cite us using the following reference:
+
+```bibtex
+@inproceedings{pyJedAI,
+    author = {Nikoletos, Konstantinos and Papadakis, George and Koubarakis, Manolis},
+    booktitle = {Demo at International Semantic Web Conference.},
+    series = {ISWC},
+    title = {{pyJedAI: a lightsaber for Link Discovery}},
+    year = {2022}
+}
+```
+
+Thank you! 🌟
+`````
+
+Released under the Apache-2.0 license [(see LICENSE.txt)](https://github.com/Nikoletos-K/pyJedAI/blob/main/LICENSE).
 
 <div align="center">
  <hr>
