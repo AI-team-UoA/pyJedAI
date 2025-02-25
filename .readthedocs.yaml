@@ -18,15 +18,15 @@ build:
 python:
    install:
    - requirements: docs/requirements.txt
-  #  - method: pip
-  #    path: .
-  #    extra_requirements:
-  #     - sphinx
+   - method: pip
+     path: .
+     extra_requirements:
+      - sphinx
 
-# sphinx:
-#   builder: html
-#   fail_on_warning: true
+sphinx:
+  builder: html
+  fail_on_warning: true
 
-# formats:
-#   - pdf
-#   - epub
+formats:
+  - pdf
+  - epub
