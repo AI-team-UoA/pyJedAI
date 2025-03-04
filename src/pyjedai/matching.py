@@ -328,8 +328,8 @@ class AbstractEntityMatching(PYJEDAIFeature):
                     id1 = gt_to_ids_reversed_1[node1]
                     id2 = gt_to_ids_reversed_2[node2]
                 else:
-                    id1 = gt_to_ids_reversed_2[node1]
-                    id2 = gt_to_ids_reversed_1[node2]
+                    id1 = gt_to_ids_reversed_1[node2]
+                    id2 = gt_to_ids_reversed_2[node1]
             else:
                 id1 = gt_to_ids_reversed_1[node1]
                 id2 = gt_to_ids_reversed_1[node2]
