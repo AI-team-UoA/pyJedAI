@@ -324,7 +324,8 @@ class AbstractJoin(PYJEDAIFeature):
         is_dirty_er = self.data.is_dirty_er
         dataset_limit = self.data.dataset_limit
         gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
-        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+        if not is_dirty_er:
+            gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
 
         for edge in tqdm(prediction.edges, disable=not tqdm_enable, desc="Exporting to DataFrame"):
             node1, node2 = edge

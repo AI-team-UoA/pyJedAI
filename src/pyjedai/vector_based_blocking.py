@@ -522,7 +522,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
 
         is_dirty_er = self.data.is_dirty_er
         gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
-        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+        if not is_dirty_er:
+            gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
 
         for entity_id, candidates in tqdm(prediction.items(), desc="Exporting to DataFrame", disable=not tqdm_enable):
             id1 = gt_to_ids_reversed_1[entity_id]

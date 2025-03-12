@@ -249,7 +249,8 @@ class AbstractBlockProcessing(PYJEDAIFeature):
 
         is_dirty_er = self.data.is_dirty_er
         gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
-        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+        if not is_dirty_er:
+            gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
 
         for block in tqdm(blocks.values(), desc="Exporting to DataFrame", disable=not tqdm_enable):
             if is_dirty_er:

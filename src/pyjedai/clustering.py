@@ -392,7 +392,8 @@ class AbstractClustering(PYJEDAIFeature):
         dataset_limit = self.data.dataset_limit
         is_dirty_er = self.data.is_dirty_er
         gt_to_ids_reversed_1 = self.data._gt_to_ids_reversed_1
-        gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
+        if not is_dirty_er:
+            gt_to_ids_reversed_2 = self.data._gt_to_ids_reversed_2
 
         for cluster in tqdm(prediction, desc="Exporting to DataFrame", disable=not tqdm_enable):
             lcluster = list(cluster)
