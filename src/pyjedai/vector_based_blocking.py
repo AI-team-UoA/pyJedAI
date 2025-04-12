@@ -9,7 +9,7 @@ import sys
 import warnings
 import pandas as pd
 from time import time
-from typing import List, Tuple
+from typing import List, Literal, Tuple
 from math import sqrt
 import faiss
 import platform
@@ -22,10 +22,20 @@ import torch
 import transformers
 from sentence_transformers import SentenceTransformer
 from tqdm.autonotebook import tqdm
-from transformers import (AlbertModel, AlbertTokenizer, BertModel,
-                          BertTokenizer, DistilBertModel, DistilBertTokenizer,
-                          RobertaModel, RobertaTokenizer, XLNetModel,
-                          XLNetTokenizer)
+from transformers import (
+    AlbertModel,
+    AlbertTokenizer,
+    AutoModel,
+    AutoTokenizer,
+    BertModel,
+    BertTokenizer,
+    DistilBertModel,
+    DistilBertTokenizer,
+    RobertaModel,
+    RobertaTokenizer,
+    XLNetModel,
+    XLNetTokenizer,
+)
 from math import log
 
 transformers.logging.set_verbosity_error()
@@ -106,6 +116,7 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                      with_entity_matching: bool = False,
                      input_cleaned_blocks: dict = None,
                      similarity_distance: str = 'cosine',
+                     custom_pretrained_model: Literal["word", "sentence"] = None,
                      verbose: bool = False
     ) -> any:
         """Main method of the vector based approach. Contains two steps. First an embedding method. \
@@ -126,6 +137,8 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                                             embeddings instead of the blocks. Defaults to False.
             tqdm_disable (bool, optional): Disable progress bar. For experiment purposes. \
                                             Defaults to False.
+            custom_pretrained_model (Literal["word", "sentence"], optional): If set, indicates \
+                that a custom pre-trained model is used for word or sentence embeddings \
 
         Raises:
             AttributeError: Vectorizer check
@@ -154,6 +167,14 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         self._progress_bar = tqdm(total=data.num_of_entities,
                                   desc=(self._method_name + ' [' + self.vectorizer + ', ' + self.similarity_search + ', ' + str(self.device) + ']'),
                                   disable=tqdm_disable)
+        self.custom_pretrained_model = custom_pretrained_model
+        gensim_models = ['word2vec', 'fasttext', 'doc2vec', 'glove']
+        word_emb_mdoels = ['bert', 'distilbert', 'roberta', 'xlnet', 'albert']
+        sentence_emb_models = ['smpnet', 'st5', 'sent_glove', 'sdistilroberta', 'sminilm']
+        reserved_model_names = gensim_models + word_emb_mdoels + sentence_emb_models
+
+        if self.custom_pretrained_model and self.vectorizer in reserved_model_names:
+            raise AttributeError(f"`custom_pretrained_model` is set, but the vectorizer is already reserved for a specific model: {self.vectorizer}. Please use a custom model, or set this to 'None'")
         
         if(input_cleaned_blocks == None):
             self._applied_to_subset = False
@@ -225,12 +246,13 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
                     if verbose: print(f"{p2} -> Loaded Successfully")
                 else:
                     if verbose: print("Embeddings not found for D2. Creating new ones.")
+
         if not self._d1_loaded or (not data.is_dirty_er and not self._d2_loaded):
             if self.vectorizer in ['word2vec', 'fasttext', 'doc2vec', 'glove']:
                 self.vectors_1, self.vectors_2 = self._create_gensim_embeddings()
-            elif self.vectorizer in ['bert', 'distilbert', 'roberta', 'xlnet', 'albert']:
+            elif self.vectorizer in ['bert', 'distilbert', 'roberta', 'xlnet', 'albert'] or (self.custom_pretrained_model == "word" and self.vectorizer not in reserved_model_names):
                 self.vectors_1, self.vectors_2 = self._create_pretrained_word_embeddings()
-            elif self.vectorizer in ['smpnet', 'st5', 'sent_glove', 'sdistilroberta', 'sminilm']:
+            elif self.vectorizer in ['smpnet', 'st5', 'sent_glove', 'sdistilroberta', 'sminilm'] or (self.custom_pretrained_model == "sentence" and self.vectorizer not in reserved_model_names):
                 self.vectors_1, self.vectors_2 = self._create_pretrained_sentence_embeddings()
             else:
                 raise AttributeError("Not available vectorizer")
@@ -315,6 +337,9 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         elif self.vectorizer == 'albert':
             tokenizer = AlbertTokenizer.from_pretrained('albert-base-v2')
             model = AlbertModel.from_pretrained("albert-base-v2")
+        elif self.custom_pretrained_model == "word":
+            tokenizer = AutoTokenizer.from_pretrained(self.vectorizer)
+            model = AutoModel.from_pretrained(self.vectorizer)
 
         model = model.to(self.device)
         self.vectors_1 = self._transform_entities_to_word_embeddings(self._entities_d1,

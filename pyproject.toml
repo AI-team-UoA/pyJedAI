@@ -38,7 +38,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 keywords = ["deduplication", "entity-resolution", "link-discovery"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "gensim",
     "matplotlib",
@@ -66,3 +66,8 @@ dev = ["pip-tools", "pytest"]
 "Documentation" = "http://pyjedai.rtfd.io"
 "Bug Tracker" = "https://github.com/AI-team-UoA/pyJedAI/issues"
 "Source code" = "https://github.com/AI-team-UoA/pyJedAI/tree/main/pyjedai"
+
+[dependency-groups]
+dev = [
+    "pytest-mock>=3.14.0",
+]
