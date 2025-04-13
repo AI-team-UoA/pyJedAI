@@ -1,7 +1,9 @@
-import pytest
-from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
-from pyjedai.datamodel import Data
 import pandas as pd
+import pytest
+
+from pyjedai.datamodel import Data
+from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
+
 
 @pytest.fixture(scope="module")
 def data():
@@ -22,27 +24,23 @@ def test_custom_vectorizer_standard_model_raises_error(data):
         instance.build_blocks(data, custom_pretrained_model="word")
 
 def test_custom_vectorizer_word_embeddings(data, mocker):
-
-    # Create an instance of the class with vectorizer 'custom'
     instance = EmbeddingsNNBlockBuilding(vectorizer='custom')
-
-    # Check if the instance is created successfully
+    # mock the tokenizer and model loading
     assert instance.vectorizer == 'custom'
-    mock_tokenizer = mocker.patch("transformers.AutoTokenizer.from_pretrained")
-    mock_model = mocker.patch("transformers.AutoModel.from_pretrained")
-    # Attempt to call build_blocks and expect an AttributeError
+    mock_tokenizer = mocker.patch("pyjedai.vector_based_blocking.AutoTokenizer.from_pretrained")
+    mock_model = mocker.patch("pyjedai.vector_based_blocking.AutoModel.from_pretrained")
     instance.build_blocks(data, custom_pretrained_model="word")
+    # Check if the tokenizer and model were called once
     assert mock_tokenizer.call_count == 1
     assert mock_model.call_count == 1
 
 
-def test_custom_vectorizer_sentence_embeddings(data):
-
-    # Create an instance of the class with vectorizer 'custom'
+def test_custom_vectorizer_sentence_embeddings(data, mocker):
     instance = EmbeddingsNNBlockBuilding(vectorizer='custom')
-
-    # Check if the instance is created successfully
     assert instance.vectorizer == 'custom'
+    mock_transformer = mocker.patch("pyjedai.vector_based_blocking.SentenceTransformer")
 
-    # Attempt to call build_blocks and expect an AttributeError
+    # check if the transformer was called with the correct model
     instance.build_blocks(data, custom_pretrained_model="sentence")
+    assert mock_transformer.call_count == 1
+    assert mock_transformer.call_args[0][0] == "custom"

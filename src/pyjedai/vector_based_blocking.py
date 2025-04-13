@@ -379,7 +379,13 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         return np.array(embeddings).astype('float32')
 
     def _create_pretrained_sentence_embeddings(self):
-        model = SentenceTransformer(self._sentence_transformer_mapping[self.vectorizer],
+        if self.vectorizer in self._sentence_transformer_mapping:
+            model_name = self._sentence_transformer_mapping[self.vectorizer]
+        elif self.custom_pretrained_model == "sentence":
+            model_name = self.vectorizer
+        else:
+            raise AttributeError(f"unknown vectorizer: {self.vectorizer}")
+        model = SentenceTransformer(model_name,
                                     device=self.device)
         vectors_1 = []
         if not self._d1_loaded:
