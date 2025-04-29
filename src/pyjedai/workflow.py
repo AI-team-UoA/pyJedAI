@@ -571,7 +571,6 @@ class BlockingBasedWorkFlow(PYJEDAIWorkFlow):
         block_building_method = self.block_building['method'](**self.block_building["params"]) \
                                                     if "params" in self.block_building \
                                                     else self.block_building['method']()
-
         block_building_blocks = \
             block_building_method.build_blocks(data,
                                                attributes_1=self.block_building["attributes_1"] \
@@ -847,7 +846,7 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
 
         
         if "exec_params" not in self.block_building:
-            block_building_blocks, em_graph = \
+            block_building_blocks = \
                 block_building_method.build_blocks(data,
                                             attributes_1=self.block_building["attributes_1"] \
                                                                 if "attributes_1" in self.block_building else None,
@@ -864,9 +863,9 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
                                                 tqdm_disable=workflow_step_tqdm_disable,
                                                 with_entity_matching=True,
                                                 **self.block_building["exec_params"])                
-
+        self.final_step_method = block_building_method
         self.final_pairs = block_building_blocks
-        self.final_pairs = block_building_method.export_to_df(self.final_pairs)
+        # self.final_pairs = block_building_method.export_to_df(self.final_pairs)
 
         if data.ground_truth is not None:
             res = block_building_method.evaluate(block_building_blocks,
@@ -882,8 +881,13 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
             clustering_method = self.clustering['method'](**self.clustering["params"]) \
                                             if "params" in self.clustering \
                                             else self.clustering['method']()
-            self.final_pairs = components = clustering_method.process(em_graph, data)
-            self.final_pairs = clustering_method.export_to_df(self.final_pairs)
+            if "exec_params" not in self.clustering:
+                self.final_pairs = components = clustering_method.process(em_graph, data)
+            else:
+                self.final_pairs = components = clustering_method.process(em_graph, data, **self.clustering["exec_params"])
+            
+            self.final_step_method = clustering_method
+            # self.final_pairs = clustering_method.export_to_df(self.final_pairs)
 
             if data.ground_truth is not None:
                 res = clustering_method.evaluate(components,
