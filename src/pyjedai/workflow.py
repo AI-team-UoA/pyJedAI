@@ -16,9 +16,9 @@ from .block_building import StandardBlocking
 from .block_cleaning import BlockFiltering, BlockPurging
 from .comparison_cleaning import *
 from .matching import EntityMatching
-from .clustering import ConnectedComponentsClustering, UniqueMappingClustering
+from .clustering import AbstractClustering, ConnectedComponentsClustering, UniqueMappingClustering
 from .vector_based_blocking import EmbeddingsNNBlockBuilding
-from .joins import EJoin, TopKJoin
+from .joins import AbstractJoin, EJoin, TopKJoin
 
 from .prioritization import ProgressiveMatching, BlockIndependentPM, class_references
 from .utils import new_dictionary_from_keys, get_class_function_arguments, generate_unique_identifier
@@ -905,3 +905,101 @@ class EmbeddingsNNWorkFlow(PYJEDAIWorkFlow):
 
 # class ProgressiveWorkFlow(PYJEDAIWorkFlow):
 #     raise NotImplementedError("Progressive workflow is not implemented yet.")
+
+
+class JoinWorkflow(PYJEDAIWorkFlow):
+    """Join-based workflow.
+    """
+
+    def __init__(
+            self,
+            join: dict,
+            clustering: dict = None,
+            name: str = None
+    ) -> None:
+        super().__init__()
+        self.join, self.clustering = join, clustering
+        self.name: str = name if name else "Workflow-" + str(self._id)
+
+    def run(self,
+            data: Data,
+            verbose: bool = False,
+            with_classification_report: bool = False,
+            workflow_step_tqdm_disable: bool = False,
+            workflow_tqdm_enable: bool = False
+        ) -> None:
+        """Main function for creating an Entity resolution workflow.
+
+        Args:
+            data (Data): Dataset module.
+            verbose (bool, optional): Print detailed report for each step. Defaults to False.
+            with_classification_report (bool, optional): Print pairs counts. Defaults to False.
+            workflow_step_tqdm_disable (bool, optional):  Tqdm progress bar in each step. Defaults to True.
+            workflow_tqdm_enable (bool, optional): Overall progress bar. Defaults to False.
+        """
+        steps = [self.join, self.clustering]
+        num_of_steps = sum(x is not None for x in steps)
+        self._workflow_bar = tqdm(total=num_of_steps,
+                                  desc=self.name,
+                                  disable=not workflow_tqdm_enable)
+        self.data = data
+        self._init_experiment()
+        start_time = time()
+        #
+        # Block building step: Only one algorithm can be performed
+        #
+        join_method : AbstractJoin = self.join['method'](**self.join["params"]) \
+                                        if "params" in self.join \
+                                        else self.join['method']()
+
+        if "exec_params" not in self.join:
+            j_graph = \
+                join_method.fit(data,
+                                attributes_1=self.join["attributes_1"] \
+                                    if "attributes_1" in self.join else None,
+                                attributes_2=self.join["attributes_2"] \
+                                        if "attributes_2" in self.join else None,
+                                tqdm_disable=workflow_step_tqdm_disable)
+        else:
+            j_graph = \
+                join_method.fit(data, 
+                        attributes_1=self.join["attributes_1"] \
+                            if "attributes_1" in self.join else None,
+                        attributes_2=self.join["attributes_2"] \
+                            if "attributes_2" in self.join else None,
+                        tqdm_disable=workflow_step_tqdm_disable,
+                        **self.join["exec_params"])                
+        self.final_step_method = join_method
+        self.final_pairs = j_graph
+
+        if data.ground_truth is not None:
+            res = join_method.evaluate(j_graph,
+                            export_to_dict=True,
+                            with_classification_report=with_classification_report,
+                            verbose=verbose)
+            self._save_step(res, join_method.method_configuration())
+        self._workflow_bar.update(1)
+        #
+        # Clustering step [optional]
+        #
+        if self.clustering:
+            clustering_method : AbstractClustering = self.clustering['method'](**self.clustering["params"]) \
+                                                        if "params" in self.clustering \
+                                                        else self.clustering['method']()
+            if "exec_params" not in self.clustering:
+                self.final_pairs = components = clustering_method.process(j_graph, data)
+            else:
+                self.final_pairs = components = clustering_method.process(j_graph, data, **self.clustering["exec_params"])
+            
+            self.final_step_method = clustering_method
+
+            if data.ground_truth is not None:
+                res = clustering_method.evaluate(components,
+                                                export_to_dict=True,
+                                                with_classification_report=False,
+                                                verbose=verbose)
+                self._save_step(res, clustering_method.method_configuration())
+            self.clusters = components
+            self.workflow_exec_time = time() - start_time
+            self._workflow_bar.update(1)
+    

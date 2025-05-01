@@ -77,7 +77,7 @@ class AbstractJoin(PYJEDAIFeature):
             eid += 1
     
     def get_id_from_index(self, index : int):
-        return (i if self.reverse_order else (index+self.data.dataset_limit))
+        return (index if self.reverse_order else (index+self.data.dataset_limit))
     
        
     def clean_indexing(self):

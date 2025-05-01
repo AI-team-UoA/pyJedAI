@@ -523,4 +523,3 @@ class Block:
             print("Clean dataset 2: " + "[\033[1;34m" + str(len(self.entities_D2)) + \
             " entities\033[0m]")
             print(self.entities_D2)
-
