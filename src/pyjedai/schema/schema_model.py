@@ -29,8 +29,7 @@ class Schema(Data):
 
         if not isinstance(dataset_2, pd.DataFrame):
             raise AttributeError("Dataset 2 must be a pandas DataFrame")
-            
-        
+                    
         if matching_type == 'CONTENT':
             dataset_1, dataset_2, ground_truth = self.load_content(dataset_1, dataset_2, ground_truth, skip_ground_truth_processing)
         elif matching_type == 'COMPOSITE': 
@@ -55,7 +54,6 @@ class Schema(Data):
                 ground_truth: DataFrame = None,
                 skip_ground_truth_processing: bool = False) -> tuple:
         
-
         dataset_1 = dataset_1.astype(str)
         dataset_2 = dataset_2.astype(str)
 
@@ -102,8 +100,7 @@ class Schema(Data):
         self.ground_truth = ground_truth      
         return dataset_1, dataset_2, ground_truth
     
-
-    def load_composite(
+    def load_composite(self,
             dataset_1: DataFrame, 
             dataset_2: DataFrame,
             ground_truth: DataFrame = None,
@@ -155,13 +152,13 @@ class Schema(Data):
         return dataset_1, dataset_2, ground_truth
     
         
-
-    def load_schema(
+    def load_schema(self,
             dataset_1: DataFrame, 
             dataset_2: DataFrame,
             ground_truth: DataFrame = None,
             skip_ground_truth_processing: bool = False
     ) -> tuple:
+        
         dataset_1 = dataset_1.astype(str)
         dataset_2 = dataset_2.astype(str)
 
