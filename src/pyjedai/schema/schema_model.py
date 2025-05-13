@@ -33,9 +33,9 @@ class Schema(Data):
         if matching_type == 'CONTENT':
             dataset_1, dataset_2, ground_truth = self.load_content(dataset_1, dataset_2, ground_truth, skip_ground_truth_processing)
         elif matching_type == 'COMPOSITE': 
-            dataset_1, dataset_2, ground_truth = self.load_composite(dataset_1, dataset_2)
+            dataset_1, dataset_2, ground_truth = self.load_composite(dataset_1, dataset_2, ground_truth, skip_ground_truth_processing)
         else:
-            dataset_1, dataset_2, ground_truth = self.load_schema(dataset_1, dataset_2, ground_truth) 
+            dataset_1, dataset_2, ground_truth = self.load_schema(dataset_1, dataset_2, ground_truth, skip_ground_truth_processing) 
             
         super().__init__(dataset_1 = dataset_1, 
                     id_column_name_1 = 'id',
@@ -95,9 +95,6 @@ class Schema(Data):
             ground_truth = pd.merge(ground_truth, dataset_2_columns, on='target', how='left')
             ground_truth = ground_truth.drop(columns=['source', 'target'])
 
-        self.dataset_1 = dataset_1
-        self.dataset_2 = dataset_2
-        self.ground_truth = ground_truth      
         return dataset_1, dataset_2, ground_truth
     
     def load_composite(self,

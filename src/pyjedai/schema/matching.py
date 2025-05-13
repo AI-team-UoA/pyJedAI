@@ -71,9 +71,9 @@ class ValentineMethodBuilder(PYJEDAIFeature):
 
     @staticmethod
     def coma_matcher(max_n: int = 0,
-                     strategy: str = "COMA_OPT"
+                     use_instances: bool = False
                      ) -> Coma:
-        return Coma(max_n, strategy)
+        return Coma(max_n, use_instances)
 
     @staticmethod
     def cupid_matcher(w_struct: float = 0.2,
