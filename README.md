@@ -141,12 +141,27 @@ This is a research project by the [AI-Team](https://ai.di.uoa.gr) of the Departm
 If you use this code or find it helpful in your research, here's the .bibtex:
 
 ```latex
-@inproceedings{pyJedAI,
-    author = {Nikoletos, Konstantinos and Papadakis, George and Koubarakis, Manolis},
-    booktitle = {Demo at International Semantic Web Conference.},
-    series = {ISWC},
-    title = {{pyJedAI: a lightsaber for Link Discovery}},
-    year = {2022}
+@inproceedings{DBLP:conf/semweb/Nikoletos0K22,
+  author       = {Konstantinos Nikoletos and
+                  George Papadakis and
+                  Manolis Koubarakis},
+  editor       = {Anastasia Dimou and
+                  Armin Haller and
+                  Anna Lisa Gentile and
+                  Petar Ristoski},
+  title        = {pyJedAI: a Lightsaber for Link Discovery},
+  booktitle    = {Proceedings of the {ISWC} 2022 Posters, Demos and Industry Tracks:
+                  From Novel Ideas to Industrial Practice co-located with 21st International
+                  Semantic Web Conference {(ISWC} 2022), Virtual Conference, Hangzhou,
+                  China, October 23-27, 2022},
+  series       = {{CEUR} Workshop Proceedings},
+  volume       = {3254},
+  publisher    = {CEUR-WS.org},
+  year         = {2022},
+  url          = {https://ceur-ws.org/Vol-3254/paper366.pdf},
+  timestamp    = {Fri, 10 Mar 2023 16:23:05 +0100},
+  biburl       = {https://dblp.org/rec/conf/semweb/Nikoletos0K22.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 ```
 
