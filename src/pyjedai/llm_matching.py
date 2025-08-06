@@ -163,23 +163,23 @@ class OllamaMatching(AbstrackLLMMatching):
                     for example in example_records['false']:
                             example_str = f"\nExample {example_cnt}\nrecord 1: {example[0]}\nrecord 2: {example[1]}\nAnswer: False."
                             example_cnt += 1
-                            self.system_prompt = f"{system_prompt}{example_str}"
+                            self.system_prompt = f"{self.system_prompt}{example_str}"
                 if 'true' in example_records: 
                     for example in example_records['true']:
                             example_str = f"\nExample {example_cnt}\nrecord 1: {example[0]}\nrecord 2: {example[1]}\nAnswer: True."
                             example_cnt += 1
-                            self.system_prompt = f"{system_prompt}{example_str}"
+                            self.system_prompt = f"{self.system_prompt}{example_str}"
             else:
                 if 'true' in example_records: 
                     for example in example_records['true']:
                             example_str = f"\nExample {example_cnt}\nrecord 1: {example[0]}\nrecord 2: {example[1]}\nAnswer: True."
                             example_cnt += 1
-                            self.system_prompt = f"{system_prompt}{example_str}"                    
+                            self.system_prompt = f"{self.system_prompt}{example_str}"                    
                 if 'false' in example_records: 
                     for example in example_records['false']:
                             example_str = f"\nExample {example_cnt}\nrecord 1: {example[0]}\nrecord 2: {example[1]}\nAnswer: False."
                             example_cnt += 1
-                            self.system_prompt = f"{system_prompt}{example_str}"
+                            self.system_prompt = f"{self.system_prompt}{example_str}"
         
         self.model_name = f'{self.llm}-{suffix}'
         ollama.create(model=self.model_name, from_=self.llm, system=self.system_prompt)
