@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.3.0"
+version = "0.3.1"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -55,7 +55,8 @@ dependencies = [
     "py-stringmatching",
     "valentine; python_version > '3.7'",
     "ordered-set",
-    "shapely"
+    "shapely",
+    "ollama"
 ]
 
 [project.optional-dependencies]
