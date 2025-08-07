@@ -15,7 +15,13 @@ import faiss
 import platform
 RUNNING_OS = platform.system()
 
-import gensim.downloader as api
+try: 
+    import gensim.downloader as api
+    HAS_GENSIM = True
+except ImportError:
+    HAS_GENSIM = False
+    
+
 import networkx as nx
 import numpy as np
 import torch
@@ -60,11 +66,14 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
     _method_info = "Creates a set of candidate pais for every entity id " + \
         "based on Embeddings creariot and Similarity search among the vectors."
 
+    
     _gensim_mapping_download = {
         'fasttext' : 'fasttext-wiki-news-subwords-300',
         'glove' : 'glove-wiki-gigaword-300',
         'word2vec' : 'word2vec-google-news-300'
-    }
+        
+    } if HAS_GENSIM else {}
+    
     _sentence_transformer_mapping = {
         'smpnet' : 'all-mpnet-base-v2',
         'st5' : 'gtr-t5-large',
@@ -303,9 +312,11 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
         Returns:
             Tuple[np.array, np.array]: Embeddings from D1 and D2
         """
-        vectors_1 = []
+        if not HAS_GENSIM : 
+            raise ImportError("Reinstall pyjedai with pip install pyjedai[with-gensim] or use other vectorizer")
+            
         vocabulary = api.load(self._gensim_mapping_download[self.vectorizer])
-        
+    
         if not self._d1_loaded:
             for e1 in self._entities_d1:
                 vectors_1.append(self._create_vector(e1, vocabulary))

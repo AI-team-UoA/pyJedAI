@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.3.2"
+version = "0.3.3"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -40,13 +40,12 @@ classifiers = [
 keywords = ["deduplication", "entity-resolution", "link-discovery"]
 requires-python = ">=3.9"
 dependencies = [
-    "gensim",
     "matplotlib",
     "networkx",
     "nltk",
-    "numpy >= 1.7.0,<2.0",
+    "numpy<3.0",
     "pandas",
-    "scipy==1.12",
+    "scipy",
     "seaborn",
     "tqdm",
     "transformers",
@@ -59,8 +58,13 @@ dependencies = [
     "ollama"
 ]
 
+
 [project.optional-dependencies]
 dev = ["pip-tools", "pytest"]
+with-gensim = [
+    "numpy>=1.7, < 2.0", 
+    "gensim",
+    "scipy==1.12"]
 
 [project.urls]
 "Homepage" = "http://pyjedai.rtfd.io"
