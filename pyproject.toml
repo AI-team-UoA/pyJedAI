@@ -6,11 +6,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.3.3"
+version = "0.3.4"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
-    { name = "Lefteris Stetsikas", email = "skantzoxoiros45@gmail.com" },
+    { name = "Lefteris Stetsikas", email = "lstetsikas3@gmail.com" },
     { name = "Konstantinos Nikoletos", email = "nikoletos.kon@gmail.com" },
     { name = "George Papadakis", email = "gpapadis84@gmail.com" },
     { name = "Jakub Maciejewski", email = "jacobb.maciejewski@gmail.com"},
@@ -51,11 +51,11 @@ dependencies = [
     "transformers",
     "sentence-transformers",
     "faiss-cpu",
-    "py-stringmatching",
     "valentine; python_version > '3.7'",
     "ordered-set",
     "shapely",
-    "ollama"
+    "ollama",
+    "StringCompare @ git+https://github.com/OlivierBinette/StringCompare.git@release"
 ]
 
 

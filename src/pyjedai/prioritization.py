@@ -15,18 +15,9 @@ from .joins import PETopKJoin
 from .vector_based_blocking import EmbeddingsNNBlockBuilding
 
 from networkx import Graph
-from py_stringmatching.similarity_measure.cosine import Cosine
-from py_stringmatching.similarity_measure.dice import Dice
-from py_stringmatching.similarity_measure.generalized_jaccard import \
-    GeneralizedJaccard
-from py_stringmatching.similarity_measure.jaccard import Jaccard
-from py_stringmatching.similarity_measure.jaro import Jaro
-from py_stringmatching.similarity_measure.levenshtein import Levenshtein
-from py_stringmatching.similarity_measure.overlap_coefficient import \
-    OverlapCoefficient
-from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
-from py_stringmatching.tokenizer.whitespace_tokenizer import \
-    WhitespaceTokenizer
+from .string_matchers import WhitespaceTokenizer, Cosine, Jaccard, GeneralizedJaccard, Dice, OverlapCoefficient
+from stringcompare import Levenshtein, Jaro
+from stringcompare.preprocessing import NGramTokenizer
 from sklearn.metrics.pairwise import pairwise_distances
 from tqdm.autonotebook import tqdm
 

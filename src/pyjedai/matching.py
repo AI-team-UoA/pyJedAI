@@ -7,18 +7,9 @@ from time import time
 import matplotlib.pyplot as plt
 import numpy as np
 from networkx import Graph
-from py_stringmatching.similarity_measure.cosine import Cosine
-from py_stringmatching.similarity_measure.dice import Dice
-from py_stringmatching.similarity_measure.generalized_jaccard import \
-    GeneralizedJaccard
-from py_stringmatching.similarity_measure.jaccard import Jaccard
-from py_stringmatching.similarity_measure.jaro import Jaro
-from py_stringmatching.similarity_measure.levenshtein import Levenshtein
-from py_stringmatching.similarity_measure.overlap_coefficient import \
-    OverlapCoefficient
-from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
-from py_stringmatching.tokenizer.whitespace_tokenizer import \
-    WhitespaceTokenizer
+from .string_matchers import WhitespaceTokenizer, Cosine, Jaccard, GeneralizedJaccard, Dice, OverlapCoefficient
+from stringcompare import Levenshtein, Jaro
+from stringcompare.preprocessing import NGramTokenizer
 from tqdm.autonotebook import tqdm
 
 from .datamodel import Data, PYJEDAIFeature
@@ -389,12 +380,12 @@ class EntityMatching(AbstractEntityMatching):
                         vectorizer, available_vectorizers
                     )
                 )
+                
         elif(tokenizer is not None):
             if tokenizer == 'white_space_tokenizer':
-                self._tokenizer = WhitespaceTokenizer(return_set=self.tokenizer_return_set)
+                self._tokenizer = WhitespaceTokenizer()
             elif tokenizer == 'char_tokenizer':
-                self._tokenizer = QgramTokenizer(qval=self.qgram,
-                                                return_set=self.tokenizer_return_set)
+                self._tokenizer = NGramTokenizer(n=self.qgram)
             elif tokenizer == 'word_tokenizer':
                 self._tokenizer = WordQgramTokenizer(q=self.qgram)
             elif tokenizer not in available_tokenizers:
@@ -508,27 +499,41 @@ class EntityMatching(AbstractEntityMatching):
             for attribute, weight in self.attributes.items():
                 e1 = self.data.entities.iloc[entity_id1][attribute].lower()
                 e2 = self.data.entities.iloc[entity_id2][attribute].lower()
-
-                similarity += weight*metrics_mapping[self._metric].get_sim_score(
-                    self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
-                    self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
-                )
+                if self.tokenizer_return_set: 
+                    similarity += weight*metrics_mapping[self._metric].compare(
+                        set(self._tokenizer.tokenize(e1)) if self._metric in set_metrics else e1,
+                        set(self._tokenizer.tokenize(e2)) if self._metric in set_metrics else e2
+                    )
+                else:     
+                    similarity += weight*metrics_mapping[self._metric].compare(
+                        self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
+                        self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
+                    )
         elif isinstance(self.attributes, list):
             for attribute in self.attributes:
                 e1 = self.data.entities.iloc[entity_id1][attribute].lower()
                 e2 = self.data.entities.iloc[entity_id2][attribute].lower()
-                similarity += metrics_mapping[self._metric].get_sim_score(
-                    self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
-                    self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
-                )
+                if self.tokenizer_return_set: 
+                    similarity += metrics_mapping[self._metric].compare(
+                        set(self._tokenizer.tokenize(e1)) if self._metric in set_metrics else e1,
+                        set(self._tokenizer.tokenize(e2)) if self._metric in set_metrics else e2
+                    )
+                else:
+                    similarity += metrics_mapping[self._metric].compare(
+                        self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1,
+                        self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
+                    )
             similarity /= len(self.attributes)
         else:
-            # concatenated row string
             e1 = self.data.entities.iloc[entity_id1].str.cat(sep=' ').lower()
             e2 = self.data.entities.iloc[entity_id2].str.cat(sep=' ').lower()
-            te1 = self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1
-            te2 = self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
-            similarity = metrics_mapping[self._metric].get_sim_score(te1, te2)
+            if self.tokenizer_return_set: 
+                te1 = set(self._tokenizer.tokenize(e1)) if self._metric in set_metrics else e1
+                te2 = set(self._tokenizer.tokenize(e2)) if self._metric in set_metrics else e2
+            else:
+                te1 = self._tokenizer.tokenize(e1) if self._metric in set_metrics else e1
+                te2 = self._tokenizer.tokenize(e2) if self._metric in set_metrics else e2
+            similarity = metrics_mapping[self._metric].compare(te1, te2)
         return similarity
 
     def _configuration(self) -> dict:
