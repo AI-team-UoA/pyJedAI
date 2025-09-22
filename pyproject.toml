@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyjedai"
-version = "0.3.4"
+version = "0.3.5"
 description = "An open-source library that builds powerful end-to-end Entity Resolution workflows."
 readme = "README.md"
 authors = [
@@ -55,7 +55,8 @@ dependencies = [
     "ordered-set",
     "shapely",
     "ollama",
-    "StringCompare @ git+https://github.com/OlivierBinette/StringCompare.git@release"
+    "py-stringcompare",
+    "ray"
 ]
 
 
