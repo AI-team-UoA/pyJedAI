@@ -7,15 +7,19 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Tuple
-
+import ray
 import nltk
 import numpy as np
 from tqdm.auto import tqdm
-
+import logging
+from typing import Callable
 from .datamodel import Block, Data, PYJEDAIFeature
-from .utils import (are_matching, drop_big_blocks_by_size, create_entity_index,
+from .utils import (are_matching, _ray_are_matching, drop_big_blocks_by_size, create_entity_index,
                     drop_single_entity_blocks, get_blocks_cardinality)
 from .evaluation import Evaluation
+
+#pyarrow ray pip 
+
 
 class AbstractBlockProcessing(PYJEDAIFeature):
     """Abstract class for the block building method
@@ -23,6 +27,9 @@ class AbstractBlockProcessing(PYJEDAIFeature):
 
     def __init__(self):
         super().__init__()
+        self.disable_eval_ray : bool = False
+        self.disable_ray : bool = None
+        self.eval_batch_size : int = 10000
         self.blocks: dict
         self.attributes_1: list
         self.attributes_2: list
@@ -48,6 +55,44 @@ class AbstractBlockProcessing(PYJEDAIFeature):
                 else self.data.dataset_2.columns)) if not self.data.is_dirty_er else "") +
             "\nRuntime: {:2.4f} seconds".format(self.execution_time)
         )
+    def _serial_evaluate(self, entity_index) -> int:
+        true_positives = 0
+        for _, (id1, id2) in self.data.ground_truth.iterrows():
+            id1 = self.data._ids_mapping_1[id1]
+            id2 = self.data._ids_mapping_1[id2] if self.data.is_dirty_er else self.data._ids_mapping_2[id2]
+            if id1 in entity_index and    \
+                id2 in entity_index and are_matching(entity_index, id1, id2):
+                    true_positives += 1 
+
+        return true_positives
+
+    def _ray_evaluate(self, entity_index) -> int: 
+        if not ray.is_initialized():
+            logging.getLogger("ray").setLevel(logging.ERROR)
+            ray.init(log_to_driver=False, logging_level=logging.ERROR)
+
+        entity_index_ref = ray.put(entity_index)
+        batch_size = self.eval_batch_size
+            
+        pairs = []
+        futures = []
+        for _, (id1, id2) in self.data.ground_truth.iterrows():
+            id1 = self.data._ids_mapping_1[id1]
+            id2 = self.data._ids_mapping_1[id2] if self.data.is_dirty_er else self.data._ids_mapping_2[id2]
+            if id1 in entity_index and    \
+                id2 in entity_index:
+                    pairs.append((id1, id2))
+            if len(pairs) == batch_size:
+                futures.append(_ray_are_matching.remote(entity_index_ref, pairs))
+                pairs = []
+
+        if len(pairs) != 0:
+            futures.append(_ray_are_matching.remote(entity_index_ref, pairs))
+
+        ray_results = ray.get(futures)
+        true_positives = sum(ray_results)
+        return true_positives        
+        
 
     def evaluate(self,
                  prediction,
@@ -71,16 +116,23 @@ class AbstractBlockProcessing(PYJEDAIFeature):
         if self.data.ground_truth is None:
             raise AttributeError("Can not proceed to evaluation without a ground-truth file. " + 
                     "Data object has not been initialized with the ground-truth file")
+        
 
         eval_obj = Evaluation(self.data)
-        true_positives = 0
         entity_index = eval_obj._create_entity_index_from_blocks(eval_blocks)
-        for _, (id1, id2) in self.data.ground_truth.iterrows():
-            id1 = self.data._ids_mapping_1[id1]
-            id2 = self.data._ids_mapping_1[id2] if self.data.is_dirty_er else self.data._ids_mapping_2[id2]
-            if id1 in entity_index and    \
-                id2 in entity_index and are_matching(entity_index, id1, id2):
-                true_positives += 1
+
+        
+        
+        if self.disable_ray and self.disable_eval_ray: 
+            true_positives = self._serial_evaluate(entity_index)
+        else: 
+            true_positives = self._ray_evaluate(entity_index)
+              
+
+        
+            
+
+        
 
         total_matching_pairs = get_blocks_cardinality(eval_blocks, self.data.is_dirty_er)
         eval_obj.calculate_scores(true_positives=true_positives, total_matching_pairs=total_matching_pairs)
@@ -280,8 +332,27 @@ class AbstractBlockBuilding(AbstractBlockProcessing):
     _method_name: str
     _method_info: str
     _method_short_name: str
+    
+    @staticmethod
+    def _ray_create_blocks_dict_batch(entities, data_limit):
+        blocks = defaultdict(Block)
+        for eid, entity in entities:
+            if eid < data_limit:
+                for token in entity: 
+                    blocks[token].entities_D1.add(eid)
+            else: 
+                for token in entity: 
+                    blocks[token].entities_D2.add(eid)
+                
+        return blocks
 
-    def __init__(self):
+    @staticmethod
+    def _ray_tokenize_batch(chunk, tokenizer_config : dict):
+        tokenizer = tokenizer_config['func']
+        kwargs = tokenizer_config.get("kwargs", {})
+        return [tokenizer(" ".join(row), **kwargs) for row in chunk]
+    
+    def __init__(self, disable_ray = True, batch_size = 10000):
         super().__init__()
         self.blocks: dict
         self._progress_bar: tqdm
@@ -290,7 +361,51 @@ class AbstractBlockBuilding(AbstractBlockProcessing):
         self.execution_time: float
         self.data: Data
         self.list_of_sizes: list = []
+        self.disable_ray = disable_ray
+        self.batch_size = batch_size
+        if  self.disable_ray and not ray.is_initialized():
+            logging.getLogger("ray").setLevel(logging.ERROR)
+            ray.init(log_to_driver=False, logging_level=logging.ERROR)
 
+    def _serial_build_blocks(self):
+        # TODO Text process function can be applied in this step (.apply)
+        self._entities_d1 = self.data.dataset_1[self.attributes_1 if self.attributes_1 else self.data.attributes_1]  \
+                        .apply(" ".join, axis=1) \
+                        .apply(self._tokenize_entity) \
+                        .values.tolist()
+        self._all_tokens = set(itertools.chain.from_iterable(self._entities_d1))
+        
+        if not self.data.is_dirty_er:
+            self._entities_d2 = self.data.dataset_2[self.attributes_2 if self.attributes_2 else self.data.attributes_2] \
+                    .apply(" ".join, axis=1) \
+                    .apply(self._tokenize_entity) \
+                    .values.tolist()
+            self._all_tokens.union(set(itertools.chain.from_iterable(self._entities_d2)))
+
+    def _ray_build_blocks(self):
+        futures = []
+        ray_tokenize_batch = ray.remote(self._ray_tokenize_batch)
+        self._entities_d1 = self.data.dataset_1[self.attributes_1 if self.attributes_1 else self.data.attributes_1]
+        tokenizer_config = ray.put(self._ray_configuration())
+       
+        for i in range(0, self.data.dataset_limit, self.batch_size):
+            futures.append(ray_tokenize_batch.remote(self._entities_d1.iloc[i: i+self.batch_size].to_numpy().tolist(), tokenizer_config))
+
+        ray_results = ray.get(futures)
+        self._entities_d1 = list(itertools.chain.from_iterable(ray_results))        
+        self._all_tokens = set(itertools.chain.from_iterable(self._entities_d1))
+        
+        if not self.data.is_dirty_er:
+            futures = []
+            self._entities_d2 = self.data.dataset_2[self.attributes_2 if self.attributes_2 else self.data.attributes_2]
+            max_id = self.data.dataset_2.shape[0]
+            for i in range(0, max_id, self.batch_size):
+                futures.append(ray_tokenize_batch.remote(self._entities_d2.iloc[i: i+self.batch_size].to_numpy().tolist(), tokenizer_config))
+            ray_results = ray.get(futures)
+            self._entities_d2 = list(itertools.chain.from_iterable(ray_results))
+            self._all_tokens.union(set(itertools.chain.from_iterable(self._entities_d2))) 
+
+        
     def build_blocks(
             self,
             data: Data,
@@ -318,41 +433,25 @@ class AbstractBlockBuilding(AbstractBlockProcessing):
         self._progress_bar = tqdm(
             total=data.num_of_entities, desc=self._method_name, disable=tqdm_disable
         )
-
-        # TODO Text process function can be applied in this step (.apply)
-        self._entities_d1 = data.dataset_1[attributes_1 if attributes_1 else data.attributes_1] \
-                            .apply(" ".join, axis=1) \
-                            .apply(self._tokenize_entity) \
-                            .values.tolist()
-                        # if attributes_1 else data.entities_d1.apply(self._tokenize_entity)
-
-        self._all_tokens = set(itertools.chain.from_iterable(self._entities_d1))
-
-        if not data.is_dirty_er:
-            self._entities_d2 = data.dataset_2[attributes_2 if attributes_2 else data.attributes_2] \
-                    .apply(" ".join, axis=1) \
-                    .apply(self._tokenize_entity) \
-                    .values.tolist()
-            self._all_tokens.union(set(itertools.chain.from_iterable(self._entities_d2)))
-
-        entity_id = itertools.count()
-        blocks = {}
         
-        for entity in self._entities_d1:
-            eid = next(entity_id)
+        if self.disable_ray: 
+            self._serial_build_blocks()      # Serial Logic
+        else: 
+            self._ray_build_blocks()         # Ray Logic
+        
+        blocks = defaultdict(Block)
+        for eid, entity in enumerate(self._entities_d1):
             for token in entity:
-                blocks.setdefault(token, Block())
                 blocks[token].entities_D1.add(eid)
             self._progress_bar.update(1)
-
+        
         if not data.is_dirty_er:
-            for entity in self._entities_d2:
-                eid = next(entity_id)
+            for eid_off, entity in enumerate(self._entities_d2):
+                eid = self.data.dataset_limit + eid_off
                 for token in entity:
-                    blocks.setdefault(token, Block())
                     blocks[token].entities_D2.add(eid)
                 self._progress_bar.update(1)
-
+                                    
         self.original_num_of_blocks = len(blocks)
         self.blocks = self._clean_blocks(blocks)
         self.num_of_blocks_dropped = len(blocks) - len(self.blocks)
@@ -393,9 +492,14 @@ class StandardBlocking(AbstractBlockBuilding):
     _method_info = "Creates one block for every token in " + \
         "the attribute values of at least two entities."
 
-    def __init__(self) -> any:
-        super().__init__()
+    def __init__(self, disable_ray = False, batch_size = 10000) -> any:
+        super().__init__(disable_ray, batch_size)
 
+    @staticmethod
+    def _ray_tokenize_entity(entity : str) -> list:
+        return list(set(filter(None, re.split('[\\W_]', entity.lower()))))
+        
+    
     def _tokenize_entity(self, entity: str) -> list:
         """Produces a list of workds of a given string
 
@@ -414,6 +518,11 @@ class StandardBlocking(AbstractBlockBuilding):
     def _configuration(self) -> dict:
         """No configuration"""
         return {}
+    
+    def _ray_configuration(self) -> dict: 
+        return {
+            "func": self._ray_tokenize_entity,
+            }
 
 class QGramsBlocking(StandardBlocking):
     """ Creates one block for every q-gram that is extracted \
@@ -428,11 +537,21 @@ class QGramsBlocking(StandardBlocking):
                     "The q-gram must be shared by at least two entities."
 
     def __init__(
-            self, qgrams: int = 6
+            self, disable_ray=False, batch_size = 10000, qgrams: int = 6
     ) -> any:
-        super().__init__()
+        super().__init__(disable_ray, batch_size)
         self.qgrams = qgrams
 
+    @staticmethod
+    def _ray_tokenize_entity(entity : str, qgrams: int) -> list:
+        keys = set()
+        for token in StandardBlocking._ray_tokenize_entity(entity):
+            if len(token) < qgrams:
+                keys.add(token)
+            else:
+                keys.update(''.join(qg) for qg in nltk.ngrams(token, n=qgrams))
+        return keys
+    
     def _tokenize_entity(self, entity) -> set:
         keys = set()
         for token in super()._tokenize_entity(entity):
@@ -450,6 +569,13 @@ class QGramsBlocking(StandardBlocking):
             "Q-Gramms" : self.qgrams
         }
 
+    def _ray_configuration(self) -> dict:
+        return {
+            "func": self._ray_tokenize_entity,
+            "kwargs" : {"qgrams" : self.qgrams}
+        }
+
+
 class SuffixArraysBlocking(StandardBlocking):
     """ It creates one block for every suffix that appears \
         in the attribute value tokens of at least two entities.
@@ -462,11 +588,24 @@ class SuffixArraysBlocking(StandardBlocking):
 
     def __init__(
             self,
+            disable_ray : bool = False,
+            batch_size : int = 10000,
             suffix_length: int = 6,
             max_block_size: int = 53
     ) -> any:
-        super().__init__()
+        super().__init__(disable_ray, batch_size)
         self.suffix_length, self.max_block_size = suffix_length, max_block_size
+
+    @staticmethod
+    def _ray_tokenize_entity(entity : str, suffix_length: int) -> set:
+        keys = set()
+        for token in StandardBlocking._ray_tokenize_entity(entity):
+            if len(token) < suffix_length:
+                keys.add(token)
+            else:
+                for length in range(0, len(token) - suffix_length + 1):
+                    keys.add(token[length:])
+        return keys
 
     def _tokenize_entity(self, entity) -> set:
         keys = set()
@@ -486,6 +625,12 @@ class SuffixArraysBlocking(StandardBlocking):
             "Suffix length" : self.suffix_length,
             "Maximum Block Size" : self.max_block_size
         }
+    
+    def _ray_configuration(self) -> dict:
+        return {
+            "func": self._ray_tokenize_entity,
+            "kwargs" : {"suffix_length" : self.suffix_length}
+        }
 
 class ExtendedSuffixArraysBlocking(StandardBlocking):
     """ It creates one block for every substring \
@@ -499,12 +644,26 @@ class ExtendedSuffixArraysBlocking(StandardBlocking):
 
     def __init__(
             self,
+            disable_ray : bool = False,
+            batch_size : int = 10000,
             suffix_length: int = 6,
             max_block_size: int = 39
     ) -> any:
-        super().__init__()
+        super().__init__(disable_ray, batch_size)
         self.suffix_length, self.max_block_size = suffix_length, max_block_size
 
+    @staticmethod
+    def _ray_tokenize_entity(entity: str, suffix_length: int) -> set:
+        keys = set()
+        for token in StandardBlocking._ray_tokenize_entity(entity):
+            keys.add(token)
+            if len(token) > suffix_length:
+                for current_size in range(suffix_length, len(token)): 
+                    for letters in list(nltk.ngrams(token, n=current_size)):
+                        keys.add("".join(letters))
+        return keys
+
+    
     def _tokenize_entity(self, entity) -> set:
         keys = set()
         for token in super()._tokenize_entity(entity):
@@ -523,6 +682,12 @@ class ExtendedSuffixArraysBlocking(StandardBlocking):
             "Suffix length" : self.suffix_length,
             "Maximum Block Size" : self.max_block_size
         }
+    
+    def _ray_configuration(self) -> dict:
+        return {
+            "func": self._ray_tokenize_entity,
+            "kwargs" : {"suffix_length" : self.suffix_length}
+        }
 
 class ExtendedQGramsBlocking(StandardBlocking):
     """It creates one block for every combination of q-grams that represents at least two entities.
@@ -536,13 +701,36 @@ class ExtendedQGramsBlocking(StandardBlocking):
 
     def __init__(
             self,
+            disable_ray : bool = False,
+            batch_size : int = 10000,
             qgrams: int = 6,
             threshold: float = 0.95
     ) -> any:
-        super().__init__()
+        super().__init__(disable_ray, batch_size)
         self.threshold: float = threshold
         self.MAX_QGRAMS: int = 15
         self.qgrams = qgrams
+
+    @staticmethod
+    def _ray_tokenize_entity(entity: str, self_qgrams: int, threshold: float) -> set:
+        MAX_QGRAMS = 15
+        keys = set()
+        for token in StandardBlocking._ray_tokenize_entity(entity):
+            if len(token) < self_qgrams:
+                keys.add(token)
+            else:   
+                qgrams = [''.join(qgram) for qgram in nltk.ngrams(token, n=self_qgrams)]
+                if len(qgrams) == 1:
+                    keys.update(qgrams)
+                else:
+                    if len(qgrams) > MAX_QGRAMS:
+                        qgrams = qgrams[:MAX_QGRAMS]
+
+                    minimum_length = max(1, math.floor(len(qgrams) * threshold))
+                    for i in range(minimum_length, len(qgrams) + 1):
+                        keys.update(ExtendedQGramsBlocking._qgrams_combinations(qgrams, i))
+        
+        return keys
 
     def _tokenize_entity(self, entity) -> set:
         keys = set()
@@ -563,15 +751,16 @@ class ExtendedQGramsBlocking(StandardBlocking):
 
         return keys
 
-    def _qgrams_combinations(self, sublists: list, sublist_length: int) -> list:
+    @staticmethod
+    def _qgrams_combinations(sublists: list, sublist_length: int) -> list:
         if sublist_length == 0 or len(sublists) < sublist_length:
             return []
 
         remaining_elements = sublists.copy()
         last_sublist = remaining_elements.pop(len(sublists)-1)
 
-        combinations_exclusive_x = self._qgrams_combinations(remaining_elements, sublist_length)
-        combinations_inclusive_x = self._qgrams_combinations(remaining_elements, sublist_length-1)
+        combinations_exclusive_x = ExtendedQGramsBlocking._qgrams_combinations(remaining_elements, sublist_length)
+        combinations_inclusive_x = ExtendedQGramsBlocking._qgrams_combinations(remaining_elements, sublist_length-1)
 
         resulting_combinations = combinations_exclusive_x.copy() if combinations_exclusive_x else []
 
@@ -590,4 +779,10 @@ class ExtendedQGramsBlocking(StandardBlocking):
         return {
             "Q-Gramms" : self.qgrams,
             "Threshold" : self.threshold
+        }
+
+    def _ray_configuration(self) -> dict:
+        return {
+            "func": self._ray_tokenize_entity,
+            "kwargs" : {"self_qgrams" : self.qgrams, "threshold":  self.threshold}
         }

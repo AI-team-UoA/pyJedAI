@@ -56,7 +56,6 @@ class Cosine(StringMatcher):
         
 class Dice(StringMatcher):
     def compare(self, te1, te2) -> float:
-        print("TIFASIII??")
         self.check_instance_type(te1, te2)
 
         set1 = set(te1)

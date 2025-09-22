@@ -7,6 +7,7 @@ import os
 import json
 import pandas as pd
 import inspect
+import ray
 
 from abc import ABC, abstractmethod
 from typing import List, Tuple
@@ -50,7 +51,14 @@ def create_entity_index(blocks: dict, is_dirty_er: bool) -> dict:
 
     return entity_index
 
-def are_matching(entity_index, id1, id2) -> bool:
+@ray.remote
+def _ray_are_matching(entity_index: dict[str, set], pairs: list):
+    true_positives = 0
+    for id1, id2 in pairs:
+        true_positives += 0 if entity_index[id1].isdisjoint(entity_index[id2]) else 1 
+    return true_positives
+
+def are_matching(entity_index : dict, id1, id2) -> bool:
     '''
     id1 and id2 consist a matching pair if:
     - Blocks: intersection > 0 (comparison of sets)
@@ -60,7 +68,7 @@ def are_matching(entity_index, id1, id2) -> bool:
     if len(entity_index) < 1:
         raise ValueError("No entities found in the provided index")
     if isinstance(list(entity_index.values())[0], set): # Blocks case
-        return len(entity_index[id1].intersection(entity_index[id2])) > 0
+        return not entity_index[id1].isdisjoint(entity_index[id2]) 
     return entity_index[id1] == entity_index[id2] # Clusters case
 
 def get_blocks_cardinality(blocks: dict, is_dirty_er: bool) -> int:
