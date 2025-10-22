@@ -171,8 +171,15 @@ class EmbeddingsNNBlockBuilding(PYJEDAIFeature):
             = data, attributes_1, attributes_2, vector_size, num_of_clusters, top_k, input_cleaned_blocks
         self.load_path_d1, self.load_path_d2 = load_path_d1, load_path_d2
         
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+        if torch.cuda.is_available():
+            self.device = torch.device('cuda')
+        elif torch.backends.mps.is_available():
+            self.device = torch.device('mps')
+        else: 
+            self.device = torch.device('cpu')
+        
+        
+        
         self._progress_bar = tqdm(total=data.num_of_entities,
                                   desc=(self._method_name + ' [' + self.vectorizer + ', ' + self.similarity_search + ', ' + str(self.device) + ']'),
                                   disable=tqdm_disable)
