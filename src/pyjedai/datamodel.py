@@ -151,7 +151,8 @@ class Data:
                     raise AttributeError("Dataset 2 must contain column names if attributes_2 is empty.")
             else:
                 self.attributes_2: list = attributes_2
-
+       
+        self.duplicate_of = None
         # Ground truth data
         self.skip_ground_truth_processing = skip_ground_truth_processing
         if ground_truth is not None and not skip_ground_truth_processing:
