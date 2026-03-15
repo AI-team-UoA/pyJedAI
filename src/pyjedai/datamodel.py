@@ -314,32 +314,37 @@ class Data:
                       remove_unicodes: bool = True) -> None:
         """Removes stopwords, punctuation, uni-codes, numbers from the dataset.
         """
-        nltk.download('stopwords')
-
-        # Make self.dataset_1 and self.dataset_2 lowercase
-        self.dataset_1 = self.dataset_1.applymap(lambda x: x.lower())
-        if not self.is_dirty_er:
-            self.dataset_2 = self.dataset_2.applymap(lambda x: x.lower())
-            
-        if remove_numbers:
-            self.dataset_1 = self.dataset_1.applymap(lambda x: re.sub(r'\d+', '', x))
-            if not self.is_dirty_er:
-                self.dataset_2 = self.dataset_2.applymap(lambda x: re.sub(r'\d+', '', x))    
-                
-        if remove_unicodes:
-            self.dataset_1 = self.dataset_1.applymap(lambda x: re.sub(r'[^\x00-\x7F]+', '', x))
-            if not self.is_dirty_er:
-                self.dataset_2 = self.dataset_2.applymap(lambda x: re.sub(r'[^\x00-\x7F]+', '', x))
-            
-        if remove_punctuation:
-            self.dataset_1  = self.dataset_1.applymap(lambda x: re.sub(r'[^\w\s]','',x))
-            if not self.is_dirty_er:
-                self.dataset_2 = self.dataset_2.applymap(lambda x: re.sub(r'[^\w\s]','',x))
-        
+        stop_words = None
         if remove_stopwords:
-            self.dataset_1 = self.dataset_1.applymap(lambda x: ' '.join([word for word in x.split() if word not in (stopwords.words('english'))]))
-            if not self.is_dirty_er:
-                self.dataset_2 = self.dataset_2.applymap(lambda x: ' '.join([word for word in x.split() if word not in (stopwords.words('english'))]))    
+            nltk.download('stopwords')
+            stop_words = set(stopwords.words('english'))
+
+        def _clean_dataframe(dataframe: DataFrame, columns: list) -> DataFrame:
+            if not columns:
+                return dataframe
+
+            cleaned_columns = dataframe.loc[:, columns].applymap(lambda x: x.lower())
+
+            if remove_numbers:
+                cleaned_columns = cleaned_columns.applymap(lambda x: re.sub(r'\d+', '', x))
+
+            if remove_unicodes:
+                cleaned_columns = cleaned_columns.applymap(lambda x: re.sub(r'[^\x00-\x7F]+', '', x))
+
+            if remove_punctuation:
+                cleaned_columns = cleaned_columns.applymap(lambda x: re.sub(r'[^\w\s]','',x))
+
+            if remove_stopwords:
+                cleaned_columns = cleaned_columns.applymap(
+                    lambda x: ' '.join([word for word in x.split() if word not in stop_words])
+                )
+
+            dataframe.loc[:, columns] = cleaned_columns
+            return dataframe
+
+        self.dataset_1 = _clean_dataframe(self.dataset_1, self.attributes_1)
+        if not self.is_dirty_er:
+            self.dataset_2 = _clean_dataframe(self.dataset_2, self.attributes_2)
 
         self.entities = self.dataset_1 = self.dataset_1.astype(str)
         
